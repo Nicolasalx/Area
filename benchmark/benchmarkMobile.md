@@ -8,7 +8,7 @@
 |--------|:---------------|:---------|:----------------|
 | Good performances |  Platform specific | Platform dependant |Airbnb |
 | Components can be reused |    Must adapt the language used depending on the platform   | | Skype |
-| Extensions | | | |
+| Extensions | Deprecated | | |
 
 
 ### Flutter
