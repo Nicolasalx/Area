@@ -1,12 +1,11 @@
+'use client';
+
 import React from 'react';
 import { Check, Trash2, Edit2 } from 'lucide-react';
+import { type Todo } from '@/types';
 
 interface TodoItemProps {
-  todo: {
-    id: string;
-    text: string;
-    completed: boolean;
-  };
+  todo: Todo;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
   onEdit: (id: string, newText: string) => void;
@@ -25,7 +24,7 @@ export function TodoItem({ todo, onToggle, onDelete, onEdit }: TodoItemProps) {
   };
 
   return (
-    <div className="group flex items-center gap-4 bg-white p-4 rounded-lg shadow-sm transition-all duration-200 hover:shadow-md">
+    <div className="group flex items-center gap-4 bg-white p-4 rounded-lg shadow-sm transition-all duration-200 hover:shadow-md todo-item">
       <button
         onClick={() => onToggle(todo.id)}
         className={`flex-shrink-0 w-6 h-6 rounded-full border-2 transition-colors duration-200 flex items-center justify-center
