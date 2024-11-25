@@ -27,8 +27,8 @@
 
 ## Conclusion
 
-Là où le React peut briller par son système de component, la promesse de Cross platform de Flutter et .NET parraît plus avantageuse pour permettre à une plus grande variété d'utilisateurs-trices de profiter de notre application.
+Where React shine by its component system, the promess of Flutter and .Net's Cross platform seems more advantageous to offer our application to a wider range of users.
 
-Le Flutter propose de visualiser en temps réel les changements apportés à l'application, rendant le code plus intuitif et le Dart plus simple à approcher.
+Flutter allows to visualise in realtime the changes made to the application, rendering the code easier to understand, and Dart easier to approach.
 
-Je recommande donc l'utilisation du Flutter pour le développement de notre application mobile.
+I thereby recommand the use of Flutter for our mobile app development.
