@@ -18,8 +18,12 @@ export class UserController {
 
   @Post()
   async createUser(
-    @Body() body: { username: string; email: string, password: string },
+    @Body() body: { username: string; email: string; password: string },
   ): Promise<User> {
-    return this.userService.createUser(body.username, body.email, body.password);
+    return this.userService.createUser(
+      body.username,
+      body.email,
+      body.password,
+    );
   }
 }

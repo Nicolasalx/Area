@@ -1,0 +1,33 @@
+name: "Back: Lint and Format Validation"
+
+on:
+  push:
+    paths:
+      - "back/**"
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Install Dependencies
+        working-directory: back
+        run: npm install
+
+      - name: Run ESLint
+        working-directory: back
+        run: npx eslint . --ext .js,.ts
+
+      - name: Run Prettier Check
+        working-directory: back
+        run: npx prettier --check .

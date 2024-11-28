@@ -1,0 +1,23 @@
+name: "Back: Security Check"
+
+on:
+  push:
+    paths:
+      - "back/**"
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        working-directory: back
+        run: npm install
+
+      - name: Run npm audit
+        working-directory: back
+        run: npm audit --production

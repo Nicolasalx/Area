@@ -20,8 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "db:up": "docker-compose up -d",
     "db:down": "docker-compose down",
-    "db:update": "npx prisma generate && npx prisma db push",
-    "db:view": "npx prisma studio"
+    "db:update": "npx prisma generate --schema prismaDb && npx prisma db push --schema prismaDb",
+    "db:view": "npx prisma studio --schema prismaDb"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -61,7 +61,7 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "rootDir": ".",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -70,6 +70,11 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@prismaService/(.*)$": "<rootDir>/src/microservices/prisma-service/$1",
+      "^@userService/(.*)$": "<rootDir>/src/microservices/user-service/$1",
+      "^@prismaDb/(.*)$": "<rootDir>/src/prismaDb/$1"
+    }
   }
 }
