@@ -27,19 +27,19 @@ const Button = ({
   target,
   ...props
 }: ButtonProps) => {
-  const baseStyles = `inline-flex lin items-center justify-center gap-2 rounded-full bg-black px-10 py-4 text-white transition-opacity duration-100 focus:opacity-75 hover:opacity-75 ${
+  const baseStyles = `inline-flex lin items-center justify-center gap-2 rounded-full bg-black px-8 py-4 text-white transition-opacity duration-100 focus:opacity-75 hover:opacity-75 ${
     isLoading || disabled ? "cursor-not-allowed opacity-50" : ""
-  } ${isLoading || leftIcon ? "pl-8" : ""} ${rightIcon ? "pr-8" : ""} ${className}`;
+  } ${isLoading || leftIcon ? "pl-4" : ""} ${rightIcon ? "pr-4" : ""} ${className}`;
 
   const content = (
     <>
       {isLoading ? (
-        <Loader2 className="animate-spin" />
+        <Loader2 className="h-5 animate-spin" />
       ) : (
-        leftIcon && <span>{leftIcon}</span>
+        leftIcon && <>{leftIcon}</>
       )}
       {children}
-      {!isLoading && rightIcon && <span>{rightIcon}</span>}
+      {!isLoading && rightIcon && <>{rightIcon}</>}
     </>
   );
 
