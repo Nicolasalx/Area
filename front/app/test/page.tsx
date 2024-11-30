@@ -1,9 +1,18 @@
 "use client";
 
-import { ArrowRight, Plus } from "lucide-react";
+import { ArrowRight, Mail, Plus, Search } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Text from "@/components/ui/Text";
 import Card from "@/components/ui/Card";
+import Form from "@/components/ui/Form";
+import Checkbox from "@/components/ui/Checkbox";
+import Textarea from "@/components/ui/Textarea";
+import Select from "@/components/ui/Select";
+import Input from "@/components/ui/Input";
+
+const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+};
 
 export default function TestPage() {
   return (
@@ -222,6 +231,46 @@ export default function TestPage() {
           </Card>
         </div>
       </div>
+      <Form onSubmit={handleSubmit} className="max-w-md">
+        <Input
+          label="Username"
+          placeholder="Enter your username"
+          startIcon={<Search />}
+        />
+
+        <Input
+          label="Email"
+          type="email"
+          placeholder="Enter your email"
+          helperText="We'll never share your email"
+          endIcon={<Mail />}
+        />
+
+        <Input
+          label="Password"
+          type="password"
+          placeholder="Enter your password"
+          error="Password must be at least 8 characters"
+        />
+
+        <Select
+          label="Country"
+          options={[
+            { value: "us", label: "United States" },
+            { value: "uk", label: "United Kingdom" },
+            { value: "ca", label: "Canada" },
+          ]}
+        />
+
+        <Textarea label="Bio" placeholder="Tell us about yourself" rows={4} />
+
+        <Checkbox
+          label="I agree to the terms and conditions"
+          helperText="Required for registration"
+        />
+
+        <Button type="submit">Submit</Button>
+      </Form>
     </div>
   );
 }
