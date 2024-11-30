@@ -19,7 +19,8 @@ export const useFormValidation = (rules: ValidationRules = {}) => {
 
   const validate = useCallback(
     (value: string): boolean => {
-      if (!isDirty) {
+      if (!rules.required && !value.trim()) {
+        setError("");
         return true;
       }
 
@@ -69,7 +70,7 @@ export const useFormValidation = (rules: ValidationRules = {}) => {
       setError("");
       return true;
     },
-    [rules, isDirty],
+    [rules],
   );
 
   const markAsDirty = useCallback(() => {
