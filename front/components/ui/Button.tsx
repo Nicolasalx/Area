@@ -34,7 +34,7 @@ const Button = ({
   const content = (
     <>
       {isLoading ? (
-        <Loader2 className="animate-spin h-5" />
+        <Loader2 className="h-5 animate-spin" />
       ) : (
         leftIcon && <>{leftIcon}</>
       )}
