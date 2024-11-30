@@ -1,4 +1,3 @@
-// app/auth/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -20,12 +19,10 @@ export default function AuthPage() {
     }
   }, [user, isLoading, router]);
 
-  // Show nothing while checking authentication status
   if (isLoading) {
     return null;
   }
 
-  // If user is authenticated, don't render the form (will redirect)
   if (user) {
     return null;
   }
@@ -33,16 +30,6 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="mx-auto max-w-md px-4 py-12">
-        {/* <div className="mb-8 text-center">
-          <Text variant="h1" className="mb-2">
-            Welcome
-          </Text>
-          <Text color="gray">
-            {isLogin
-              ? "Sign in to your account to continue"
-              : "Create a new account to get started"}
-          </Text>
-        </div> */}
         {isLogin ? <LoginForm /> : <RegisterForm />}
         <div className="mt-6 flex items-center justify-center gap-4 text-center">
           <Text variant="small" color="gray">
