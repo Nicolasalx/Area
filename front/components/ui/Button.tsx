@@ -29,7 +29,7 @@ const Button = ({
 }: ButtonProps) => {
   const baseStyles = `inline-flex lin items-center justify-center gap-2 rounded-full bg-black px-8 py-4 text-white transition-opacity duration-100 focus:opacity-75 hover:opacity-75 ${
     isLoading || disabled ? "cursor-not-allowed opacity-50" : ""
-  } ${isLoading || leftIcon ? "pl-4" : ""} ${rightIcon ? "pr-4" : ""} ${className}`;
+  } ${isLoading || leftIcon ? "pl-6" : ""} ${rightIcon ? "pr-6" : ""} ${className}`;
 
   const content = (
     <>

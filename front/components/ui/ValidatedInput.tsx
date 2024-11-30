@@ -29,33 +29,45 @@ const ValidatedInput = forwardRef<HTMLInputElement, ValidatedInputProps>(
       onChange,
       onBlur,
       value = "",
+      defaultValue = "",
       ...props
     },
     ref,
   ) => {
-    const { validate, error, markAsDirty } = useFormValidation(validation);
-    const [currentValue, setCurrentValue] = useState(value as string);
+    const { validate, error, markAsDirty, isDirty } =
+      useFormValidation(validation);
+    const [currentValue, setCurrentValue] = useState(value || defaultValue);
 
     useEffect(() => {
-      const isValid = validate(currentValue);
-      onValidChange?.(isValid);
-    }, [currentValue, validate, onValidChange]);
+      if (!validation.required && currentValue === "") {
+        onValidChange?.(true);
+      } else {
+        const isValid = validate(currentValue as string);
+        onValidChange?.(isValid);
+      }
+    }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setCurrentValue(e.target.value);
+      const newValue = e.target.value;
+      setCurrentValue(newValue);
+      const isValid = validate(newValue as string);
+      onValidChange?.(isValid);
       onChange?.(e);
     };
 
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
       markAsDirty();
-      validate(e.target.value);
+      const isValid = validate(currentValue as string);
+      onValidChange?.(isValid);
       onBlur?.(e);
     };
 
     const inputClasses = twMerge(
       "w-full rounded-lg border bg-white px-4 py-2.5 text-gray-900 transition-colors",
       "focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2",
-      error ? "border-red-500" : "border-gray-300 hover:border-gray-400",
+      isDirty && error
+        ? "border-red-500"
+        : "border-gray-300 hover:border-gray-400",
       disabled && "cursor-not-allowed bg-gray-50 opacity-50",
       className,
     );
@@ -92,7 +104,7 @@ const ValidatedInput = forwardRef<HTMLInputElement, ValidatedInputProps>(
             </span>
           )}
         </div>
-        {(error || helperText) && (
+        {isDirty && (error || helperText) && (
           <Text variant="small" color={error ? "red" : "gray"}>
             {error || helperText}
           </Text>
