@@ -104,7 +104,9 @@ const Text = ({
 
   const classes = twMerge(
     getVariantStyles(variant),
-    color && (color === "white" || color === "black") ? `text-${color.toLocaleLowerCase()}` : `text-${color.toLocaleLowerCase()}-500`,
+    color && (color === "white" || color === "black")
+      ? `text-${color.toLocaleLowerCase()}`
+      : `text-${color.toLocaleLowerCase()}-500`,
     weight ? `font-${weight}` : `font-${getDefaultWeight(variant)}`,
     align && `text-${align}`,
     transform && transform,

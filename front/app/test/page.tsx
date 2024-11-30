@@ -3,10 +3,11 @@
 import { ArrowRight, Plus } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Text from "@/components/ui/Text";
+import Card from "@/components/ui/Card";
 
 export default function TestPage() {
   return (
-    <div className="mx-auto max-w-3xl space-y-8 p-8">
+    <div className="text-md mx-auto max-w-3xl space-y-8 p-8">
       {/* Text Component Tests */}
       <div className="space-y-4 rounded-lg border p-6">
         <Text variant="h2">Text Component</Text>
@@ -44,7 +45,7 @@ export default function TestPage() {
       </div>
 
       {/* Button Component Tests */}
-      <div className="space-y-4 rounded-lg border p-6 text">
+      <div className="text space-y-4 rounded-lg border p-6">
         <Text variant="h2">Button Component</Text>
 
         {/* Basic Buttons */}
@@ -84,6 +85,141 @@ export default function TestPage() {
           >
             Custom Style
           </Button>
+        </div>
+      </div>
+      {/* Card Component Tests */}
+      <div className="space-y-4 rounded-lg border p-6">
+        <Text variant="h2">Card Component</Text>
+
+        {/* Basic Card */}
+        <Card>
+          <Card.Header>
+            <Text variant="h4">Basic Card</Text>
+          </Card.Header>
+          <Card.Body>
+            <Text>This is a simple card with just header and body.</Text>
+          </Card.Body>
+        </Card>
+
+        {/* Card with all sections */}
+        <Card className="mt-4">
+          <Card.Header>
+            <Text variant="h4">Complete Card</Text>
+          </Card.Header>
+          <Card.Body>
+            <Text>This card demonstrates all sections including a footer.</Text>
+          </Card.Body>
+          <Card.Footer>
+            <div className="flex justify-end gap-4">
+              <Button>Cancel</Button>
+              <Button rightIcon={<ArrowRight />}>Continue</Button>
+            </div>
+          </Card.Footer>
+        </Card>
+
+        {/* Interactive Card */}
+        <Card
+          className="mt-4"
+          hover={true}
+          onClick={() => alert("Card clicked!")}
+        >
+          <Card.Body>
+            <Text>This is a clickable card with hover effect.</Text>
+          </Card.Body>
+        </Card>
+
+        {/* Styled Cards */}
+        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <Card shadow="large" border={false}>
+            <Card.Header className="bg-gray-50">
+              <Text variant="h4">Large Shadow</Text>
+            </Card.Header>
+            <Card.Body>
+              <Text>Card with large shadow and no border.</Text>
+            </Card.Body>
+          </Card>
+
+          <Card className="bg-gray-50">
+            <Card.Header className="bg-white">
+              <Text variant="h4">Custom Background</Text>
+            </Card.Header>
+            <Card.Body>
+              <Text>Card with custom background color.</Text>
+            </Card.Body>
+          </Card>
+        </div>
+
+        {/* Complex Card */}
+        <Card className="mt-4 bg-amber-600">
+          <Card.Header>
+            <div className="flex items-center justify-between">
+              <Text variant="h4">Complex Layout</Text>
+              <Button leftIcon={<Plus />} className="bg-blue-500">
+                Add Item
+              </Button>
+            </div>
+          </Card.Header>
+          <Card.Body>
+            <div className="space-y-4">
+              <Text>
+                This card shows a more complex layout with multiple elements.
+              </Text>
+              <div className="rounded-lg bg-white bg-opacity-50 p-4">
+                <Text>Nested content example</Text>
+              </div>
+            </div>
+          </Card.Body>
+          <Card.Footer>
+            <div className="flex items-center justify-between">
+              <Text variant="small" color="gray">
+                Last updated: 2 hours ago
+              </Text>
+              <Button rightIcon={<ArrowRight />}>View All</Button>
+            </div>
+          </Card.Footer>
+        </Card>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          {/* Default hover effect */}
+          <Card hover={true}>
+            <Card.Body>
+              <Text>Default hover effect (shadow)</Text>
+            </Card.Body>
+          </Card>
+
+          {/* Translate effect */}
+          <Card hover="translate">
+            <Card.Body>
+              <Text>Card moves up on hover</Text>
+            </Card.Body>
+          </Card>
+
+          {/* Scale effect */}
+          <Card hover="scale">
+            <Card.Body>
+              <Text>Card scales up on hover</Text>
+            </Card.Body>
+          </Card>
+
+          {/* Enhanced shadow */}
+          <Card hover="shadow">
+            <Card.Body>
+              <Text>Enhanced shadow on hover</Text>
+            </Card.Body>
+          </Card>
+
+          {/* All effects combined */}
+          <Card hover="all">
+            <Card.Body>
+              <Text>All hover effects combined</Text>
+            </Card.Body>
+          </Card>
+
+          {/* Interactive card with hover */}
+          <Card hover="all" onClick={() => alert("Clicked!")}>
+            <Card.Body>
+              <Text>Clickable card with all hover effects</Text>
+            </Card.Body>
+          </Card>
         </div>
       </div>
     </div>
