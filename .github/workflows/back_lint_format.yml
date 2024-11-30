@@ -3,9 +3,11 @@ name: "Back: Lint and Format Validation"
 on:
   push:
     paths:
-      - "back/**"
+      - 'back/**'
   pull_request:
-    branches: ["main"]
+    paths:
+      - 'back/**'
+    branches: ['main']
 
 jobs:
   lint:

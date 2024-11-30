@@ -3,9 +3,11 @@ name: "Back: End-to-End Tests"
 on:
   push:
     paths:
-      - "back/**"
+      - 'back/**'
   pull_request:
-    branches: ["main"]
+    paths:
+      - 'back/**'
+    branches: ['main']
 
 jobs:
   e2e-test:

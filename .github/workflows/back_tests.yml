@@ -3,9 +3,11 @@ name: "Back: Run Unit Tests"
 on:
   push:
     paths:
-      - "back/**"
+      - 'back/**'
   pull_request:
-    branches: ["main"]
+    paths:
+      - 'back/**'
+    branches: ['main']
 
 jobs:
   test:
