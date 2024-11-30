@@ -3,9 +3,11 @@ name: "Back: Build Validation"
 on:
   push:
     paths:
-      - "back/**"
+      - 'back/**'
   pull_request:
-    branches: ["main"]
+    paths:
+      - 'back/**'
+    branches: ['main']
 
 jobs:
   build:
