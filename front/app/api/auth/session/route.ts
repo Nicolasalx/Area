@@ -5,7 +5,7 @@ export async function GET() {
   try {
     const sessionToken = (await cookies()).get("session")?.value;
 
-    // TODO: Validate session token against your database
+    // TODO: Validate session token against the db
     // This is a placeholder implementation
     if (sessionToken) {
       return NextResponse.json({
