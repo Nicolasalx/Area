@@ -51,17 +51,17 @@ const Text = ({
   const getVariantStyles = (variant: Variant) => {
     switch (variant) {
       case "h1":
-        return "text-4xl tracking-tight mb-4";
+        return "text-4xl tracking-tight";
       case "h2":
-        return "text-3xl tracking-tight mb-3";
+        return "text-3xl tracking-tight";
       case "h3":
-        return "text-2xl mb-2";
+        return "text-2xl";
       case "h4":
-        return "text-xl mb-2";
+        return "text-xl";
       case "h5":
-        return "text-lg mb-2";
+        return "text-lg";
       case "h6":
-        return "text-base mb-2";
+        return "text-base";
       case "body":
         return "text-base";
       case "small":

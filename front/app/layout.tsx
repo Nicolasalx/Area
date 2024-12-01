@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Prompt } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
+import Navbar from "@/components/ui/Navbar";
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -18,10 +19,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en">
-      <body className={`${prompt.className} antialiased`}>
-        <Providers>{children}</Providers>
-      </body>
+    <html lang="en" className={`${prompt.className} antialiased`}>
+      <Providers>
+        <body
+          className={`${prompt.className} min-h-full min-w-full antialiased bg-gray-100`}
+        >
+          <Navbar />
+          <div className="h-full w-full pt-16">{children}</div>
+        </body>
+      </Providers>
     </html>
   );
 }
