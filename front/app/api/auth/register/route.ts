@@ -5,9 +5,9 @@ export async function POST(request: Request) {
   try {
     const { email, password, name } = await request.json();
 
-    // TODO: Validate if user already exists in your database
+    // TODO: Validate if user already exists in the db
     // TODO: Hash password before storing
-    // TODO: Store user in your database
+    // TODO: Store user in the db
     // This is a placeholder implementation
 
     if (email === "demo@example.com") {
