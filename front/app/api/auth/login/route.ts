@@ -5,7 +5,7 @@ export async function POST(request: Request) {
   try {
     const { email, password } = await request.json();
 
-    // TODO: Validate credentials against your database
+    // TODO: Validate credentials against the db
     // This is a placeholder implementation
     if (email === "demo@example.com" && password === "Password123!") {
       const sessionToken = `mock-token-${Date.now()}`;
