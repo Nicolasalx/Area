@@ -10,7 +10,14 @@ import { PrismaController } from './microservices/prisma-service/prisma/prisma.c
 import { PrismaServiceModule } from './microservices/prisma-service/prisma-service.module';
 
 @Module({
-  imports: [ApiGatewayModule, UserServiceModule, TriggerServiceModule, ActionServiceModule, WorkflowServiceModule, PrismaServiceModule],
+  imports: [
+    ApiGatewayModule,
+    UserServiceModule,
+    TriggerServiceModule,
+    ActionServiceModule,
+    WorkflowServiceModule,
+    PrismaServiceModule,
+  ],
   controllers: [AppController, PrismaController],
   providers: [AppService],
 })

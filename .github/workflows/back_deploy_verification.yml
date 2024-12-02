@@ -1,0 +1,12 @@
+# name: "Back: Deploy Verification"
+#
+# on:
+#   push:
+#     paths:
+#       - 'back/**'
+#   pull_request:
+#     paths:
+#       - 'back/**'
+#     branches: ['main']
+#
+# To implement after, to see if when we launch docker, the server is listening.

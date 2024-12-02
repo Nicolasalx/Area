@@ -4,6 +4,6 @@ import { WorkflowController } from './workflow/workflow.controller';
 
 @Module({
   providers: [WorkflowService],
-  controllers: [WorkflowController]
+  controllers: [WorkflowController],
 })
 export class WorkflowServiceModule {}
