@@ -42,7 +42,7 @@ const MobileMenu = ({ isOpen, onClose, children }: MobileMenuProps) => {
           <h2 className="text-lg font-semibold">Menu</h2>
           <button
             onClick={onClose}
-            className="rounded-full p-1 hover:bg-gray-100"
+            className="focus::outline-none rounded-full p-1 duration-200 hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
           >
             <X className="h-6 w-6" />
           </button>

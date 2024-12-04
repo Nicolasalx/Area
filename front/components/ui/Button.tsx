@@ -3,6 +3,7 @@
 import React from "react";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { twMerge } from "tailwind-merge";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
@@ -27,9 +28,12 @@ const Button = ({
   target,
   ...props
 }: ButtonProps) => {
-  const baseStyles = `inline-flex lin items-center justify-center gap-2 rounded-full bg-black px-8 py-4 text-white transition-opacity duration-100 focus:opacity-75 hover:opacity-75 ${
-    isLoading || disabled ? "cursor-not-allowed opacity-50" : ""
-  } ${isLoading || leftIcon ? "pl-6" : ""} ${rightIcon ? "pr-6" : ""} ${className}`;
+  const baseStyles = twMerge(
+    `inline-flex items-center justify-center gap-2 rounded-full bg-black px-8 py-4 text-white transition-all duration-200 hover:opacity-75 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 duration-200 ${
+      isLoading || disabled ? "cursor-not-allowed opacity-50" : ""
+    } ${isLoading || leftIcon ? "pl-6" : ""} ${rightIcon ? "pr-6" : ""}`,
+    className,
+  );
 
   const content = (
     <>
