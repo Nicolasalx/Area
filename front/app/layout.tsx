@@ -11,6 +11,7 @@ interface RootLayoutProps {
 const prompt = Prompt({
   weight: ["300", "400", "500", "600", "700"],
   style: ["normal", "italic"],
+  subsets: ["latin"],
 });
 export const metadata: Metadata = {
   title: "Area",
@@ -19,13 +20,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" className={`${prompt.className} antialiased`}>
+    <html lang="en" className={`${prompt.className} h-full antialiased`}>
       <Providers>
         <body
-          className={`${prompt.className} min-h-full min-w-full antialiased bg-gray-100`}
+          className={`${prompt.className} h-screen bg-gray-100 antialiased`}
         >
           <Navbar />
-          <div className="h-full w-full pt-16">{children}</div>
+          <main className="h-[calc(100vh-4rem)] w-full pt-16">{children}</main>
         </body>
       </Providers>
     </html>

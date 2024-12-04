@@ -19,56 +19,51 @@ export const useFormValidation = (rules: ValidationRules = {}) => {
 
   const validate = useCallback(
     (value: string): boolean => {
-      if (!rules.required && !value.trim()) {
-        setError("");
-        return true;
-      }
+      let newError = "";
+      let isValid = true;
 
-      if (rules.required) {
+      if (!rules.required && !value.trim()) {
+        isValid = true;
+      } else if (rules.required) {
         const isRequired =
           typeof rules.required === "boolean" ? rules.required : true;
         if (isRequired && !value.trim()) {
-          setError(
-            typeof rules.required === "string"
-              ? rules.required
-              : "This field is required",
-          );
-          return false;
+          newError = typeof rules.required === "string"
+            ? rules.required
+            : "This field is required";
+          isValid = false;
         }
       }
 
-      if (rules.minLength && value.length < rules.minLength[0]) {
-        setError(
-          rules.minLength[1] ||
-            `Minimum length is ${rules.minLength[0]} characters`,
-        );
-        return false;
+      if (isValid && rules.minLength && value.length < rules.minLength[0]) {
+        newError = rules.minLength[1] ||
+          `Minimum length is ${rules.minLength[0]} characters`;
+        isValid = false;
       }
 
-      if (rules.maxLength && value.length > rules.maxLength[0]) {
-        setError(
-          rules.maxLength[1] ||
-            `Maximum length is ${rules.maxLength[0]} characters`,
-        );
-        return false;
+      if (isValid && rules.maxLength && value.length > rules.maxLength[0]) {
+        newError = rules.maxLength[1] ||
+          `Maximum length is ${rules.maxLength[0]} characters`;
+        isValid = false;
       }
 
-      if (rules.pattern && !rules.pattern[0].test(value)) {
-        setError(rules.pattern[1] || "Invalid format");
-        return false;
+      if (isValid && rules.pattern && !rules.pattern[0].test(value)) {
+        newError = rules.pattern[1] || "Invalid format";
+        isValid = false;
       }
 
-      if (rules.custom) {
+      if (isValid && rules.custom) {
         for (const rule of rules.custom) {
           if (!rule.validate(value)) {
-            setError(rule.message);
-            return false;
+            newError = rule.message;
+            isValid = false;
+            break;
           }
         }
       }
 
-      setError("");
-      return true;
+      setError(newError);
+      return isValid;
     },
     [rules],
   );

@@ -64,7 +64,8 @@ const Card = ({
     getShadowClasses(),
     border && "border border-gray-200",
     getHoverClasses(),
-    onClick && "cursor-pointer",
+    onClick &&
+      "cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 duration-200",
     className,
   );
 

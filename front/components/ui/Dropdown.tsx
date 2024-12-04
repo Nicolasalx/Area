@@ -31,7 +31,7 @@ const Dropdown = ({ trigger, children }: DropdownProps) => {
         {trigger}
       </div>
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-48 rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+        <div className="absolute right-0 top-full z-40 mt-2 w-48 rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
           {children}
         </div>
       )}
