@@ -39,19 +39,13 @@ const ValidatedInput = forwardRef<HTMLInputElement, ValidatedInputProps>(
     const [currentValue, setCurrentValue] = useState(value || defaultValue);
 
     useEffect(() => {
-      if (!validation.required && currentValue === "") {
-        onValidChange?.(true);
-      } else {
-        const isValid = validate(currentValue as string);
-        onValidChange?.(isValid);
-      }
-    }, []);
+      const isValid = validate(currentValue as string);
+      onValidChange?.(isValid);
+    }, [currentValue]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
       setCurrentValue(newValue);
-      const isValid = validate(newValue as string);
-      onValidChange?.(isValid);
       onChange?.(e);
     };
 
@@ -63,8 +57,8 @@ const ValidatedInput = forwardRef<HTMLInputElement, ValidatedInputProps>(
     };
 
     const inputClasses = twMerge(
-      "w-full rounded-lg border bg-white px-4 py-2.5 text-gray-900 transition-colors",
-      "focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2",
+      "w-full rounded-lg border bg-white px-4 py-2.5 text-gray-900",
+      "focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 duration-200",
       isDirty && error
         ? "border-red-500"
         : "border-gray-300 hover:border-gray-400",

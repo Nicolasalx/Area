@@ -9,12 +9,15 @@ import Checkbox from "@/components/ui/Checkbox";
 import Textarea from "@/components/ui/Textarea";
 import Select from "@/components/ui/Select";
 import Input from "@/components/ui/Input";
+import { useToast } from "@/contexts/ToastContext";
 
 const handleSubmit = (e: React.FormEvent) => {
   e.preventDefault();
 };
 
 export default function TestPage() {
+  const { showToast } = useToast();
+
   return (
     <div className="text-md mx-auto max-w-3xl space-y-8 p-8">
       {/* Text Component Tests */}
@@ -271,6 +274,131 @@ export default function TestPage() {
 
         <Button type="submit">Submit</Button>
       </Form>
+
+      {/* Toast Component Tests */}
+      <div className="space-y-4 rounded-lg border p-6">
+        <Text variant="h2">Toast Notifications</Text>
+        <div className="flex flex-wrap gap-4">
+          <Button
+            onClick={() =>
+              showToast("Operation completed successfully!", "success")
+            }
+          >
+            Show Success Toast
+          </Button>
+          <Button
+            onClick={() =>
+              showToast("Something went wrong. Please try again.", "error")
+            }
+          >
+            Show Error Toast
+          </Button>
+          <Button
+            onClick={() =>
+              showToast(
+                "Please review the changes before proceeding.",
+                "warning",
+              )
+            }
+          >
+            Show Warning Toast
+          </Button>
+          <Button
+            onClick={() =>
+              showToast(
+                "Your data is being processed in the background.",
+                "info",
+              )
+            }
+          >
+            Show Info Toast
+          </Button>
+        </div>
+
+        <Text variant="h3" className="mt-4">
+          Custom Duration Toasts
+        </Text>
+        <div className="flex flex-wrap gap-4">
+          <Button
+            onClick={() =>
+              showToast("This toast will disappear quickly!", "info", 1000)
+            }
+          >
+            Quick Toast (1s)
+          </Button>
+          <Button
+            onClick={() =>
+              showToast("This toast will stay longer...", "info", 5000)
+            }
+          >
+            Long Toast (5s)
+          </Button>
+        </div>
+
+        <Text variant="h3" className="mt-4">
+          Multiple Toasts
+        </Text>
+        <div className="flex flex-wrap gap-4">
+          <Button
+            onClick={() => {
+              showToast("First notification", "success");
+              setTimeout(() => {
+                showToast("Second notification", "info");
+              }, 1000);
+              setTimeout(() => {
+                showToast("Third notification", "warning");
+              }, 2000);
+            }}
+          >
+            Show Multiple Toasts
+          </Button>
+        </div>
+
+        <Text variant="h3" className="mt-4">
+          Multiline Toasts
+        </Text>
+        <div className="flex flex-wrap gap-4">
+          <Button
+            onClick={() =>
+              showToast(
+                "This is a longer toast message that will wrap to multiple lines. It demonstrates how the toast handles longer content while maintaining proper alignment with the icon.",
+                "info",
+              )
+            }
+          >
+            Show Long Toast
+          </Button>
+          <Button
+            onClick={() =>
+              showToast(
+                "Error details:\n- Invalid input\n- Missing required fields\n- Server connection failed",
+                "error",
+              )
+            }
+          >
+            Show List Toast
+          </Button>
+          <Button
+            onClick={() => {
+              showToast("Step 1: Processing data...", "info");
+              setTimeout(() => {
+                showToast(
+                  "Step 2: This is a longer message that explains what's happening in more detail and might wrap to multiple lines.",
+                  "info",
+                );
+              }, 1000);
+              setTimeout(() => {
+                showToast(
+                  "Step 3: Process completed successfully!\nAll tasks were completed without any errors.",
+                  "success",
+                );
+              }, 2000);
+            }}
+          >
+            Show Process Steps
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }

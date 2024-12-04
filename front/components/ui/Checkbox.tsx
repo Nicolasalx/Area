@@ -14,7 +14,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   ({ label, error, helperText, className = "", disabled, ...props }, ref) => {
     const checkboxClasses = twMerge(
       "h-4 w-4 rounded border-gray-300 text-black transition-colors",
-      "focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2",
+      "focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 duration-200",
       error && "border-red-500",
       disabled && "cursor-not-allowed opacity-50",
       className,

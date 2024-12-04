@@ -1,23 +1,39 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { LoginForm, RegisterForm } from "@/components/auth/AuthForms";
-import Button from "@/components/ui/Button";
 import Text from "@/components/ui/Text";
 import { useAuth } from "@/contexts/AuthContext";
-import { LogIn, UserPlus2 } from "lucide-react";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const router = useRouter();
   const { user, isLoading } = useAuth();
+  const searchParams = useSearchParams();
+  const { showToast } = useToast();
 
   useEffect(() => {
     if (user && !isLoading) {
-      router.replace("/");
+      const params = new URLSearchParams(window.location.search);
+      const redirectPath = params.get("redirect");
+      router.replace(redirectPath || "/");
     }
   }, [user, isLoading, router]);
+
+  useEffect(() => {
+    const toastType = searchParams.get("toast");
+    if (toastType === "auth-required") {
+      showToast("Please sign in to access this page", "info");
+      const newParams = new URLSearchParams(window.location.search);
+      newParams.delete("toast");
+      const newUrl =
+        window.location.pathname +
+        (newParams.toString() ? `?${newParams.toString()}` : "");
+      window.history.replaceState({}, "", newUrl);
+    }
+  }, [searchParams, showToast]);
 
   if (isLoading) {
     return null;
@@ -28,25 +44,20 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="mx-auto max-w-md px-4 py-12">
+    <div className="flex h-full items-center justify-center">
+      <div className="w-full max-w-md px-4">
         {isLogin ? <LoginForm /> : <RegisterForm />}
         <div className="mt-6 flex items-center justify-center gap-4 text-center">
           <Text variant="small" color="gray">
             {isLogin ? "Don't have an account?" : "Already have an account?"}
           </Text>
-          <Button
+          <button
+            type="button"
             onClick={() => setIsLogin(!isLogin)}
-            rightIcon={
-              isLogin ? (
-                <LogIn className="h-5 w-5" />
-              ) : (
-                <UserPlus2 className="h-5 w-5" />
-              )
-            }
+            className="rounded-sm text-sm text-black underline decoration-1 underline-offset-2 duration-200 hover:text-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
           >
             {isLogin ? "Create an account" : "Sign in"}
-          </Button>
+          </button>
         </div>
       </div>
     </div>
