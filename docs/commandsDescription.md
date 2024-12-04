@@ -30,7 +30,7 @@ Below is a list of available commands in this project, along with their descript
 |---------------------|-------------------------------------------------------------|
 | `npm run db:up`     | Starts the database services using Docker Compose.          |
 | `npm run db:down`   | Stops the database services using Docker Compose.           |
-| `npm run db:update` | Generates Prisma files and applies migrations.              |
+| `db:migrate` | The command generates the Prisma client, updates the database to match the schema, and then runs a script to migrate and insert the data.              |
 | `npm run db:view`   | Opens Prisma Studio to view and manage data.                |
 
 ## Additional Information
