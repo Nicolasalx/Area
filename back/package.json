@@ -24,10 +24,12 @@
     "db:view": "npx prisma studio --schema prismaDb"
   },
   "dependencies": {
+    "@nestjs/axios": "^3.1.2",
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
     "@prisma/client": "^5.22.0",
+    "axios": "^1.7.8",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1"
   },
