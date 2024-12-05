@@ -18,7 +18,7 @@ import { ReactionServiceModule } from './microservices/reaction-service/reaction
     ActionServiceModule,
     WorkflowServiceModule,
     PrismaServiceModule,
-    ReactionServiceModule
+    ReactionServiceModule,
   ],
   controllers: [AppController, PrismaController],
   providers: [AppService],

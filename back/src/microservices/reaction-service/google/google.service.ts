@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { google } from 'googleapis';
-
-const nodemailer = require('nodemailer');
+import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class GoogleService {
