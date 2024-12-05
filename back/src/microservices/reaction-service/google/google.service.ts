@@ -10,8 +10,51 @@ export class GoogleService {
         return this.sendEmail(data);
       case 'set_calendar_event':
         return this.setCalendarEvent(data);
+      case 'create_task':
+        return this.createTask(data);
       default:
         return 'Action not recognized for Google';
+    }
+  }
+
+  private async createTask(data: {
+    tasklist?: string;
+    title: string;
+    notes?: string;
+    due?: string;
+  }): Promise<string> {
+    const { tasklist, title, notes, due } = data;
+    const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+    const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+    const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;
+    const REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN;
+
+    try {
+      const oAuth2Client = new google.auth.OAuth2(
+        CLIENT_ID,
+        CLIENT_SECRET,
+        REDIRECT_URI,
+      );
+      oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+
+      const tasks = google.tasks({ version: 'v1', auth: oAuth2Client });
+
+      const task = {
+        title,
+        notes,
+        due,
+      };
+
+      const response = await tasks.tasks.insert({
+        tasklist: tasklist || '@default',
+        requestBody: task,
+      });
+
+      console.log('Task created successfully:', response.data);
+      return `Task created successfully with ID: ${response.data.id}`;
+    } catch (error) {
+      console.error('Error creating task:', error);
+      return 'Error creating task!';
     }
   }
 
