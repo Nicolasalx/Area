@@ -1,12 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ReactionService } from './reaction.service';
+import { GoogleService } from '../google/google.service';
 
 describe('ReactionService', () => {
   let service: ReactionService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ReactionService],
+      providers: [
+        ReactionService,
+        {
+          provide: GoogleService,
+          useValue: {},
+        },
+      ],
     }).compile();
 
     service = module.get<ReactionService>(ReactionService);
