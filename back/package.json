@@ -20,7 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "db:up": "docker-compose up -d",
     "db:down": "docker-compose down",
-    "db:update": "npx prisma generate --schema prismaDb && npx prisma db push --schema prismaDb",
+    "db:migrate": "npx prisma generate --schema prismaDb && npx prisma db push --schema prismaDb && node prismaDb/migrate.js prismaDb/reset/ && node prismaDb/migrate.js prismaDb/seed/",
     "db:view": "npx prisma studio --schema prismaDb"
   },
   "dependencies": {

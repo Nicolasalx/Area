@@ -33,6 +33,9 @@ model Actions {
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
 
+  serviceId Int
+  service   Services @relation(fields: [serviceId], references: [id])
+
   services  Services[]  @relation("ServiceActions")
   workflows Workflows[] @relation("WorkflowActions")
 }
@@ -44,6 +47,9 @@ model Reactions {
   trigger     Json     @unique
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
+
+  serviceId Int
+  service   Services @relation(fields: [serviceId], references: [id])
 
   services  Services[]  @relation("ServiceReactions")
   workflows Workflows[] @relation("WorkflowReactions")
@@ -69,6 +75,8 @@ model Services {
   serviceTokens ServiceTokens[]
   isActive      Boolean         @default(true)
   createdAt     DateTime        @default(now())
+  Actions       Actions[]
+  Reactions     Reactions[]
 }
 
 model ServiceTokens {
