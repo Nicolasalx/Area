@@ -1,11 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["prismaSchemaFolder"]
 }
 
@@ -14,11 +8,85 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  isActive  Boolean  @default(true)
+enum ConnectionType {
+  CLASSIC
+  GOOGLE
+  DISCORD
+  GITHUB
+}
+
+model Users {
+  id            String          @id @default(uuid()) @db.Uuid
+  name          String
+  email         String          @unique
+  password      String
+  isActive      Boolean         @default(true)
+  createdAt     DateTime        @default(now())
+  type          ConnectionType
+  serviceTokens ServiceTokens[]
+}
+
+model Actions {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  serviceId Int
+  service   Services @relation(fields: [serviceId], references: [id])
+
+  services  Services[]  @relation("ServiceActions")
+  workflows Workflows[] @relation("WorkflowActions")
+}
+
+model Reactions {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  trigger     Json     @unique
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  serviceId Int
+  service   Services @relation(fields: [serviceId], references: [id])
+
+  services  Services[]  @relation("ServiceReactions")
+  workflows Workflows[] @relation("WorkflowReactions")
+}
+
+model Workflows {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  description String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  actions   Actions[]   @relation("WorkflowActions")
+  reactions Reactions[] @relation("WorkflowReactions")
+}
+
+model Services {
+  id            Int             @id @default(autoincrement())
+  name          String          @unique
+  description   String
+  actions       Actions[]       @relation("ServiceActions")
+  reactions     Reactions[]     @relation("ServiceReactions")
+  serviceTokens ServiceTokens[]
+  isActive      Boolean         @default(true)
+  createdAt     DateTime        @default(now())
+  Actions       Actions[]
+  Reactions     Reactions[]
+}
+
+model ServiceTokens {
+  id        String   @id @default(uuid()) @db.Uuid
+  token     String
+  userId    String   @db.Uuid
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  serviceId Int
+  services  Services @relation(fields: [serviceId], references: [id])
+  users     Users    @relation(fields: [userId], references: [id])
 }
