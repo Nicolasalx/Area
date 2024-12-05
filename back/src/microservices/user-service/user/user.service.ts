@@ -26,7 +26,7 @@ export class UserService {
         name,
         email,
         password,
-        type: ConnectionType.CLASSIC
+        type: ConnectionType.CLASSIC,
       },
     });
   }
