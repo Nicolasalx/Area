@@ -8,6 +8,7 @@ import { ActionServiceModule } from './microservices/action-service/action-servi
 import { WorkflowServiceModule } from './microservices/workflow-service/workflow-service.module';
 import { PrismaController } from './microservices/prisma-service/prisma/prisma.controller';
 import { PrismaServiceModule } from './microservices/prisma-service/prisma-service.module';
+import { ReactionServiceModule } from './microservices/reaction-service/reaction-service.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { PrismaServiceModule } from './microservices/prisma-service/prisma-servi
     ActionServiceModule,
     WorkflowServiceModule,
     PrismaServiceModule,
+    ReactionServiceModule,
   ],
   controllers: [AppController, PrismaController],
   providers: [AppService],
