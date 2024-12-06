@@ -12,8 +12,58 @@ export class GoogleService {
         return this.setCalendarEvent(data);
       case 'create_task':
         return this.createTask(data);
+      case 'create_drive_file':
+        return this.createFileInDrive(data);
       default:
         return 'Action not recognized for Google';
+    }
+  }
+
+  private async createFileInDrive(data: {
+    title: string;
+    fileType: string;
+  }): Promise<string> {
+    const { title, fileType } = data;
+    const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+    const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+    const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;
+    const REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN;
+
+    const fileTypeMapping: { [key: string]: string } = {
+      docs: 'application/vnd.google-apps.document',
+      sheets: 'application/vnd.google-apps.spreadsheet',
+      slides: 'application/vnd.google-apps.presentation',
+      forms: 'application/vnd.google-apps.form',
+    };
+
+    const mimeType = fileTypeMapping[fileType.toLowerCase()];
+    if (!mimeType) {
+      return 'Invalid file type provided! Supported types: docs, sheets, slides, forms.';
+    }
+
+    try {
+      const oAuth2Client = new google.auth.OAuth2(
+        CLIENT_ID,
+        CLIENT_SECRET,
+        REDIRECT_URI,
+      );
+      oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+
+      const drive = google.drive({ version: 'v3', auth: oAuth2Client });
+
+      const response = await drive.files.create({
+        requestBody: {
+          name: title,
+          mimeType,
+        },
+        fields: 'id',
+      });
+
+      console.log('File created successfully:', response.data);
+      return `File created successfully with ID: ${response.data.id}`;
+    } catch (error) {
+      console.error('Error creating file:', error);
+      return 'Error creating file!';
     }
   }
 
