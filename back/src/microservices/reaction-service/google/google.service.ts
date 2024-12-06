@@ -12,33 +12,34 @@ export class GoogleService {
         return this.setCalendarEvent(data);
       case 'create_task':
         return this.createTask(data);
-      case 'create_drive_file':
-        return this.createFileInDrive(data);
+      case 'create_drive_element':
+        return this.createElementInDrive(data);
       default:
         return 'Action not recognized for Google';
     }
   }
 
-  private async createFileInDrive(data: {
+  private async createElementInDrive(data: {
     title: string;
-    fileType: string;
+    elementType: string;
   }): Promise<string> {
-    const { title, fileType } = data;
+    const { title, elementType } = data;
     const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
     const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
     const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;
     const REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN;
 
-    const fileTypeMapping: { [key: string]: string } = {
+    const elementTypeMapping: { [key: string]: string } = {
       docs: 'application/vnd.google-apps.document',
       sheets: 'application/vnd.google-apps.spreadsheet',
       slides: 'application/vnd.google-apps.presentation',
       forms: 'application/vnd.google-apps.form',
+      folder: 'application/vnd.google-apps.folder',
     };
 
-    const mimeType = fileTypeMapping[fileType.toLowerCase()];
+    const mimeType = elementTypeMapping[elementType.toLowerCase()];
     if (!mimeType) {
-      return 'Invalid file type provided! Supported types: docs, sheets, slides, forms.';
+      return 'Invalid element type provided! Supported types: docs, sheets, slides, forms.';
     }
 
     try {
@@ -59,11 +60,11 @@ export class GoogleService {
         fields: 'id',
       });
 
-      console.log('File created successfully:', response.data);
-      return `File created successfully with ID: ${response.data.id}`;
+      console.log('Element created successfully:', response.data);
+      return `Element created successfully with ID: ${response.data.id}`;
     } catch (error) {
-      console.error('Error creating file:', error);
-      return 'Error creating file!';
+      console.error('Error creating element:', error);
+      return 'Error creating element!';
     }
   }
 
