@@ -14,8 +14,55 @@ export class GoogleService {
         return this.createTask(data);
       case 'create_drive_element':
         return this.createElementInDrive(data);
+      case 'create_youtube_playlist':
+        return this.createYoutubePlaylist(data);
       default:
         return 'Action not recognized for Google';
+    }
+  }
+
+  private async createYoutubePlaylist(data: {
+    title: string;
+    description?: string;
+    privacyStatus: string;
+  }): Promise<string> {
+    const { title, description, privacyStatus } = data;
+    const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+    const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+    const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;
+    const REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN;
+
+    try {
+      const oAuth2Client = new google.auth.OAuth2(
+        CLIENT_ID,
+        CLIENT_SECRET,
+        REDIRECT_URI,
+      );
+      oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+
+      const youtube = google.youtube({ version: 'v3', auth: oAuth2Client });
+
+      const requestBody = {
+        snippet: {
+          title: title,
+          description: description || '',
+        },
+        status: {
+          privacyStatus: privacyStatus, // In the request we can set to 'public', 'private' or 'unlisted'
+        },
+      };
+
+      const response = await youtube.playlists.insert({
+        part: ['snippet', 'status'],
+        requestBody: requestBody,
+      });
+
+      const { data } = response;
+      console.log('Playlist created successfully:', data);
+      return `Playlist created successfully with ID: ${data.id}`;
+    } catch (error) {
+      console.error('Error creating YouTube playlist:', error);
+      return 'Error creating YouTube playlist!';
     }
   }
 
