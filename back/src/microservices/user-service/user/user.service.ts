@@ -43,10 +43,8 @@ export class UserService {
         throw new ConflictException('User with this email already exists');
       }
 
-      // Hash the password
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      // Create user with hashed password
       const user = await this.prisma.users.create({
         data: {
           name,
@@ -58,7 +56,7 @@ export class UserService {
 
       this.logger.debug(`User created successfully with ID: ${user.id}`);
 
-      // Return user without password
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password: _, ...userWithoutPassword } = user;
       return userWithoutPassword as Users;
     } catch (error) {
@@ -69,7 +67,6 @@ export class UserService {
       }
 
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        // Handle unique constraint violations
         if (error.code === 'P2002') {
           throw new ConflictException('User with this email already exists');
         }
