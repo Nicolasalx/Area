@@ -36,11 +36,6 @@ export default function WorkflowsPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Redirect to login if not authenticated
-    if (!authLoading && !user) {
-      router.push("/auth");
-      return;
-    }
 
     const fetchWorkflows = async () => {
       if (!user?.id || !token) return;
