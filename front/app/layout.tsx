@@ -13,6 +13,7 @@ const prompt = Prompt({
   style: ["normal", "italic"],
   subsets: ["latin"],
 });
+
 export const metadata: Metadata = {
   title: "Area",
   description: "Make action reaction workflows",
@@ -21,14 +22,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={`${prompt.className} h-full antialiased`}>
-      <Providers>
-        <body
-          className={`${prompt.className} h-screen bg-gray-100 antialiased`}
-        >
+      <body className={`${prompt.className} h-screen bg-gray-100 antialiased`}>
+        <Providers>
           <Navbar />
           <main className="h-[calc(100vh-4rem)] w-full pt-16">{children}</main>
-        </body>
-      </Providers>
+        </Providers>
+      </body>
     </html>
   );
 }

@@ -28,21 +28,24 @@ export const useFormValidation = (rules: ValidationRules = {}) => {
         const isRequired =
           typeof rules.required === "boolean" ? rules.required : true;
         if (isRequired && !value.trim()) {
-          newError = typeof rules.required === "string"
-            ? rules.required
-            : "This field is required";
+          newError =
+            typeof rules.required === "string"
+              ? rules.required
+              : "This field is required";
           isValid = false;
         }
       }
 
       if (isValid && rules.minLength && value.length < rules.minLength[0]) {
-        newError = rules.minLength[1] ||
+        newError =
+          rules.minLength[1] ||
           `Minimum length is ${rules.minLength[0]} characters`;
         isValid = false;
       }
 
       if (isValid && rules.maxLength && value.length > rules.maxLength[0]) {
-        newError = rules.maxLength[1] ||
+        newError =
+          rules.maxLength[1] ||
           `Maximum length is ${rules.maxLength[0]} characters`;
         isValid = false;
       }

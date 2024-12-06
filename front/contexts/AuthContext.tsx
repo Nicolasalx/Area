@@ -1,182 +1,166 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
+import { useRouter } from "next/navigation";
+import { useToast } from "./ToastContext";
+import Cookies from "js-cookie";
 
 interface User {
   id: string;
   email: string;
   name?: string;
-  image?: string;
 }
 
 interface AuthContextType {
   user: User | null;
-  isLoading: boolean;
+  token: string | null;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, name: string) => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
-  logout: () => Promise<void>;
+  logout: () => void;
+  loading: boolean;
   error: string | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const { showToast } = useToast();
 
   useEffect(() => {
-    // Check for existing session
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
-    try {
-      const response = await fetch("/api/auth/session");
-      const data = await response.json();
-
-      if (data.user) {
-        setUser(data.user);
-      }
-    } catch (err) {
-      console.error("Auth check failed:", err);
-    } finally {
-      setIsLoading(false);
+    // Check if user is logged in on mount
+    const token = Cookies.get("auth-token");
+    if (token) {
+      const userData = JSON.parse(localStorage.getItem("user") || "{}");
+      setUser(userData);
+      setToken(token);
     }
-  };
+    setLoading(false);
+  }, []);
 
   const login = async (email: string, password: string) => {
     try {
-      setError(null);
-      setIsLoading(true);
-
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        },
+      );
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Login failed");
+        setError(data.message || "Login failed");
+        showToast(data.message || "Login failed", "error");
+        return;
       }
 
-      setUser(data.user);
+      const { token, user: userData } = data.data;
+
+      Cookies.set("auth-token", token, { path: "/" });
+
+      localStorage.setItem("user", JSON.stringify(userData));
+
+      setUser(userData);
+      setToken(token);
+      setError(null);
+      showToast("Login successful", "success");
+      router.push("/workflows");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
-      throw err;
-    } finally {
-      setIsLoading(false);
+      console.error("Login error:", err);
+      const message =
+        err instanceof Error ? err.message : "An error occurred during login";
+      setError(message);
+      showToast(message, "error");
     }
   };
 
   const register = async (email: string, password: string, name: string) => {
     try {
       setError(null);
-      setIsLoading(true);
-
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, name }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+            username: name,
+          }),
+        },
+      );
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Registration failed");
+        const errorMessage = data.message || "Registration failed";
+        setError(errorMessage);
+        showToast(errorMessage, "error");
+        throw new Error(errorMessage);
       }
 
-      setUser(data.user);
+      showToast("Registration successful! Logging you in...", "success");
+      await login(email, password);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Registration failed");
+      console.error("Registration error:", err);
+      const message =
+        err instanceof Error
+          ? err.message
+          : "An error occurred during registration";
+      setError(message);
+      showToast(message, "error");
       throw err;
-    } finally {
-      setIsLoading(false);
     }
   };
 
-  const loginWithGoogle = async () => {
-    try {
-      setError(null);
-      setIsLoading(true);
-
-      const popup = window.open(
-        "/api/auth/google",
-        "Google Login",
-        "width=500,height=600,left=" +
-          (window.screenX + (window.outerWidth - 500) / 2) +
-          ",top=" +
-          (window.screenY + (window.outerHeight - 600) / 2),
-      );
-
-      if (popup) {
-        const result = await new Promise<User>((resolve, reject) => {
-          const handleMessage = (event: MessageEvent) => {
-            if (event.data?.type === "GOOGLE_LOGIN_SUCCESS") {
-              window.removeEventListener("message", handleMessage);
-              resolve(event.data.user);
-            } else if (event.data?.type === "GOOGLE_LOGIN_ERROR") {
-              window.removeEventListener("message", handleMessage);
-              reject(new Error(event.data.error));
-            }
-          };
-
-          window.addEventListener("message", handleMessage);
-
-          // Clean up if the popup is closed
-          const checkClosed = setInterval(() => {
-            if (popup.closed) {
-              clearInterval(checkClosed);
-              window.removeEventListener("message", handleMessage);
-              reject(new Error("Login window closed"));
-            }
-          }, 1000);
-        });
-
-        setUser(result);
-      }
-    } catch (err) {
-      console.error("Google login error:", err);
-      setError(err instanceof Error ? err.message : "Google login failed");
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    document.cookie =
+      "auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+    setToken(null);
+    setUser(null);
+    setError(null);
+    showToast("Successfully logged out", "info");
+    router.push("/auth");
   };
 
-  const logout = async () => {
-    try {
-      await fetch("/api/auth/logout", { method: "POST" });
-      setUser(null);
-    } catch (err) {
-      console.error("Logout failed:", err);
-    }
+  const contextValue = {
+    user,
+    token,
+    login,
+    register,
+    logout,
+    loading,
+    error,
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isLoading,
-        login,
-        register,
-        loginWithGoogle,
-        logout,
-        error,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
-};
+}
 
-export const useAuth = () => {
+export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
-};
+}

@@ -1,11 +1,22 @@
 const { PrismaClient } = require('@prisma/client');
 const fs = require('fs');
 const path = require('path');
+const bcrypt = require('bcrypt');
 
 const prisma = new PrismaClient();
 
+async function generateHash(password) {
+  const saltRounds = 10;
+  return bcrypt.hash(password, saltRounds);
+}
+
 async function executeSqlFile(filePath) {
-  const sql = fs.readFileSync(filePath, 'utf8');
+  let sql = fs.readFileSync(filePath, 'utf8');
+
+  if (filePath.includes('users.sql')) {
+    const hashedPassword = await generateHash('password123');
+    sql = sql.replace(/__HASHED_PASSWORD__/g, hashedPassword);
+  }
 
   const queries = sql
     .split(';')
@@ -39,7 +50,8 @@ async function migrate(scriptsDir) {
 
     const files = fs
       .readdirSync(scriptsDir)
-      .filter((file) => file.endsWith('.sql'));
+      .filter((file) => file.endsWith('.sql'))
+      .sort();
 
     if (files.length === 0) {
       console.log('No SQL files found in the directory.');
@@ -59,11 +71,13 @@ async function migrate(scriptsDir) {
   }
 }
 
-const scriptsDir = process.argv[2];
-
-if (!scriptsDir) {
-  console.error('You must specify a folder path containing the SQL files.');
-  process.exit(1);
+if (require.main === module) {
+  const scriptsDir = process.argv[2];
+  if (!scriptsDir) {
+    console.error('You must specify a folder path containing the SQL files.');
+    process.exit(1);
+  }
+  migrate(scriptsDir);
 }
 
-migrate(scriptsDir);
+module.exports = migrate;

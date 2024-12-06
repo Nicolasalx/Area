@@ -10,17 +10,17 @@ import { useToast } from "@/contexts/ToastContext";
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const router = useRouter();
-  const { user, isLoading } = useAuth();
+  const { user, loading } = useAuth();
   const searchParams = useSearchParams();
   const { showToast } = useToast();
 
   useEffect(() => {
-    if (user && !isLoading) {
+    if (user && !loading) {
       const params = new URLSearchParams(window.location.search);
       const redirectPath = params.get("redirect");
       router.replace(redirectPath || "/");
     }
-  }, [user, isLoading, router]);
+  }, [user, loading, router]);
 
   useEffect(() => {
     const toastType = searchParams.get("toast");
@@ -35,7 +35,7 @@ export default function AuthPage() {
     }
   }, [searchParams, showToast]);
 
-  if (isLoading) {
+  if (loading) {
     return null;
   }
 
