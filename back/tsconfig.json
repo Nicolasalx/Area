@@ -14,7 +14,7 @@
       "@prismaDb/*": ["prismaDb/*"],
       "@userService/*": ["src/microservices/user-service/*"],
       "@prismaService/*": ["src/microservices/prisma-service/*"],
-      "@common/*": ["src/common/*"],
+      "@common/*": ["src/common/*"]
     },
     "incremental": true,
     "skipLibCheck": true,
