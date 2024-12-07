@@ -36,7 +36,6 @@ export default function WorkflowsPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-
     const fetchWorkflows = async () => {
       if (!user?.id || !token) return;
 
