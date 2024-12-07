@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
+import { UserService } from '@userService/user/user.service';
+import { HttpService } from '@nestjs/axios';
 import { UnauthorizedException, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
@@ -9,9 +11,13 @@ jest.mock('bcrypt');
 
 describe('AuthService', () => {
   let service: AuthService;
-  let prismaService: PrismaService;
+  let prismaService: jest.Mocked<PrismaService>;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let jwtService: JwtService;
+  let jwtService: jest.Mocked<JwtService>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let httpService: jest.Mocked<HttpService>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let userService: jest.Mocked<UserService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -25,24 +31,51 @@ describe('AuthService', () => {
               update: jest.fn(),
               delete: jest.fn(),
             },
+            workflows: {
+              deleteMany: jest.fn(),
+            },
+            serviceTokens: {
+              deleteMany: jest.fn(),
+            },
+            $transaction: jest.fn((callback) =>
+              callback({
+                workflows: { deleteMany: jest.fn() },
+                serviceTokens: { deleteMany: jest.fn() },
+                users: { delete: jest.fn() },
+              }),
+            ),
           },
         },
         {
           provide: JwtService,
           useValue: {
-            sign: jest.fn().mockReturnValue('mock-token'),
+            sign: jest.fn(() => 'mock-token'),
           },
         },
         {
-          provide: 'JWT_SECRET',
-          useValue: 'test-secret',
+          provide: HttpService,
+          useValue: {
+            axiosRef: {
+              post: jest.fn(),
+              request: jest.fn(),
+            },
+          },
+        },
+        {
+          provide: UserService,
+          useValue: {
+            getUserByServiceId: jest.fn(),
+            createUser: jest.fn(),
+          },
         },
       ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
-    prismaService = module.get<PrismaService>(PrismaService);
-    jwtService = module.get<JwtService>(JwtService);
+    prismaService = module.get(PrismaService);
+    jwtService = module.get(JwtService);
+    httpService = module.get(HttpService);
+    userService = module.get(UserService);
   });
 
   it('should be defined', () => {
@@ -104,14 +137,20 @@ describe('AuthService', () => {
       };
 
       (prismaService.users.findUnique as jest.Mock).mockResolvedValue(mockUser);
-      (prismaService.users.delete as jest.Mock).mockResolvedValue(mockUser);
+      (prismaService.$transaction as jest.Mock).mockImplementation((callback) =>
+        callback({
+          workflows: { deleteMany: jest.fn().mockResolvedValue({ count: 1 }) },
+          serviceTokens: {
+            deleteMany: jest.fn().mockResolvedValue({ count: 1 }),
+          },
+          users: { delete: jest.fn().mockResolvedValue(mockUser) },
+        }),
+      );
 
       const result = await service.deleteUser(userId);
 
       expect(result).toEqual({ message: 'User deleted successfully' });
-      expect(prismaService.users.delete).toHaveBeenCalledWith({
-        where: { id: userId },
-      });
+      expect(prismaService.$transaction).toHaveBeenCalled();
     });
 
     it('should throw NotFoundException when user does not exist', async () => {
@@ -121,6 +160,23 @@ describe('AuthService', () => {
 
       await expect(service.deleteUser(userId)).rejects.toThrow(
         NotFoundException,
+      );
+    });
+
+    it('should throw Error when deletion fails', async () => {
+      const userId = 'user-id';
+      const mockUser = {
+        id: userId,
+        email: 'test@example.com',
+      };
+
+      (prismaService.users.findUnique as jest.Mock).mockResolvedValue(mockUser);
+      (prismaService.$transaction as jest.Mock).mockRejectedValue(
+        new Error('Database error'),
+      );
+
+      await expect(service.deleteUser(userId)).rejects.toThrow(
+        'Failed to delete user: Database error',
       );
     });
   });

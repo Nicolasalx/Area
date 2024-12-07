@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  Get,
+  Query,
   Post,
   Delete,
   UnauthorizedException,
@@ -37,7 +39,6 @@ class LoginResponseDto {
     };
   };
 }
-
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
@@ -168,5 +169,10 @@ export class AuthController {
     } catch (err) {
       throw err;
     }
+  }
+
+  @Get('google/callback')
+  async getGoogleOAuth(@Query() query: any) {
+    return this.authService.getGoogleOAuth(query.code);
   }
 }

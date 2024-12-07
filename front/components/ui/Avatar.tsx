@@ -1,6 +1,5 @@
 import { User } from "lucide-react";
 import Image from "next/image";
-
 interface AvatarProps {
   src?: string;
   alt?: string;
@@ -20,7 +19,19 @@ const Avatar = ({ src, alt = "Avatar", size = "md" }: AvatarProps) => {
     >
       <div className="h-full w-full overflow-hidden rounded-full">
         {src ? (
-          <Image src={src} alt={alt} className="h-full w-full object-cover" />
+          <Image
+            src={src}
+            alt={alt}
+            width={64}
+            height={64}
+            className="h-full w-full object-cover"
+            onError={(e) => {
+              console.error("Image failed to load:", src);
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = "";
+            }}
+            referrerPolicy="no-referrer"
+          />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-gray-200">
             <User className="h-6 w-6 text-gray-500" />

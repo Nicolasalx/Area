@@ -1,30 +1,72 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { UnauthorizedException } from '@nestjs/common';
+import { PrismaService } from '@prismaService/prisma/prisma.service';
+import { JwtService } from '@nestjs/jwt';
+import { HttpService } from '@nestjs/axios';
+import { UserService } from '@userService/user/user.service';
 
 describe('AuthController', () => {
   let controller: AuthController;
-  let authService: AuthService;
+  let authService: jest.Mocked<AuthService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
       providers: [
         AuthService,
-        JwtService,
-        PrismaService,
         {
-          provide: 'JWT_SECRET',
-          useValue: 'test-secret',
+          provide: PrismaService,
+          useValue: {
+            users: {
+              findUnique: jest.fn(),
+              update: jest.fn(),
+              delete: jest.fn(),
+            },
+            workflows: {
+              deleteMany: jest.fn(),
+            },
+            serviceTokens: {
+              deleteMany: jest.fn(),
+            },
+            $transaction: jest.fn(),
+          },
+        },
+        {
+          provide: JwtService,
+          useValue: {
+            sign: jest.fn(() => 'mock-token'),
+          },
+        },
+        {
+          provide: HttpService,
+          useValue: {
+            axiosRef: {
+              post: jest.fn(),
+              request: jest.fn(),
+            },
+          },
+        },
+        {
+          provide: UserService,
+          useValue: {
+            getUserByServiceId: jest.fn(),
+            createUser: jest.fn(),
+          },
         },
       ],
-    }).compile();
+    })
+      .overrideProvider(AuthService)
+      .useValue({
+        login: jest.fn(),
+        deleteUser: jest.fn(),
+        getGoogleOAuth: jest.fn(),
+      })
+      .compile();
 
     controller = module.get<AuthController>(AuthController);
-    authService = module.get<AuthService>(AuthService);
+    authService = module.get(AuthService);
   });
 
   it('should be defined', () => {
@@ -33,12 +75,7 @@ describe('AuthController', () => {
 
   describe('login', () => {
     it('should return successful login response', async () => {
-      const loginDto = {
-        email: 'test@example.com',
-        password: 'password123',
-      };
-
-      const mockLoginResponse = {
+      const mockLoginResult = {
         token: 'mock-token',
         user: {
           id: '1',
@@ -47,30 +84,31 @@ describe('AuthController', () => {
         },
       };
 
-      jest.spyOn(authService, 'login').mockResolvedValue(mockLoginResponse);
+      (authService.login as jest.Mock).mockResolvedValue(mockLoginResult);
 
-      const result = await controller.login(loginDto);
+      const result = await controller.login({
+        email: 'test@example.com',
+        password: 'password123',
+      });
 
       expect(result).toEqual({
         success: true,
         message: 'Login successful',
-        data: mockLoginResponse,
+        data: mockLoginResult,
       });
     });
 
     it('should throw UnauthorizedException on invalid credentials', async () => {
-      const loginDto = {
-        email: 'test@example.com',
-        password: 'wrongpassword',
-      };
-
-      jest
-        .spyOn(authService, 'login')
-        .mockRejectedValue(new UnauthorizedException('Invalid credentials'));
-
-      await expect(controller.login(loginDto)).rejects.toThrow(
-        UnauthorizedException,
+      (authService.login as jest.Mock).mockRejectedValue(
+        new UnauthorizedException('Invalid credentials'),
       );
+
+      await expect(
+        controller.login({
+          email: 'test@example.com',
+          password: 'wrongpassword',
+        }),
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 
@@ -84,9 +122,9 @@ describe('AuthController', () => {
         message: 'User deleted successfully',
       };
 
-      jest
-        .spyOn(authService, 'deleteUser')
-        .mockResolvedValue(mockDeleteResponse);
+      (authService.deleteUser as jest.Mock).mockResolvedValue(
+        mockDeleteResponse,
+      );
 
       const result = await controller.deleteUser(mockRequest);
 
