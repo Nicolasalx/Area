@@ -22,6 +22,7 @@ interface AuthContextType {
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, name: string) => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
   logout: () => void;
   loading: boolean;
   error: string | null;
@@ -130,6 +131,55 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const loginWithGoogle = async () => {
+    try {
+      setError(null);
+      setLoading(true);
+
+      const popup = window.open(
+        "/api/auth/google",
+        "Google Login",
+        "width=500,height=600,left=" +
+          (window.screenX + (window.outerWidth - 500) / 2) +
+          ",top=" +
+          (window.screenY + (window.outerHeight - 600) / 2),
+      );
+
+      if (popup) {
+        const result = await new Promise<User>((resolve, reject) => {
+          const handleMessage = (event: MessageEvent) => {
+            if (event.data?.type === "GOOGLE_LOGIN_SUCCESS") {
+              window.removeEventListener("message", handleMessage);
+              resolve(event.data.user);
+            } else if (event.data?.type === "GOOGLE_LOGIN_ERROR") {
+              window.removeEventListener("message", handleMessage);
+              reject(new Error(event.data.error));
+            }
+          };
+
+          window.addEventListener("message", handleMessage);
+
+          // Clean up if the popup is closed
+          const checkClosed = setInterval(() => {
+            if (popup.closed) {
+              clearInterval(checkClosed);
+              window.removeEventListener("message", handleMessage);
+              reject(new Error("Login window closed"));
+            }
+          }, 1000);
+        });
+
+        setUser(result);
+      }
+    } catch (err) {
+      console.error("Google login error:", err);
+      setError(err instanceof Error ? err.message : "Google login failed");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -147,20 +197,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     token,
     login,
     register,
+    loginWithGoogle,
     logout,
     loading,
     error,
   };
 
   return (
-    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>
+      {children}
+    </AuthContext.Provider>
   );
 }
 
-export function useAuth() {
+export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
-}
+};
