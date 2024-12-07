@@ -3,7 +3,6 @@ import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const session = request.cookies.get("session");
 
   // Public routes that don't require authentication
   const publicRoutes = ["/auth", "/api/auth"];
@@ -12,17 +11,31 @@ export function middleware(request: NextRequest) {
     pathname.startsWith(route),
   );
 
-  if (!session && !isPublicRoute) {
-    const url = new URL("/auth", request.url);
-    url.searchParams.set("toast", "auth-required");
-    return NextResponse.redirect(url);
+  // Get auth token from cookie
+  const authToken = request.cookies.get("auth-token");
+
+  if (!authToken && !isPublicRoute) {
+    return NextResponse.redirect(new URL("/auth", request.url));
   }
 
-  if (session && pathname.startsWith("/auth")) {
+  if (authToken && pathname.startsWith("/auth")) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  return NextResponse.next();
+  // Clone the request headers and add Authorization header if token exists
+  const requestHeaders = new Headers(request.headers);
+  if (authToken) {
+    requestHeaders.set("Authorization", `Bearer ${authToken.value}`);
+  }
+
+  // Return response with modified headers
+  const response = NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
+
+  return response;
 }
 
 export const config = {
