@@ -50,7 +50,7 @@ export const LoginForm = () => {
             Sign in to your account
           </Text>
         </div>
-        <div className="space-y-2">
+        <div className="space-y-4">
           {error && (
             <div className="rounded-lg bg-red-50 p-4">
               <div className="flex items-center gap-2">
@@ -92,17 +92,15 @@ export const LoginForm = () => {
             }
           />
         </div>
-
-        <div className="mt-8 space-y-4">
+        <div className="space-y-4">
           <Button
             type="submit"
             disabled={!isFormValid || isLoading}
             isLoading={isLoading}
-            className="w-full"
+            className="mt-6 w-full"
           >
             <Text color="white">Sign In</Text>
           </Button>
-
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300" />
@@ -193,7 +191,7 @@ export const RegisterForm = () => {
           Sign up for a new account
         </Text>
       </div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         {error && (
           <div className="rounded-lg bg-red-50 p-4">
             <div className="flex items-center gap-2">
@@ -202,7 +200,7 @@ export const RegisterForm = () => {
             </div>
           </div>
         )}
-        <div className="space-y-2">
+        <div className="space-y-4">
           <ValidatedInput
             name="name"
             label="Full Name"
@@ -246,21 +244,23 @@ export const RegisterForm = () => {
               minLength: [8, "Password must be at least 8 characters"],
               custom: [
                 {
-                  validate: (value) => /[A-Z]/.test(value),
+                  validate: (value: string) => /[A-Z]/.test(value),
                   message: "Must contain at least one uppercase letter",
                 },
                 {
-                  validate: (value) => /[0-9]/.test(value),
+                  validate: (value: string) => /[0-9]/.test(value),
                   message: "Must contain at least one number",
                 },
                 {
-                  validate: (value) => /[!@#$%^&*]/.test(value),
+                  validate: (value: string) => /[!@#$%^&*]/.test(value),
                   message:
                     "Must contain at least one special character (!@#$%^&*)",
                 },
               ],
             }}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setPassword(e.target.value)
+            }
             onValidChange={(isValid) =>
               setFormValidation((prev) => ({ ...prev, password: isValid }))
             }
@@ -276,7 +276,7 @@ export const RegisterForm = () => {
               required: "Please confirm your password",
               custom: [
                 {
-                  validate: (value) => value === password,
+                  validate: (value: string) => value === password,
                   message: "Passwords do not match",
                 },
               ],
@@ -294,7 +294,7 @@ export const RegisterForm = () => {
           type="submit"
           disabled={!isFormValid || isLoading}
           isLoading={isLoading}
-          className="mt-8 w-full"
+          className="w-full"
         >
           <Text color="white">Create Account</Text>
         </Button>

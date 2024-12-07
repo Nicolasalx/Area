@@ -383,7 +383,7 @@ export default function TestPage() {
               showToast("Step 1: Processing data...", "info");
               setTimeout(() => {
                 showToast(
-                  "Step 2: This is a longer message that explains what's happening in more detail and might wrap to multiple lines.",
+                  "Step 2: This is a longer message that explains what's happening in more detail",
                   "info",
                 );
               }, 1000);
