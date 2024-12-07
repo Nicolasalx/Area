@@ -84,7 +84,8 @@
     "moduleNameMapper": {
       "^@prismaService/(.*)$": "<rootDir>/src/microservices/prisma-service/$1",
       "^@userService/(.*)$": "<rootDir>/src/microservices/user-service/$1",
-      "^@prismaDb/(.*)$": "<rootDir>/src/prismaDb/$1"
+      "^@prismaDb/(.*)$": "<rootDir>/src/prismaDb/$1",
+      "^@common/(.*)$": "<rootDir>/src/common/$1"
     }
   },
   "overrides": {
