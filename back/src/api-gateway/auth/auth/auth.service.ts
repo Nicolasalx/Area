@@ -1,12 +1,11 @@
 import { Injectable, Dependencies, HttpException, HttpStatus } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios'
+import { UserService } from '@userService/user/user.service';
+import { UserGoogleResponse } from '../../../common/interfaces/user/user'
 
 @Injectable()
-@Dependencies(HttpService)
 export class AuthService {
-  constructor(private httpService: HttpService) {
-    this.httpService = httpService;
-  }
+  constructor(private httpService: HttpService, private userService: UserService) {}
 
   async getGoogleOAuthTokens(code : string) {
     const url = "https://oauth2.googleapis.com/token";
@@ -19,7 +18,6 @@ export class AuthService {
     };
     try {
       const response = await this.httpService.axiosRef.post(url, values);
-      console.log("Data: ", response.data);
       return response.data;
     } catch (error) {
       console.log("Failed to get Google OAuth tokens: ", error);
@@ -32,16 +30,26 @@ export class AuthService {
     }
   }
 
-  async getGoogleUser(access_token: string /*, id_token: string*/) {
+  async getGoogleUser(access_token: string) {
     const url = "https://www.googleapis.com/oauth2/v2/userinfo";
     try {
-      const response = await this.httpService.axiosRef.get(url, {
+      const response = await this.httpService.axiosRef.request<UserGoogleResponse>({url: url,
         headers: {
           Authorization: `Bearer ${access_token}`,
-        },
+        }
       });
-      return response.data;
+      // const response = await this.httpService.axiosRef.get(url, {
+      //   headers: {
+      //     Authorization: `Bearer ${access_token}`,
+      //   },
+      // });
+      let user = await this.userService.getUserByServiceId("GOOGLE", access_token);
+      if (user == null) {
+        user = await this.userService.createUser(response.data.name, response.data.email, access_token, "GOOGLE");
+      }
+      return user;
     } catch (error) {
+      console.error("ERROR getGoogleUser: ", error);
       throw new HttpException({
         status: HttpStatus.FORBIDDEN,
         error: 'Failed to get Google user',
@@ -53,17 +61,15 @@ export class AuthService {
 
   async getGoogleOAuth(code : string) {
     try {
-      console.log("CODE: ", code);
       // Get tokens from Google
       const { access_token, id_token } = await this.getGoogleOAuthTokens(code);
-      console.log("Access_token: ", access_token);
 
       // Get user with tokens
-      const googleUser = await this.getGoogleUser(access_token /*, id_token*/);
+      const googleUser = await this.getGoogleUser(access_token);
 
       // Return JSON data to the opener window
-      console.log("Send: ", {"googleUser": googleUser, "access_token": access_token});
-      return {"googleUser": googleUser, "access_token": access_token};
+      const response = {"googleUser": googleUser, "access_token": access_token};
+      return response;
     } catch (error) {
       throw new HttpException({
         status: HttpStatus.FORBIDDEN,

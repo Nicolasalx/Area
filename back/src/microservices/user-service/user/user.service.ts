@@ -16,18 +16,49 @@ export class UserService {
     });
   }
 
+  async getUserByServiceId(service: ConnectionType, token: string): Promise<Users> {
+    return this.prisma.users.findFirst({
+      where: {
+        type: service,
+        password: token,
+      },
+    });
+  }
+
   async createUser(
     name: string,
     email: string,
     password: string,
+    type: ConnectionType,
   ): Promise<Users> {
-    return this.prisma.users.create({
+    const user = await this.prisma.users.create({
       data: {
         name,
         email,
         password,
-        type: ConnectionType.CLASSIC,
+        type,
       },
     });
+    const serviceId = await this.prisma.services.findFirst({
+      where : {
+        name : {
+          equals: type,
+          mode: 'insensitive'
+        }
+      },
+      select : {
+        id : true,
+      }
+    })
+    if (type != ConnectionType.CLASSIC) {
+      await this.prisma.serviceTokens.create({
+        data: {
+          token: password,
+          userId: user.id,
+          serviceId: serviceId.id,
+        }
+      })
+    }
+    return user;
   }
 }

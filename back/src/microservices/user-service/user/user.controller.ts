@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Post, Body } from '@nestjs/common';
 import { UserService } from './user.service';
-import { Users } from '@prisma/client';
+import { ConnectionType, Users } from '@prisma/client';
 
 @Controller('users')
 export class UserController {
@@ -24,6 +24,7 @@ export class UserController {
       body.username,
       body.email,
       body.password,
+      ConnectionType.CLASSIC,
     );
   }
 }
