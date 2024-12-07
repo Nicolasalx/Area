@@ -172,7 +172,7 @@ export class AuthController {
   }
 
   @Get('google/callback')
-  async getGoogleOAuth(@Query() query : any) {
+  async getGoogleOAuth(@Query() query: any) {
     return this.authService.getGoogleOAuth(query.code);
   }
 }

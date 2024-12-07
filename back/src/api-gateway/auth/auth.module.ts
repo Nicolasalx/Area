@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { HttpModule } from '@nestjs/axios'
+import { HttpModule } from '@nestjs/axios';
 import { AuthService } from './auth/auth.service';
 import { AuthController } from './auth/auth.controller';
 import { PrismaServiceModule } from '@prismaService/prisma-service.module';
