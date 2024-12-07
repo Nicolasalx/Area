@@ -118,8 +118,12 @@ export class UserService {
         throw new NotFoundException(`User with email ${email} not found`);
       }
 
+      await this.prisma.serviceTokens.deleteMany({
+        where: { userId: user.id },
+      });
+
       await this.prisma.users.delete({
-        where: { email },
+        where: { email: email },
       });
 
       this.logger.debug(`User with email ${email} successfully deleted`);
