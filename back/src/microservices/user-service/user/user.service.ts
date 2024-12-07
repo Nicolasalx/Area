@@ -25,7 +25,10 @@ export class UserService {
     });
   }
 
-  async getUserByServiceId(service: ConnectionType, email: string): Promise<Users> {
+  async getUserByServiceId(
+    service: ConnectionType,
+    email: string,
+  ): Promise<Users> {
     return this.prisma.users.findFirst({
       where: {
         type: service,
@@ -39,6 +42,7 @@ export class UserService {
     email: string,
     password: string,
     type: ConnectionType,
+    picture?: string,
   ): Promise<Users> {
     try {
       this.logger.debug(`Creating user with email: ${email}`);
@@ -61,27 +65,28 @@ export class UserService {
           email,
           password: hashedPassword,
           type: type,
+          picture: picture,
         },
       });
       if (type != ConnectionType.CLASSIC) {
         const serviceId = await this.prisma.services.findFirst({
-          where : {
-            name : {
+          where: {
+            name: {
               equals: type,
-              mode: 'insensitive'
-            }
+              mode: 'insensitive',
+            },
           },
-          select : {
-            id : true,
-          }
-        })
+          select: {
+            id: true,
+          },
+        });
         await this.prisma.serviceTokens.create({
           data: {
             token: password,
             userId: user.id,
             serviceId: serviceId.id,
-          }
-        })
+          },
+        });
       }
 
       this.logger.debug(`User created successfully with ID: ${user.id}`);

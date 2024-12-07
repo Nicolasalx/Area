@@ -15,6 +15,7 @@ interface User {
   id: string;
   email: string;
   name?: string;
+  image?: string;
 }
 
 interface AuthContextType {
@@ -146,30 +147,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       );
 
       if (popup) {
-        const result = await new Promise<User>((resolve, reject) => {
-          const handleMessage = (event: MessageEvent) => {
-            if (event.data?.type === "GOOGLE_LOGIN_SUCCESS") {
-              window.removeEventListener("message", handleMessage);
-              resolve(event.data.user);
-            } else if (event.data?.type === "GOOGLE_LOGIN_ERROR") {
-              window.removeEventListener("message", handleMessage);
-              reject(new Error(event.data.error));
-            }
-          };
+        const result = await new Promise<{ user: User; token: string }>(
+          (resolve, reject) => {
+            const handleMessage = (event: MessageEvent) => {
+              if (event.data?.type === "GOOGLE_LOGIN_SUCCESS") {
+                console.log("Received Google login success:", event.data);
+                window.removeEventListener("message", handleMessage);
+                resolve({
+                  user: event.data.user,
+                  token: event.data.token,
+                });
+              } else if (event.data?.type === "GOOGLE_LOGIN_ERROR") {
+                window.removeEventListener("message", handleMessage);
+                reject(new Error(event.data.error));
+              }
+            };
 
-          window.addEventListener("message", handleMessage);
+            window.addEventListener("message", handleMessage);
 
-          // Clean up if the popup is closed
-          const checkClosed = setInterval(() => {
-            if (popup.closed) {
-              clearInterval(checkClosed);
-              window.removeEventListener("message", handleMessage);
-              reject(new Error("Login window closed"));
-            }
-          }, 1000);
-        });
+            // Clean up if the popup is closed
+            const checkClosed = setInterval(() => {
+              if (popup.closed) {
+                clearInterval(checkClosed);
+                window.removeEventListener("message", handleMessage);
+                reject(new Error("Login window closed"));
+              }
+            }, 1000);
+          },
+        );
 
-        setUser(result);
+        console.log("Setting user data in context:", result.user);
+        setUser(result.user);
+        setToken(result.token);
+        localStorage.setItem("user", JSON.stringify(result.user));
+        setError(null);
+        showToast("Login successful", "success");
+        router.push("/workflows");
       }
     } catch (err) {
       console.error("Google login error:", err);
@@ -181,10 +194,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
+    Cookies.remove("auth-token", { path: "/" });
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    document.cookie =
-      "auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
     setToken(null);
     setUser(null);
     setError(null);

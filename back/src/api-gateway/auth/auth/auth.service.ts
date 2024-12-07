@@ -3,13 +3,12 @@ import {
   UnauthorizedException,
   Logger,
   NotFoundException,
-  Dependencies,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios'
+import { HttpService } from '@nestjs/axios';
 import { UserService } from '@userService/user/user.service';
-import { UserGoogleResponse } from '../../../common/interfaces/user/user'
+import { UserGoogleResponse } from '../../../common/interfaces/user/user';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -95,54 +94,76 @@ export class AuthService {
       throw new Error('Failed to delete user');
     }
   }
-  async getGoogleOAuthTokens(code : string) {
-    const url = "https://oauth2.googleapis.com/token";
+  async getGoogleOAuthTokens(code: string) {
+    const url = 'https://oauth2.googleapis.com/token';
     const values = {
       code,
       client_id: process.env.GOOGLE_CLIENT_ID!,
       client_secret: process.env.GOOGLE_CLIENT_SECRET!,
       redirect_uri: process.env.GOOGLE_REDIRECT_URI!,
-      grant_type: "authorization_code",
+      grant_type: 'authorization_code',
     };
     try {
       const response = await this.httpService.axiosRef.post(url, values);
       return response.data;
     } catch (error) {
-      this.logger.error("Failed to get Google OAuth tokens: ", error);
-      throw new HttpException({
-        status: HttpStatus.FORBIDDEN,
-        error: 'Failed to get Google OAuth tokens',
-      }, HttpStatus.FORBIDDEN, {
-        cause: error
-      });
+      this.logger.error('Failed to get Google OAuth tokens: ', error);
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Failed to get Google OAuth tokens',
+        },
+        HttpStatus.FORBIDDEN,
+        {
+          cause: error,
+        },
+      );
     }
   }
 
   async getGoogleUser(access_token: string) {
-    const url = "https://www.googleapis.com/oauth2/v2/userinfo";
+    const url = 'https://www.googleapis.com/oauth2/v2/userinfo';
     try {
-      const response = await this.httpService.axiosRef.request<UserGoogleResponse>({url: url,
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        }
-      });
-      let user = await this.userService.getUserByServiceId("GOOGLE", response.data.email);
+      const response =
+        await this.httpService.axiosRef.request<UserGoogleResponse>({
+          url: url,
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        });
+      let user = await this.userService.getUserByServiceId(
+        'GOOGLE',
+        response.data.email,
+      );
       if (user == null) {
-        user = await this.userService.createUser(response.data.name, response.data.email, access_token, "GOOGLE");
+        user = await this.userService.createUser(
+          response.data.name,
+          response.data.email,
+          access_token,
+          'GOOGLE',
+          response.data.picture,
+        );
       }
-      return user;
+      return {
+        ...user,
+        picture: response.data.picture,
+      };
     } catch (error) {
-      this.logger.error("ERROR getGoogleUser: ", error);
-      throw new HttpException({
-        status: HttpStatus.FORBIDDEN,
-        error: 'Failed to get Google user',
-      }, HttpStatus.FORBIDDEN, {
-        cause: error
-      });
+      this.logger.error('ERROR getGoogleUser: ', error);
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Failed to get Google user',
+        },
+        HttpStatus.FORBIDDEN,
+        {
+          cause: error,
+        },
+      );
     }
   }
 
-  async getGoogleOAuth(code : string) {
+  async getGoogleOAuth(code: string) {
     try {
       // Get tokens from Google
       const { access_token, id_token } = await this.getGoogleOAuthTokens(code);
@@ -151,17 +172,21 @@ export class AuthService {
       const googleUser = await this.getGoogleUser(access_token);
 
       // Return JSON data to the opener window
-      const response = {"googleUser": googleUser, "access_token": access_token};
-      console.log("Response: ", response);
+      const response = { googleUser: googleUser, access_token: access_token };
+      console.log('Response: ', response);
       return response;
     } catch (error) {
-      this.logger.log("ERROR getGoogleOAuth: ", error);
-      throw new HttpException({
-        status: HttpStatus.FORBIDDEN,
-        error: 'Failed to get Google OAuth',
-      }, HttpStatus.FORBIDDEN, {
-        cause: error
-      });
+      this.logger.log('ERROR getGoogleOAuth: ', error);
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Failed to get Google OAuth',
+        },
+        HttpStatus.FORBIDDEN,
+        {
+          cause: error,
+        },
+      );
     }
   }
 }
