@@ -1,6 +1,7 @@
 INSERT INTO "Reactions" ("name", "description", "trigger", "isActive", "createdAt", "serviceId")
 VALUES
-    ('Send email', 'Sends an email when triggered.', '{"reaction": "send_email"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'Google' LIMIT 1)),
-    ('Set calendar event', 'Sets an event in Google Calendar when triggered.', '{"reaction": "set_event_calendar"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'Google' LIMIT 1)),
-    ('Play playlist', 'Plays a predefined playlist in Spotify.', '{"reaction": "play_playlist"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'Spotify' LIMIT 1)),
-    ('Upload file', 'Uploads a file to Dropbox when triggered.', '{"reaction": "upload_file"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'Dropbox' LIMIT 1));
+    ('send_email', 'Sends an email when triggered.', '{"reaction": "send_email"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'google' LIMIT 1)),
+    ('set_calendar_event', 'Sets an event in Google Calendar when triggered.', '{"reaction": "set_event_calendar"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'google' LIMIT 1)),
+    ('create_task', 'Create a task in Google Task when triggered.', '{"reaction": "create_task"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'google' LIMIT 1)),
+    ('create_drive_element', 'Create an element (it can be a folder, forms, docs, spreadsheet) in Google Drive when triggered.', '{"reaction": "create_drive_element"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'google' LIMIT 1)),
+    ('create_youtube_playlist', 'Create a Youtube Playlist when triggered.', '{"reaction": "create_youtube_playlist"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'google' LIMIT 1));
