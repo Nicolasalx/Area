@@ -1,6 +1,6 @@
+import { WorkflowDto } from '@common/dto/workflow.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
-import { WorkflowDto } from 'src/common/interfaces/workflow.interface';
 
 @Injectable()
 export class WorkflowService {
