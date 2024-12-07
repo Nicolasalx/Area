@@ -1,9 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { GoogleService } from '../google/google.service';
+import { PrismaService } from '@prismaService/prisma/prisma.service';
+import { ReactionDto } from 'src/common/dto/reaction.dto';
 
 @Injectable()
 export class ReactionService {
-  constructor(private readonly googleService: GoogleService) {}
+  constructor(
+    private readonly googleService: GoogleService,
+    private readonly prisma: PrismaService,
+  ) {}
+
+  async getReactions(): Promise<ReactionDto[]> {
+    const reactions = await this.prisma.reactions.findMany();
+
+    return reactions.map((reaction) => ({
+      id: reaction.id,
+      name: reaction.name,
+      description: reaction.description,
+      trigger: reaction.trigger,
+      isActive: reaction.isActive,
+      createdAt: reaction.createdAt,
+      serviceId: reaction.serviceId,
+    }));
+  }
 
   async handleReaction(
     service: string,

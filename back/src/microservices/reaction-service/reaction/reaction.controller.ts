@@ -1,9 +1,31 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get } from '@nestjs/common';
 import { ReactionService } from './reaction.service';
+import { ReactionDto } from 'src/common/dto/reaction.dto';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-@Controller('reaction')
+@ApiTags('Reactions')
+@Controller('reactions')
 export class ReactionController {
   constructor(private readonly reactionService: ReactionService) {}
+
+  @ApiOperation({
+    summary: 'Retrieve all reactions',
+    description:
+      'Fetch all reactions available in the system with their details.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'A list of all reactions successfully retrieved.',
+    type: [ReactionDto],
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error occurred while fetching reactions.',
+  })
+  @Get()
+  async getReactions(): Promise<ReactionDto[]> {
+    return this.reactionService.getReactions();
+  }
 
   @Post()
   async handleReaction(
