@@ -86,5 +86,13 @@ flutter:
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #
+  fonts:
+  - family: Regular
+    fonts:
+      - asset: assets/NotoSans-Medium.ttf
+      - asset: assets/NotoSans-ExtraBold.ttf
+        weight: 700
+      - asset: assets/NotoSans-Italic.ttf
+        style: italic
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
