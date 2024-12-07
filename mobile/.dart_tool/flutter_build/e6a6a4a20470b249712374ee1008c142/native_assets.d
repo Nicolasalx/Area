@@ -1,0 +1,1 @@
+ /home/terminator/web/AREA/mobile/.dart_tool/flutter_build/e6a6a4a20470b249712374ee1008c142/native_assets.yaml: 
