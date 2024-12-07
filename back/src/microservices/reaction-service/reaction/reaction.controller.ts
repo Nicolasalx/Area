@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Get } from '@nestjs/common';
 import { ReactionService } from './reaction.service';
-import { ReactionDto } from 'src/common/dto/reaction.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ReactionDto } from '@common/dto/reaction.dto';
 
 @ApiTags('Reactions')
 @Controller('reactions')

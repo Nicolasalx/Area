@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { GoogleService } from '../google/google.service';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
-import { ReactionDto } from 'src/common/dto/reaction.dto';
+import { ReactionDto } from '@common/dto/reaction.dto';
 
 @Injectable()
 export class ReactionService {

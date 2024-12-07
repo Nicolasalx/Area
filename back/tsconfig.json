@@ -13,7 +13,8 @@
     "paths": {
       "@prismaDb/*": ["prismaDb/*"],
       "@userService/*": ["src/microservices/user-service/*"],
-      "@prismaService/*": ["src/microservices/prisma-service/*"]
+      "@prismaService/*": ["src/microservices/prisma-service/*"],
+      "@common/*": ["src/common/*"],
     },
     "incremental": true,
     "skipLibCheck": true,

@@ -1,6 +1,6 @@
+import { ActionDto } from '@common/dto/action.dto';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
-import { ActionDto } from 'src/common/dto/action.dto';
 
 @Injectable()
 export class ActionService {

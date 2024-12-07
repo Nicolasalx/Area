@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { ActionService } from './action.service';
-import { ActionDto } from 'src/common/dto/action.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ActionDto } from '@common/dto/action.dto';
 
 @ApiTags('Actions')
 @Controller('actions')
