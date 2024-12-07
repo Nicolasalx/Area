@@ -86,12 +86,30 @@ export class AuthService {
     }
 
     try {
-      await this.prisma.users.delete({
-        where: { id: userId },
+      await this.prisma.$transaction(async (tx) => {
+        await tx.workflows.deleteMany({
+          where: { userId: userId },
+        });
+
+        await tx.serviceTokens.deleteMany({
+          where: { userId: userId },
+        });
+
+        await tx.users.delete({
+          where: { id: userId },
+        });
       });
+
       return { message: 'User deleted successfully' };
-    } catch {
-      throw new Error('Failed to delete user');
+    } catch (error) {
+      this.logger.error('Error deleting user:', error);
+      if (error.code === 'P2003') {
+        throw new Error(
+          'Cannot delete user due to existing references. Error: ' +
+            error.message,
+        );
+      }
+      throw new Error(`Failed to delete user: ${error.message}`);
     }
   }
   async getGoogleOAuthTokens(code: string) {
@@ -166,13 +184,21 @@ export class AuthService {
   async getGoogleOAuth(code: string) {
     try {
       // Get tokens from Google
-      const { access_token, id_token } = await this.getGoogleOAuthTokens(code);
+      const { access_token } = await this.getGoogleOAuthTokens(code);
 
       // Get user with tokens
       const googleUser = await this.getGoogleUser(access_token);
 
+      const token = this.jwtService.sign({
+        sub: googleUser.id,
+        email: googleUser.email,
+      });
+
       // Return JSON data to the opener window
-      const response = { googleUser: googleUser, access_token: access_token };
+      const response = {
+        googleUser: googleUser,
+        token: token,
+      };
       console.log('Response: ', response);
       return response;
     } catch (error) {

@@ -15,8 +15,7 @@ export async function GET(request: Request) {
     .get(`http://localhost:8080/auth/google/callback/?code=${code}`)
     .then((res) => res.data)
     .then(async (data) => {
-
-      const sessionToken = data.access_token;
+      const sessionToken = data.token;
 
       (await cookies()).set("auth-token", sessionToken, {
         secure: process.env.NODE_ENV === "production",
