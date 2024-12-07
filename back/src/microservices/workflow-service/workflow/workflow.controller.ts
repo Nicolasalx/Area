@@ -1,8 +1,6 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { WorkflowService } from './workflow.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ActionDto } from '@common/dto/action.dto';
-import { ReactionDto } from '@common/dto/reaction.dto';
 import { WorkflowDto } from '@common/dto/workflow.dto';
 
 @ApiTags('Workflows')
