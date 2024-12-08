@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { GoogleService } from '../google/google.service';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { ReactionDto } from '@common/dto/reaction.dto';
+import { ActiveReaction } from '@prisma/client';
 
 @Injectable()
 export class ReactionService {
@@ -42,6 +43,28 @@ export class ReactionService {
         return await this.googleService.handleAction(reaction, data);
       default:
         throw new Error('Service not recognized');
+    }
+  }
+
+  async executeReactions(reactions: ActiveReaction[]): Promise<void> {
+    for (const reaction of reactions) {
+      try {
+        const service = await this.prisma.services.findUnique({
+          where: { id: reaction.serviceId },
+        });
+
+        if (!service) {
+          console.log(`Service not found for ID: ${reaction.serviceId}`);
+          continue;
+        }
+
+        await this.handleReaction(service.name, reaction.name, reaction.data);
+      } catch (error) {
+        console.error(
+          `Error fetching service for ID: ${reaction.serviceId}`,
+          error,
+        );
+      }
     }
   }
 }
