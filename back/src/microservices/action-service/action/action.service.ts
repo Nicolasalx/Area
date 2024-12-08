@@ -7,7 +7,11 @@ export class ActionService {
   constructor(private prisma: PrismaService) {}
 
   async getActions(): Promise<ActionDto[]> {
-    const actions = await this.prisma.actions.findMany();
+    const actions = await this.prisma.actions.findMany({
+      include: {
+        service: true,
+      },
+    });
 
     return actions.map((action) => ({
       id: action.id,
@@ -15,6 +19,8 @@ export class ActionService {
       description: action.description,
       isActive: action.isActive,
       createdAt: action.createdAt,
+      serviceId: action.serviceId,
+      service: action.service,
     }));
   }
 }

@@ -4,18 +4,12 @@ import Card from "@/components/ui/Card";
 import CardContent from "@/components/ui/Card";
 import CardHeader from "@/components/ui/Card";
 import Text from "@/components/ui/Text";
-import {
-  Mail,
-  PlayCircle,
-  Settings,
-  ArrowRight,
-  Ghost,
-  Trash2,
-  Power,
-} from "lucide-react";
+import { PlayCircle, ArrowRight, Ghost, Trash2, Power } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+
+import { getServiceIcon, getRandomGradient } from "../utils";
 
 interface Workflow {
   id: number;
@@ -37,29 +31,6 @@ interface Workflow {
     };
   }>;
 }
-
-const getServiceIcon = (serviceName: string) => {
-  switch (serviceName.toLowerCase()) {
-    case "google":
-      return <Mail className="h-4 w-4 text-gray-500" />;
-    default:
-      return <Settings className="h-4 w-4 text-gray-500" />;
-  }
-};
-
-const getRandomGradient = () => {
-  const colors = [
-    "from-blue-50",
-    "from-green-50",
-    "from-purple-50",
-    "from-pink-50",
-    "from-yellow-50",
-    "from-indigo-50",
-    "from-red-50",
-    "from-teal-50",
-  ];
-  return colors[Math.floor(Math.random() * colors.length)];
-};
 
 interface WorkflowsBodyProps {
   workflows: Workflow[];
@@ -171,10 +142,10 @@ export default function WorkflowsBody({
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => handleToggle(workflow.id, workflow.isActive)}
-                  className={`transition-colors ${
+                  className={`rounded-full border-b-0 border-black p-2 duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 ${
                     workflow.isActive
-                      ? "rounded-full border-b-0 border-black p-2 text-green-500 duration-200 hover:text-green-600 focus-visible:text-green-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
-                      : "rounded-full border-b-0 border-black p-2 text-gray-400 duration-200 hover:text-gray-500 focus-visible:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+                      ? "text-green-500 hover:text-green-600 focus-visible:text-green-600"
+                      : "text-gray-400 hover:text-gray-500 focus-visible:text-gray-500"
                   }`}
                   title={
                     workflow.isActive ? "Deactivate area" : "Activate area"

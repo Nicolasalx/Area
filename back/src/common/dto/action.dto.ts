@@ -30,4 +30,24 @@ export class ActionDto {
     example: '2023-10-01T12:34:56Z',
   })
   createdAt: Date;
+
+  @ApiProperty({
+    description: 'The ID of the service this action belongs to',
+    example: 1,
+  })
+  serviceId: number;
+
+  @ApiProperty({
+    description: 'The service details',
+    example: {
+      id: 1,
+      name: 'google',
+      description: 'Google services',
+    },
+  })
+  service: {
+    id: number;
+    name: string;
+    description: string;
+  };
 }

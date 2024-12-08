@@ -71,23 +71,29 @@ export class WorkflowService {
 
   private async verifyServicesExist(actions: any[], reactions: any[]) {
     for (const action of actions) {
+      if (!action.serviceId) {
+        throw new NotFoundException('Service ID is required for actions');
+      }
       const service = await this.prisma.services.findUnique({
-        where: { name: action.service },
+        where: { id: action.serviceId },
       });
       if (!service) {
         throw new NotFoundException(
-          `Service with name "${action.service}" untraceable.`,
+          `Service with ID "${action.serviceId}" not found.`,
         );
       }
     }
 
     for (const reaction of reactions) {
+      if (!reaction.serviceId) {
+        throw new NotFoundException('Service ID is required for reactions');
+      }
       const service = await this.prisma.services.findUnique({
-        where: { name: reaction.service },
+        where: { id: reaction.serviceId },
       });
       if (!service) {
         throw new NotFoundException(
-          `Service with name "${reaction.service}" untraceable.`,
+          `Service with ID "${reaction.serviceId}" not found.`,
         );
       }
     }
@@ -97,11 +103,13 @@ export class WorkflowService {
     return Promise.all(
       actions.map(async (action) => {
         const existingAction = await this.prisma.actions.findFirst({
-          where: { name: action.name },
+          where: {
+            AND: [{ name: action.name }, { serviceId: action.serviceId }],
+          },
         });
         if (!existingAction) {
           throw new NotFoundException(
-            `Action with name "${action.name}" not found.`,
+            `Action "${action.name}" not found for the specified service.`,
           );
         }
         return { id: existingAction.id };
@@ -113,11 +121,13 @@ export class WorkflowService {
     return Promise.all(
       reactions.map(async (reaction) => {
         const existingReaction = await this.prisma.reactions.findFirst({
-          where: { name: reaction.name },
+          where: {
+            AND: [{ name: reaction.name }, { serviceId: reaction.serviceId }],
+          },
         });
         if (!existingReaction) {
           throw new NotFoundException(
-            `Reaction with name "${reaction.name}" not found.`,
+            `Reaction "${reaction.name}" not found for the specified service.`,
           );
         }
         return { id: existingReaction.id };
