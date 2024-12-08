@@ -142,4 +142,28 @@ export class WorkflowService {
       where: { id },
     });
   }
+
+  /**
+   * Toggles a workflow's active status
+   * @param id Workflow ID
+   * @param isActive New active status
+   */
+  async toggleWorkflow(id: string, isActive: boolean) {
+    const workflow = await this.prisma.workflows.findUnique({
+      where: { id },
+    });
+
+    if (!workflow) {
+      throw new NotFoundException(`Workflow with ID ${id} not found`);
+    }
+
+    return this.prisma.workflows.update({
+      where: { id },
+      data: { isActive },
+      include: {
+        actions: { include: { service: true } },
+        reactions: { include: { service: true } },
+      },
+    });
+  }
 }
