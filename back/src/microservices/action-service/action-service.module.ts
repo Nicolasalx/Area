@@ -9,7 +9,13 @@ import { DiscordService } from '../reaction-service/discord/discord.service';
 
 @Module({
   imports: [PrismaServiceModule],
-  providers: [ActionService, GithubService, ReactionService, GoogleService, DiscordService],
+  providers: [
+    ActionService,
+    GithubService,
+    ReactionService,
+    GoogleService,
+    DiscordService,
+  ],
   controllers: [ActionController],
 })
 export class ActionServiceModule {}
