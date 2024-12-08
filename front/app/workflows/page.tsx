@@ -13,6 +13,7 @@ interface Workflow {
   id: number;
   name: string;
   userId: string;
+  isActive: boolean;
   actions: Array<{
     id: number;
     name: string;
@@ -90,6 +91,14 @@ export default function WorkflowsPage() {
     );
   };
 
+  const handleToggle = (id: number, isActive: boolean) => {
+    setWorkflows((prevWorkflows) =>
+      prevWorkflows.map((workflow) =>
+        workflow.id === id ? { ...workflow, isActive } : workflow,
+      ),
+    );
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8 flex items-center justify-between">
@@ -109,7 +118,11 @@ export default function WorkflowsPage() {
           {error}
         </div>
       ) : (
-        <WorkflowsBody workflows={workflows} onDelete={handleDelete} />
+        <WorkflowsBody
+          workflows={workflows}
+          onDelete={handleDelete}
+          onToggle={handleToggle}
+        />
       )}
     </div>
   );

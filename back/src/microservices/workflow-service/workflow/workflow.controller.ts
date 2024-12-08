@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Patch,
+} from '@nestjs/common';
 import { WorkflowService } from './workflow.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { WorkflowDto } from '@common/dto/workflow.dto';
@@ -203,6 +211,56 @@ export class WorkflowController {
       await this.workflowService.deleteWorkflow(id);
       return {
         message: 'Workflow successfully deleted.',
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Toggles a workflow's active status
+   * @param id Workflow ID
+   * @param isActive New active status
+   */
+  @Patch(':id/toggle')
+  @ApiOperation({ summary: 'Toggle workflow active status' })
+  @ApiResponse({
+    status: 200,
+    description: 'Workflow status successfully updated.',
+    schema: {
+      example: {
+        message: 'Workflow status successfully updated.',
+        data: {
+          id: 'workflow-id',
+          name: 'My Workflow',
+          isActive: true,
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Workflow not found',
+    schema: {
+      example: {
+        message: 'Workflow not found',
+        error: 'Not Found',
+        statusCode: 404,
+      },
+    },
+  })
+  async toggleWorkflow(
+    @Param('id') id: string,
+    @Body() body: { isActive: boolean },
+  ) {
+    try {
+      const workflow = await this.workflowService.toggleWorkflow(
+        id,
+        body.isActive,
+      );
+      return {
+        message: 'Workflow status successfully updated.',
+        data: workflow,
       };
     } catch (error) {
       throw error;
