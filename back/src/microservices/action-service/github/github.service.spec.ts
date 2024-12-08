@@ -9,7 +9,7 @@ describe('GithubService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [GithubService, ActionService],
-      imports: [PrismaServiceModule]
+      imports: [PrismaServiceModule],
     }).compile();
 
     service = module.get<GithubService>(GithubService);
