@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ElementType, ReactNode } from "react";
+import React, { ElementType, ReactNode, KeyboardEvent } from "react";
 import { twMerge } from "tailwind-merge";
 
 interface CardProps {
@@ -23,10 +23,17 @@ const Card = ({
   className = "",
   onClick,
   as: Component = "div",
-  shadow = "small",
+  shadow = "none",
   border = true,
   hover = false,
 }: CardProps) => {
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (onClick && (event.key === "Enter" || event.key === " ")) {
+      event.preventDefault();
+      onClick();
+    }
+  };
+
   const getShadowClasses = () => {
     switch (shadow) {
       case "none":
@@ -69,8 +76,17 @@ const Card = ({
     className,
   );
 
+  const cardProps = onClick
+    ? {
+        role: "button",
+        tabIndex: 0,
+        onClick,
+        onKeyDown: handleKeyDown,
+      }
+    : {};
+
   return (
-    <Component className={classes} onClick={onClick}>
+    <Component className={classes} {...cardProps}>
       {children}
     </Component>
   );

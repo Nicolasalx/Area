@@ -3,15 +3,17 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import Card from "@/components/ui/Card";
-import CardContent from "@/components/ui/Card";
-import CardHeader from "@/components/ui/Card";
-import CardTitle from "@/components/ui/Card";
+import Text from "@/components/ui/Text";
+import { Plus } from "lucide-react";
+import Button from "@/components/ui/Button";
+import WorkflowsBody from "./components/WorkflowsBody";
+import WorkflowsLoading from "./loading";
 
 interface Workflow {
   id: number;
   name: string;
   userId: string;
+  isActive: boolean;
   actions: Array<{
     id: number;
     name: string;
@@ -49,12 +51,27 @@ export default function WorkflowsPage() {
           },
         );
 
+        if (response.status === 404) {
+          setWorkflows([]);
+          return;
+        }
+
         if (!response.ok) {
-          throw new Error("Failed to fetch workflows");
+          const errorData = await response.text();
+          console.error("API Error:", {
+            status: response.status,
+            statusText: response.statusText,
+            data: errorData,
+          });
+          throw new Error(
+            `Failed to fetch workflows: ${response.status} ${response.statusText}`,
+          );
         }
         const data = await response.json();
+        console.log("Workflows fetched:", data);
         setWorkflows(data.data);
       } catch (err) {
+        console.error("Fetch error:", err);
         setError(
           err instanceof Error ? err.message : "Failed to fetch workflows",
         );
@@ -68,58 +85,45 @@ export default function WorkflowsPage() {
     }
   }, [user, token, authLoading, router]);
 
-  if (authLoading || loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        Loading workflows...
-      </div>
+  const handleDelete = (id: number) => {
+    setWorkflows((prevWorkflows) =>
+      prevWorkflows.filter((workflow) => workflow.id !== id),
     );
-  }
+  };
 
-  if (error) {
-    return (
-      <div className="flex min-h-screen items-center justify-center text-red-500">
-        {error}
-      </div>
+  const handleToggle = (id: number, isActive: boolean) => {
+    setWorkflows((prevWorkflows) =>
+      prevWorkflows.map((workflow) =>
+        workflow.id === id ? { ...workflow, isActive } : workflow,
+      ),
     );
-  }
+  };
 
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="mb-6 text-3xl font-bold">My Workflows</h1>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {workflows.map((workflow) => (
-          <Card key={workflow.id} className="transition-shadow hover:shadow-lg">
-            <CardHeader>
-              <CardTitle>{workflow.name}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <h3 className="mb-2 font-semibold">Actions:</h3>
-                  <ul className="list-inside list-disc">
-                    {workflow.actions.map((action) => (
-                      <li key={action.id}>
-                        {action.name} ({action.service.name})
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <h3 className="mb-2 font-semibold">Reactions:</h3>
-                  <ul className="list-inside list-disc">
-                    {workflow.reactions.map((reaction) => (
-                      <li key={reaction.id}>
-                        {reaction.name} ({reaction.service.name})
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8 flex items-center justify-between">
+        <Text variant="h2">My Areas</Text>
+        <Button
+          onClick={() => router.push("/workflows/new")}
+          leftIcon={<Plus className="h-4 w-4" />}
+        >
+          New Area
+        </Button>
       </div>
+
+      {loading ? (
+        <WorkflowsLoading />
+      ) : error ? (
+        <div className="flex min-h-screen items-center justify-center text-red-500">
+          {error}
+        </div>
+      ) : (
+        <WorkflowsBody
+          workflows={workflows}
+          onDelete={handleDelete}
+          onToggle={handleToggle}
+        />
+      )}
     </div>
   );
 }

@@ -48,7 +48,7 @@ const getBgColor = (variant: ToastVariant) => {
 const Toast = ({
   message,
   variant = "info",
-  duration = 3000,
+  duration = 7000,
   onClose,
   index = 0,
   heights = [],

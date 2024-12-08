@@ -1,6 +1,6 @@
+import { WorkflowDto } from '@common/dto/workflow.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
-import { WorkflowDto } from 'src/common/interfaces/workflow.interface';
 
 @Injectable()
 export class WorkflowService {
@@ -71,23 +71,29 @@ export class WorkflowService {
 
   private async verifyServicesExist(actions: any[], reactions: any[]) {
     for (const action of actions) {
+      if (!action.serviceId) {
+        throw new NotFoundException('Service ID is required for actions');
+      }
       const service = await this.prisma.services.findUnique({
-        where: { name: action.service },
+        where: { id: action.serviceId },
       });
       if (!service) {
         throw new NotFoundException(
-          `Service with name "${action.service}" untraceable.`,
+          `Service with ID "${action.serviceId}" not found.`,
         );
       }
     }
 
     for (const reaction of reactions) {
+      if (!reaction.serviceId) {
+        throw new NotFoundException('Service ID is required for reactions');
+      }
       const service = await this.prisma.services.findUnique({
-        where: { name: reaction.service },
+        where: { id: reaction.serviceId },
       });
       if (!service) {
         throw new NotFoundException(
-          `Service with name "${reaction.service}" untraceable.`,
+          `Service with ID "${reaction.serviceId}" not found.`,
         );
       }
     }
@@ -97,11 +103,13 @@ export class WorkflowService {
     return Promise.all(
       actions.map(async (action) => {
         const existingAction = await this.prisma.actions.findFirst({
-          where: { name: action.name },
+          where: {
+            AND: [{ name: action.name }, { serviceId: action.serviceId }],
+          },
         });
         if (!existingAction) {
           throw new NotFoundException(
-            `Action with name "${action.name}" not found.`,
+            `Action "${action.name}" not found for the specified service.`,
           );
         }
         return { id: existingAction.id };
@@ -113,15 +121,59 @@ export class WorkflowService {
     return Promise.all(
       reactions.map(async (reaction) => {
         const existingReaction = await this.prisma.reactions.findFirst({
-          where: { name: reaction.name },
+          where: {
+            AND: [{ name: reaction.name }, { serviceId: reaction.serviceId }],
+          },
         });
         if (!existingReaction) {
           throw new NotFoundException(
-            `Reaction with name "${reaction.name}" not found.`,
+            `Reaction "${reaction.name}" not found for the specified service.`,
           );
         }
         return { id: existingReaction.id };
       }),
     );
+  }
+
+  /**
+   * Deletes a workflow by its ID
+   * @param id Workflow ID
+   */
+  async deleteWorkflow(id: string) {
+    const workflow = await this.prisma.workflows.findUnique({
+      where: { id },
+    });
+
+    if (!workflow) {
+      throw new NotFoundException(`Workflow with ID ${id} not found`);
+    }
+
+    await this.prisma.workflows.delete({
+      where: { id },
+    });
+  }
+
+  /**
+   * Toggles a workflow's active status
+   * @param id Workflow ID
+   * @param isActive New active status
+   */
+  async toggleWorkflow(id: string, isActive: boolean) {
+    const workflow = await this.prisma.workflows.findUnique({
+      where: { id },
+    });
+
+    if (!workflow) {
+      throw new NotFoundException(`Workflow with ID ${id} not found`);
+    }
+
+    return this.prisma.workflows.update({
+      where: { id },
+      data: { isActive },
+      include: {
+        actions: { include: { service: true } },
+        reactions: { include: { service: true } },
+      },
+    });
   }
 }

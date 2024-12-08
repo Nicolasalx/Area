@@ -63,5 +63,20 @@ export default {
     // Text decorations
     "italic",
     "underline",
+
+    "from-blue-50",
+    "from-green-50",
+    "from-purple-50",
+    "from-pink-50",
+    "from-yellow-50",
+    "from-indigo-50",
+    "from-red-50",
+    "from-teal-50",
+    "bg-gray-50",
+    "bg-gray-100",
+    "bg-gray-200",
+    "bg-gray-300",
+    "bg-gray-400",
+    "bg-gray-500",
   ],
 } satisfies Config;

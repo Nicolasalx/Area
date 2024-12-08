@@ -11,6 +11,7 @@
     "format:fix": "prettier --write --ignore-path .gitignore ."
   },
   "dependencies": {
+    "axios": "^1.7.9",
     "eslint-config-prettier": "^9.1.0",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.460.0",

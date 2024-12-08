@@ -10,7 +10,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { Users } from '@prisma/client';
+import { ConnectionType, Users } from '@prisma/client';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 
 class CreateUserDto {
@@ -88,6 +88,7 @@ export class UserController {
       body.username,
       body.email,
       body.password,
+      ConnectionType.CLASSIC,
     );
   }
 

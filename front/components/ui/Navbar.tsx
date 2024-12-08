@@ -24,8 +24,10 @@ const Navbar = () => {
   };
 
   const navigationLinks = [
-    { href: "/test", label: "Tests" },
-    { href: "/test/form", label: "Forms tests" },
+    // { href: "/test", label: "Tests" },
+    // { href: "/test/form", label: "Forms tests" },
+    { href: "/workflows/new", label: "New area" },
+    { href: "/workflows", label: "My Areas" },
   ];
 
   return (
@@ -52,7 +54,7 @@ const Navbar = () => {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-md flex h-full items-center border-b-0 border-gray-900 p-4 text-gray-700 duration-200 hover:border-b-4 hover:bg-gray-100 hover:pb-3 hover:text-gray-900 focus-visible:rounded-md focus-visible:border-b-4 focus-visible:bg-gray-100 focus-visible:pb-3 focus-visible:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+                  className="text-md flex h-full items-center border-b-0 border-black p-4 text-gray-800 duration-200 hover:border-b-4 hover:bg-gray-200 hover:pb-3 hover:text-black focus-visible:rounded-md focus-visible:border-b-4 focus-visible:bg-gray-100 focus-visible:pb-3 focus-visible:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
                 >
                   {link.label}
                 </Link>
@@ -121,7 +123,7 @@ const Navbar = () => {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm text-gray-700 duration-200 hover:text-gray-900 focus:outline-none focus-visible:rounded-md focus-visible:text-gray-900 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+              className="text-sm text-gray-900 duration-200 hover:text-black focus:outline-none focus-visible:rounded-md focus-visible:text-black focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               {link.label}
