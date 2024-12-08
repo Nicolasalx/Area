@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ActiveAction, ActiveReaction } from '@prisma/client';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
-import { GithubService } from 'src/microservices/action-service/github/github.service';
+import { GithubService } from '../../action-service/github/github.service';
 
 @Injectable()
 export class TriggerService implements OnModuleInit {
@@ -28,7 +28,6 @@ export class TriggerService implements OnModuleInit {
       workflows.forEach((workflow) => {
         const action = workflow.activeActions.at(0);
         this.selectAction(action, workflow.activeReactions);
-        console.log('------------------------------------');
       });
     } catch (error) {
       console.error('Error fetching workflows:', error);

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Injectable } from '@nestjs/common';
 import { ActiveAction, ActiveReaction } from '@prisma/client';
-import { ReactionService } from 'src/microservices/reaction-service/reaction/reaction.service';
+import { ActionService } from '../action/action.service';
 
 interface GithubActionData {
   repositoryOwner: string;
@@ -12,7 +12,7 @@ interface GithubActionData {
 export class GithubService {
   private lastCheckTimestamp: number = Date.now();
 
-  constructor(private readonly reactionService: ReactionService) {}
+  constructor(private readonly actionService: ActionService) {}
 
   async handleGithubPush(
     action: ActiveAction,
@@ -42,7 +42,7 @@ export class GithubService {
           if (eventTimestamp > this.lastCheckTimestamp) {
             eventDetected = true;
 
-            await this.reactionService.executeReactions(reaction);
+            await this.actionService.executeReactions(reaction);
           }
         }
 
@@ -50,6 +50,8 @@ export class GithubService {
           this.lastCheckTimestamp = Date.now();
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error();
+    }
   }
 }
