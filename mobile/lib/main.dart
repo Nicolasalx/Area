@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 
 void main() {
   runApp(const MyApp());
@@ -77,6 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+    final formkey = GlobalKey<FormState>();
     return Scaffold(
       appBar: AppBar(
           // TRY THIS: Try changing the color here to a specific color (to
@@ -111,6 +114,191 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
           ],
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 50.0, left: 20, right: 20),
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: const Color.fromARGB(255, 255, 255, 255),
+                border: Border.all(
+                    color: const Color.fromARGB(255, 185, 185, 185))),
+            child: Column(
+              children: <Widget>[
+                const Padding(
+                  padding: EdgeInsets.only(top: 30.0),
+                  child: Center(
+                    child: Text('Welcome',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w700, fontSize: 30)),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(top: 5.0),
+                  child: Center(
+                    child: Text('Sign in to your account',
+                        style: TextStyle(fontSize: 15)),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Form(
+                        key: formkey,
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: TextFormField(
+                                      validator: MultiValidator([
+                                        RequiredValidator(
+                                            errorText: 'Enter email address'),
+                                        EmailValidator(
+                                            errorText:
+                                                'Please correct email filled'),
+                                      ]),
+                                      decoration: InputDecoration(
+                                          hintText: 'Email',
+                                          labelText: 'Email',
+                                          prefixIcon: Icon(
+                                            Icons.email,
+                                            //color: Colors.green,
+                                          ),
+                                          errorStyle: TextStyle(fontSize: 18.0),
+                                          border: OutlineInputBorder(
+                                              borderSide:
+                                                  BorderSide(color: Colors.red),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(9.0)))))),
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: TextFormField(
+                                  validator: MultiValidator([
+                                    RequiredValidator(
+                                        errorText: 'Please enter Password'),
+                                    MinLengthValidator(8,
+                                        errorText:
+                                            'Password must be atlist 8 digit'),
+                                    PatternValidator(r'(?=.*?[#!@$%^&*-])',
+                                        errorText:
+                                            'Password must be atlist one special character')
+                                  ]),
+                                  decoration: InputDecoration(
+                                    hintText: 'Password',
+                                    labelText: 'Password',
+                                    prefixIcon: Icon(
+                                      Icons.key,
+                                      color: Colors.green,
+                                    ),
+                                    errorStyle: TextStyle(fontSize: 18.0),
+                                    border: OutlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.red),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(9.0))),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.fromLTRB(180, 0, 0, 0),
+                                child: Text('Forget Password!'),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(28.0),
+                                child: Container(
+                                  child: ElevatedButton(
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  Colors.green),
+                                          padding: MaterialStateProperty.all(
+                                              const EdgeInsets.all(20)),
+                                          textStyle: MaterialStateProperty.all(
+                                              const TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.white))),
+                                      onPressed: () {
+                                        if (formkey.currentState!.validate()) {
+                                          print('form submiitted');
+                                        }
+                                      },
+                                      child: const Text(
+                                        'Login',
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 22),
+                                      )),
+                                ),
+                              ),
+                              Center(
+                                child: Padding(
+                                  padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
+                                  child: Center(
+                                    child: Text(
+                                      'Or Sign In Using!',
+                                      style: TextStyle(
+                                          fontSize: 18, color: Colors.black),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                            height: 40,
+                                            width: 40,
+                                            child: Image.asset(
+                                              'assets/social.jpg',
+                                              fit: BoxFit.cover,
+                                            )),
+                                        Container(
+                                          height: 70,
+                                          width: 70,
+                                          child: Image.asset(
+                                            'assets/vishal.png',
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        Container(
+                                          height: 40,
+                                          width: 40,
+                                          child: Image.asset(
+                                            'assets/google.png',
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Center(
+                                child: Container(
+                                  padding: EdgeInsets.only(top: 50),
+                                  child: Text(
+                                    'SIGN UP!',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.lightBlue,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ]),
+                      )),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
       /*body: Center(
