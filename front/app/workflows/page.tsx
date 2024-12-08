@@ -84,6 +84,12 @@ export default function WorkflowsPage() {
     }
   }, [user, token, authLoading, router]);
 
+  const handleDelete = (id: number) => {
+    setWorkflows((prevWorkflows) =>
+      prevWorkflows.filter((workflow) => workflow.id !== id),
+    );
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8 flex items-center justify-between">
@@ -103,7 +109,7 @@ export default function WorkflowsPage() {
           {error}
         </div>
       ) : (
-        <WorkflowsBody workflows={workflows} />
+        <WorkflowsBody workflows={workflows} onDelete={handleDelete} />
       )}
     </div>
   );

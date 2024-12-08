@@ -4,8 +4,17 @@ import Card from "@/components/ui/Card";
 import CardContent from "@/components/ui/Card";
 import CardHeader from "@/components/ui/Card";
 import Text from "@/components/ui/Text";
-import { Mail, PlayCircle, Settings, ArrowRight, Ghost } from "lucide-react";
+import {
+  Mail,
+  PlayCircle,
+  Settings,
+  ArrowRight,
+  Ghost,
+  Trash2,
+} from "lucide-react";
 import Button from "@/components/ui/Button";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
 
 interface Workflow {
   id: number;
@@ -52,9 +61,45 @@ const getRandomGradient = () => {
 
 interface WorkflowsBodyProps {
   workflows: Workflow[];
+  onDelete?: (id: number) => void;
 }
 
-export default function WorkflowsBody({ workflows }: WorkflowsBodyProps) {
+export default function WorkflowsBody({
+  workflows,
+  onDelete,
+}: WorkflowsBodyProps) {
+  const { token } = useAuth();
+  const { showToast } = useToast();
+
+  const handleDelete = async (id: number) => {
+    if (!token) return;
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/workflow/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete workflow");
+      }
+
+      showToast("Workflow deleted successfully", "success");
+      onDelete?.(id);
+    } catch (error) {
+      console.error("Delete error:", error);
+      showToast(
+        error instanceof Error ? error.message : "Failed to delete workflow",
+        "error",
+      );
+    }
+  };
+
   if (workflows.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-gray-300 p-12 text-center">
@@ -76,18 +121,28 @@ export default function WorkflowsBody({ workflows }: WorkflowsBodyProps) {
           <CardHeader
             className={`bg-gradient-to-r ${getRandomGradient()} rounded-none border-0 to-white p-6`}
           >
-            <Text variant="h3" className="text-gray-800">
-              {workflow.name.length > 0
-                ? workflow.name.charAt(0).toUpperCase() + workflow.name.slice(1)
-                : "Untitled Area"}
-            </Text>
+            <div className="flex items-center justify-between">
+              <Text variant="h3" className="text-gray-800">
+                {workflow.name.length > 0
+                  ? workflow.name.charAt(0).toUpperCase() +
+                    workflow.name.slice(1)
+                  : "Untitled Area"}
+              </Text>
+              <button
+                onClick={() => handleDelete(workflow.id)}
+                className="rounded-full border-b-0 border-black p-2 text-gray-500 duration-200 hover:text-red-500 focus-visible:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+                title="Delete area"
+              >
+                <Trash2 className="h-5 w-5" />
+              </button>
+            </div>
           </CardHeader>
           <CardContent className="rounded-none p-6" border={false}>
             <div className="space-y-6">
               <div>
                 <Text variant="h4" className="mb-3 flex items-center gap-2">
                   <PlayCircle className="h-5 w-5 text-gray-500" />
-                  Triggers
+                  Actions
                 </Text>
                 <ul className="ml-4 space-y-2 rounded-lg bg-gray-100 p-2">
                   {workflow.actions.length > 0 ? (
@@ -109,7 +164,7 @@ export default function WorkflowsBody({ workflows }: WorkflowsBodyProps) {
                         color="red"
                         className="opacity-75"
                       >
-                        No triggers have been added yet
+                        No actions have been added yet
                       </Text>
                     </li>
                   )}

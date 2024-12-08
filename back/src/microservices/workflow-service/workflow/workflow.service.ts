@@ -124,4 +124,22 @@ export class WorkflowService {
       }),
     );
   }
+
+  /**
+   * Deletes a workflow by its ID
+   * @param id Workflow ID
+   */
+  async deleteWorkflow(id: string) {
+    const workflow = await this.prisma.workflows.findUnique({
+      where: { id },
+    });
+
+    if (!workflow) {
+      throw new NotFoundException(`Workflow with ID ${id} not found`);
+    }
+
+    await this.prisma.workflows.delete({
+      where: { id },
+    });
+  }
 }
