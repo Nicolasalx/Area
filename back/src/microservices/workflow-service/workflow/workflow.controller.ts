@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { WorkflowService } from './workflow.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { WorkflowDto } from '@common/dto/workflow.dto';
@@ -166,6 +166,43 @@ export class WorkflowController {
       return {
         message: 'Workflow successfully created.',
         data: workflow,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Deletes a workflow by its ID
+   * @param id Workflow ID
+   */
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete a workflow by ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Workflow successfully deleted.',
+    schema: {
+      example: {
+        message: 'Workflow successfully deleted.',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Workflow not found',
+    schema: {
+      example: {
+        message: 'Workflow not found',
+        error: 'Not Found',
+        statusCode: 404,
+      },
+    },
+  })
+  async deleteWorkflow(@Param('id') id: string) {
+    try {
+      await this.workflowService.deleteWorkflow(id);
+      return {
+        message: 'Workflow successfully deleted.',
       };
     } catch (error) {
       throw error;
