@@ -21,6 +21,7 @@ export class ActionService {
       createdAt: action.createdAt,
       serviceId: action.serviceId,
       service: action.service,
+      body: action.body,
     }));
   }
 }
