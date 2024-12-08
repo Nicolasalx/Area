@@ -50,8 +50,8 @@ export class GithubService {
           this.lastCheckTimestamp = Date.now();
         }
       }
-    } catch (_) {
-      console.error();
+    } catch {
+      return;
     }
   }
 }
