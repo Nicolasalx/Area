@@ -5,4 +5,3 @@ VALUES
     ('create_task', 'Create a task in Google Task when triggered.', '{"reaction": "create_task"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'google' LIMIT 1)),
     ('create_drive_element', 'Create an element (it can be a folder, forms, docs, spreadsheet) in Google Drive when triggered.', '{"reaction": "create_drive_element"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'google' LIMIT 1)),
     ('create_youtube_playlist', 'Create a Youtube Playlist when triggered.', '{"reaction": "create_youtube_playlist"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'google' LIMIT 1));
-    ('send_message', 'Send a message to discord channel when triggered.', '{"reaction": "send_message"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'discord' LIMIT 1));
