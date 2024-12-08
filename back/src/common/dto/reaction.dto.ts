@@ -39,8 +39,22 @@ export class ReactionDto {
   createdAt: Date;
 
   @ApiProperty({
-    description: 'The unique identifier of the associated service',
-    example: 5,
+    description: 'The ID of the service this reaction belongs to',
+    example: 1,
   })
   serviceId: number;
+
+  @ApiProperty({
+    description: 'The service details',
+    example: {
+      id: 1,
+      name: 'google',
+      description: 'Google services',
+    },
+  })
+  service: {
+    id: number;
+    name: string;
+    description: string;
+  };
 }

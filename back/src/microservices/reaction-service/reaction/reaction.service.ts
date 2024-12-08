@@ -11,7 +11,11 @@ export class ReactionService {
   ) {}
 
   async getReactions(): Promise<ReactionDto[]> {
-    const reactions = await this.prisma.reactions.findMany();
+    const reactions = await this.prisma.reactions.findMany({
+      include: {
+        service: true,
+      },
+    });
 
     return reactions.map((reaction) => ({
       id: reaction.id,
@@ -21,6 +25,7 @@ export class ReactionService {
       isActive: reaction.isActive,
       createdAt: reaction.createdAt,
       serviceId: reaction.serviceId,
+      service: reaction.service,
     }));
   }
 
