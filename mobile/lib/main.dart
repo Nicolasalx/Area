@@ -273,7 +273,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         Center(
                           child: Padding(
                             padding: const EdgeInsets.only(
-                                top: 20.0, left: 10, right: 10),
+                                top: 20.0, left: 10, right: 10, bottom: 20),
                             child: Container(
                               decoration: BoxDecoration(
                                 border: Border.all(
