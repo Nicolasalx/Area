@@ -28,14 +28,12 @@ export class DiscordService {
     }
   }
 
-  private async sendMessage(data: {
-    message: string;
-  }): Promise<string> {
+  private async sendMessage(data: { message: string }): Promise<string> {
     const { message } = data;
 
     try {
       await axios.post(this.webhook.url, {
-        content: message
+        content: message,
       });
     } catch (error) {
       console.error('Error sending message to Discord:', error);

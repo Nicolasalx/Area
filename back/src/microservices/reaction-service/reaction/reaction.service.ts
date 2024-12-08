@@ -4,9 +4,10 @@ import { DiscordService } from '../discord/discord.service';
 
 @Injectable()
 export class ReactionService {
-  constructor(private readonly googleService: GoogleService,
-    private readonly discordService: DiscordService
-  ) { }
+  constructor(
+    private readonly googleService: GoogleService,
+    private readonly discordService: DiscordService,
+  ) {}
 
   async handleReaction(
     service: string,
