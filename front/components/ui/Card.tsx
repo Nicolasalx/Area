@@ -23,7 +23,7 @@ const Card = ({
   className = "",
   onClick,
   as: Component = "div",
-  shadow = "small",
+  shadow = "none",
   border = true,
   hover = false,
 }: CardProps) => {

@@ -63,5 +63,14 @@ export default {
     // Text decorations
     "italic",
     "underline",
+
+    "from-blue-100",
+    "from-green-100",
+    "from-purple-100",
+    "from-pink-100",
+    "from-yellow-100",
+    "from-indigo-100",
+    "from-red-100",
+    "from-teal-100",
   ],
 } satisfies Config;
