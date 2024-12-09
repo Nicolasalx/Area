@@ -28,6 +28,7 @@ export class ReactionService {
       createdAt: reaction.createdAt,
       serviceId: reaction.serviceId,
       service: reaction.service,
+      body: reaction.body,
     }));
   }
 

@@ -14,11 +14,15 @@ export class WorkflowService {
     const workflows = await this.prisma.workflows.findMany({
       where: { userId: id },
       include: {
-        actions: {
-          include: { service: true },
+        activeActions: {
+          include: {
+            service: { select: { id: true, name: true, description: true } },
+          },
         },
-        reactions: {
-          include: { service: true },
+        activeReactions: {
+          include: {
+            service: { select: { id: true, name: true, description: true } },
+          },
         },
       },
     });
@@ -46,23 +50,29 @@ export class WorkflowService {
 
     await this.verifyServicesExist(actions, reactions);
 
-    const actionsToConnect = await this.findExistingActions(actions);
-    const reactionsToConnect = await this.findExistingReactions(reactions);
-
     const workflow = await this.prisma.workflows.create({
       data: {
         name,
         userId: sessionId,
-        actions: {
-          connect: actionsToConnect,
+        activeActions: {
+          create: actions.map((action) => ({
+            name: action.name,
+            description: `Action for service: ${action.serviceId}`,
+            data: action.data,
+            serviceId: action.serviceId,
+            isActive: true,
+          })),
         },
-        reactions: {
-          connect: reactionsToConnect,
+        activeReactions: {
+          create: reactions.map((reaction) => ({
+            name: reaction.name,
+            description: `Reaction for service: ${reaction.serviceId}`,
+            trigger: reaction.trigger,
+            data: reaction.data,
+            serviceId: reaction.serviceId,
+            isActive: true,
+          })),
         },
-      },
-      include: {
-        actions: { include: { service: true } },
-        reactions: { include: { service: true } },
       },
     });
 
@@ -82,6 +92,11 @@ export class WorkflowService {
           `Service with ID "${action.serviceId}" not found.`,
         );
       }
+      if (!action.data || Object.keys(action.data).length === 0) {
+        throw new NotFoundException(
+          `Data for action ${action.name} is required.`,
+        );
+      }
     }
 
     for (const reaction of reactions) {
@@ -94,6 +109,11 @@ export class WorkflowService {
       if (!service) {
         throw new NotFoundException(
           `Service with ID "${reaction.serviceId}" not found.`,
+        );
+      }
+      if (!reaction.data || Object.keys(reaction.data).length === 0) {
+        throw new NotFoundException(
+          `Data for action ${reaction.name} is required.`,
         );
       }
     }
@@ -171,8 +191,16 @@ export class WorkflowService {
       where: { id },
       data: { isActive },
       include: {
-        actions: { include: { service: true } },
-        reactions: { include: { service: true } },
+        activeActions: {
+          include: {
+            service: { select: { id: true, name: true, description: true } },
+          },
+        },
+        activeReactions: {
+          include: {
+            service: { select: { id: true, name: true, description: true } },
+          },
+        },
       },
     });
   }

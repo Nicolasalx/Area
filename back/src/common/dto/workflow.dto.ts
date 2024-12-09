@@ -1,4 +1,6 @@
 import { Action } from '@common/interfaces/action.interface';
+import { ActiveActions } from '@common/interfaces/activeActions.interface';
+import { ActiveReactions } from '@common/interfaces/activeReactions.interface';
 import { Reaction } from '@common/interfaces/reaction.interface';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -13,11 +15,11 @@ export class WorkflowDto {
     description: 'List of actions associated with the workflow',
     type: [Action],
   })
-  actions: Action[];
+  actions: ActiveActions[];
 
   @ApiProperty({
     description: 'List of reactions associated with the workflow',
     type: [Reaction],
   })
-  reactions: Reaction[];
+  reactions: ActiveReactions[];
 }

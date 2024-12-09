@@ -1,5 +1,3 @@
-INSERT INTO "Actions" ("name", "description", "isActive", "createdAt", "serviceId")
+INSERT INTO "Actions" ("name", "description", "isActive", "createdAt", "serviceId", "body")
 VALUES
-    ('receive_email', 'Triggered when an email is received.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'google' LIMIT 1)),
-    ('create_event', 'Triggered when an event is created.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'google' LIMIT 1)),
-    ('play_music', 'Triggered when music starts playing.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'spotify' LIMIT 1));
+    ('check_push_github', 'Action triggered when a user push on a repository.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'github' LIMIT 1), '[{"field": "repositoryOwner", "description": "Name of the repository owner "}, {"field": "repositoryName", "description": "Name of the repository"}]')
