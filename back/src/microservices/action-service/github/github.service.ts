@@ -50,8 +50,8 @@ export class GithubService {
           this.lastCheckTimestamp = Date.now();
         }
       }
-    } catch (error) {
-      console.warn('GitHub event fetch failed:', error.message);
+    } catch {
+      return;
     }
   }
 }
