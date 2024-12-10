@@ -295,7 +295,7 @@ export class AuthService {
           },
         });
         const getPrimaryEmailGithub = (data: [EmailGithubResponse]): string => {
-          for (let { email, primary } of data) {
+          for (const { email, primary } of data) {
             if (primary == true) {
               return email;
             }
