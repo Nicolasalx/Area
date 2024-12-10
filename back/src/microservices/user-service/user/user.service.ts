@@ -48,8 +48,11 @@ export class UserService {
       this.logger.debug(`Creating user with email: ${email}`);
 
       // Check if user already exists
-      const existingUser = await this.prisma.users.findUnique({
-        where: { email },
+      const existingUser = await this.prisma.users.findFirst({
+        where: {
+          email,
+          type
+        },
       });
 
       if (existingUser) {
@@ -111,36 +114,36 @@ export class UserService {
     }
   }
 
-  async deleteUser(email: string): Promise<{ message: string }> {
-    try {
-      this.logger.debug(`Attempting to delete user with email: ${email}`);
+//   async deleteUser(email: string): Promise<{ message: string }> {
+//     try {
+//       this.logger.debug(`Attempting to delete user with email: ${email}`);
 
-      const user = await this.prisma.users.findUnique({
-        where: { email },
-      });
+//       const user = await this.prisma.users.findUnique({
+//         where: { email },
+//       });
 
-      if (!user) {
-        throw new NotFoundException(`User with email ${email} not found`);
-      }
+//       if (!user) {
+//         throw new NotFoundException(`User with email ${email} not found`);
+//       }
 
-      await this.prisma.serviceTokens.deleteMany({
-        where: { userId: user.id },
-      });
+//       await this.prisma.serviceTokens.deleteMany({
+//         where: { userId: user.id },
+//       });
 
-      await this.prisma.users.delete({
-        where: { email: email },
-      });
+//       await this.prisma.users.delete({
+//         where: { email: email },
+//       });
 
-      this.logger.debug(`User with email ${email} successfully deleted`);
-      return { message: 'User successfully deleted' };
-    } catch (error) {
-      this.logger.error(`Error deleting user with email ${email}:`, error);
+//       this.logger.debug(`User with email ${email} successfully deleted`);
+//       return { message: 'User successfully deleted' };
+//     } catch (error) {
+//       this.logger.error(`Error deleting user with email ${email}:`, error);
 
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
+//       if (error instanceof NotFoundException) {
+//         throw error;
+//       }
 
-      throw new InternalServerErrorException('Could not delete user');
-    }
-  }
+//       throw new InternalServerErrorException('Could not delete user');
+//     }
+//   }
 }
