@@ -3,7 +3,7 @@ import { TriggerService } from './trigger.service';
 import { PrismaServiceModule } from '@prismaService/prisma-service.module';
 import { GithubService } from '../../action-service/github/github.service';
 import { ActionService } from '../../action-service/action/action.service';
-import { CronService } from 'src/microservices/action-service/cron/cron.service';
+import { CronService } from '../../action-service/cron/cron.service';
 
 describe('TriggerService', () => {
   let service: TriggerService;
