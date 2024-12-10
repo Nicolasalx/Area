@@ -9,7 +9,7 @@ import * as jwt from 'jsonwebtoken';
 export class ActionService {
   private jwtToken: string;
 
-  constructor(private prisma: PrismaService) {}
+  constructor(public prisma: PrismaService) {}
 
   /**
    * Updates the JWT token using the provided secret key and payload.

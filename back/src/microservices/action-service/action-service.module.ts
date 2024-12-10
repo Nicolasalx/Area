@@ -7,7 +7,7 @@ import { ReactionService } from '../reaction-service/reaction/reaction.service';
 import { GoogleService } from '../reaction-service/google/google.service';
 import { DiscordService } from '../reaction-service/discord/discord.service';
 import { SharedAuthModule } from '../../shared/auth/auth.module';
-import { CronService } from './cron/cron.service';
+import { TimerService } from './timer/timer.service';
 import { GoogleActionService } from './google/google.service';
 
 @Module({
@@ -19,7 +19,7 @@ import { GoogleActionService } from './google/google.service';
     GoogleService,
     GoogleActionService,
     DiscordService,
-    CronService,
+    TimerService,
   ],
   controllers: [ActionController],
 })
