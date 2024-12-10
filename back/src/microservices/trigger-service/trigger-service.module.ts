@@ -9,7 +9,13 @@ import { CronService } from '../action-service/cron/cron.service';
 
 @Module({
   imports: [PrismaServiceModule],
-  providers: [TriggerService, GithubService, ActionService, GoogleService, CronService],
+  providers: [
+    TriggerService,
+    GithubService,
+    ActionService,
+    GoogleService,
+    CronService,
+  ],
   controllers: [TriggerController],
 })
 export class TriggerServiceModule {}
