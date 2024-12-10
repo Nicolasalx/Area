@@ -14,8 +14,4 @@ export class TimerUtils {
     static createTargetDate(data: ActionDate): Date {
         return new Date(`${data.date}T${data.hour}:00`);
     }
-
-    static isTimeToExecute(targetDate: Date): boolean {
-        return new Date().getTime() >= targetDate.getTime();
-    }
 }

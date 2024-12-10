@@ -8,6 +8,10 @@ import { SchedulerRegistry } from '@nestjs/schedule';
 import { WORKFLOW_EVENTS } from 'src/shared/event/workflow.events';
 import { TimerUtils } from '@common/utils/timer.utils';
 import { WorkflowEventPayload } from '@common/interfaces/workflow-event.interface';
+import { CronService } from 'src/microservices/action-service/cron/cron.service';
+import { GoogleActionService } from 'src/microservices/action-service/google/google.service';
+import { CronUtils } from '@common/utils/cron.utils';
+import { CronJob } from 'cron';
 
 @Injectable()
 export class TriggerService implements OnModuleInit {
@@ -15,7 +19,9 @@ export class TriggerService implements OnModuleInit {
     private readonly prisma: PrismaService,
     private readonly githubService: GithubService,
     private readonly schedulerRegistry: SchedulerRegistry,
-    private readonly timerService: TimerService
+    private readonly timerService: TimerService,
+    private readonly cronService: CronService,
+    private readonly googleActionService: GoogleActionService,
   ) { }
 
   onModuleInit() {
@@ -47,35 +53,27 @@ export class TriggerService implements OnModuleInit {
       case 'check_push_github':
         await this.githubService.handleGithubPush(action, reaction);
         break;
-      // case 'daily_cron_action':
-      //   await this.cronService.handleDailyCronAction(action, reaction);
-      //   break;
-      // case 'weekly_cron_action':
-      //   await this.cronService.handleWeeklyCronAction(action, reaction);
-      //   break;
-      // case 'timer_scheduled_action':
-      //   await this.timerService.handleTimerAction(action, reaction);
-      //   break;
+      case 'receive_new_email':
+        await this.googleActionService.receiveNewEmail(action, reaction);
+        break;
+      case 'new_calendar_event':
+        await this.googleActionService.newCalendarEvent(action, reaction);
+        break;
+      case 'new_task':
+        await this.googleActionService.newTask(action, reaction);
+        break;
+      case 'new_playlist_youtube':
+        await this.googleActionService.newPlaylistYoutube(action, reaction);
+        break;
+      case 'new_drive_element':
+        await this.googleActionService.newDriveElement(action, reaction);
+        break;
       default:
         return;
     }
   }
 
-  @OnEvent(WORKFLOW_EVENTS.CREATED)
-  async handleWorkflowCreated(payload: WorkflowEventPayload) {
-    if (!payload || !payload.action) {
-      console.error('Invalid workflow event payload:', payload);
-      return;
-    }
-
-    const { action, reactions } = payload;
-
-    if (action.name === 'timer_scheduled_action') {
-      await this.scheduleTimer(action, reactions);
-    }
-  }
-
-  private async scheduleTimer(action: ActiveAction, reactions: ActiveReaction[]) {
+  private async registerTimerAction(action: ActiveAction, reactions: ActiveReaction[]) {
     if (!action.data) {
       console.error('Invalid action data:', action);
       return;
@@ -85,7 +83,7 @@ export class TriggerService implements OnModuleInit {
     const targetDate = TimerUtils.createTargetDate(actionDate);
     const jobId = `timer_${action.id}`;
 
-    const executeAction = async () => {
+    const executeReaction = async () => {
       try {
         await this.timerService.handleTimerAction(action, reactions);
       } finally {
@@ -101,7 +99,7 @@ export class TriggerService implements OnModuleInit {
 
     const timeout = targetDate.getTime() - new Date().getTime();
     if (timeout > 0) {
-      const timeoutRef = setTimeout(executeAction, timeout);
+      const timeoutRef = setTimeout(executeReaction, timeout);
       try {
         this.schedulerRegistry.addTimeout(jobId, timeoutRef);
         console.log(`Scheduled timer ${jobId} for ${targetDate}`);
@@ -111,6 +109,59 @@ export class TriggerService implements OnModuleInit {
       }
     } else {
       console.error(`Invalid date ${jobId}: target date is in the past`);
+    }
+  }
+  private async registerCronAction(action: ActiveAction, reactions: ActiveReaction[]) {
+    if (!action.data) {
+      console.error('Invalid cron action data:', action);
+      return;
+    }
+
+    const cronData = CronUtils.parseCronExpression(action.data);
+    const jobId = `cron_${action.id}`;
+
+    try {
+      const job = new CronJob(
+        cronData.patern,
+        async () => {
+          try {
+            await this.cronService.handleCronAction(reactions);
+          } catch (error) {
+            console.error(`Error executing cron action ${jobId}: ${error}`);
+          }
+        },
+        null,
+        true
+      );
+
+      this.schedulerRegistry.addCronJob(jobId, job);
+      console.log(`Scheduled cron job ${jobId} with pattern ${cronData.patern}`);
+
+    } catch (error) {
+      console.error(`Failed to schedule cron job ${jobId}: ${error.message}`);
+      if (this.schedulerRegistry.doesExist('cron', jobId)) {
+        this.schedulerRegistry.deleteCronJob(jobId);
+      }
+    }
+  }
+  @OnEvent(WORKFLOW_EVENTS.CREATED)
+  async handleWorkflowCreated(payload: WorkflowEventPayload) {
+    if (!payload || !payload.action) {
+      console.error('Invalid workflow event payload:', payload);
+      return;
+    }
+
+    const { action, reactions } = payload;
+
+    switch (action.name) {
+      case 'cron_action':
+        await this.registerCronAction(action, reactions);
+        break;
+      case 'timer_action':
+        await this.registerTimerAction(action, reactions);
+        break;
+      default:
+        return;
     }
   }
 }

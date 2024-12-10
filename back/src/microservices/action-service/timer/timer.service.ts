@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ActionService } from '../action/action.service';
 import { ActiveAction, ActiveReaction } from '@prisma/client';
-import { ActionDate } from '@common/interfaces/timer.interface';
 
 @Injectable()
 export class TimerService {

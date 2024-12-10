@@ -7,6 +7,8 @@ import { GoogleService } from '../reaction-service/google/google.service';
 import { ActionService } from '../action-service/action/action.service';
 import { TimerService } from '../action-service/timer/timer.service';
 import { ScheduleModule } from '@nestjs/schedule';
+import { GoogleActionService } from '../action-service/google/google.service';
+import { CronService } from '../action-service/cron/cron.service';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { ScheduleModule } from '@nestjs/schedule';
     ActionService,
     GoogleService,
     TimerService,
+    CronService,
+    GoogleActionService,
   ],
   controllers: [TriggerController],
 })

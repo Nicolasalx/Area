@@ -4,13 +4,20 @@ import { PrismaServiceModule } from '@prismaService/prisma-service.module';
 import { GithubService } from '../../action-service/github/github.service';
 import { ActionService } from '../../action-service/action/action.service';
 import { TimerService } from '../../action-service/timer/timer.service';
+import { GoogleActionService } from '../../action-service/google/google.service';
 
 describe('TriggerService', () => {
   let service: TriggerService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [TriggerService, GithubService, ActionService, TimerService],
+      providers: [
+        TriggerService,
+        GithubService,
+        ActionService,
+        TimerService,
+        GoogleActionService,
+      ],
       imports: [PrismaServiceModule],
     }).compile();
 

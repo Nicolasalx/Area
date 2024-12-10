@@ -129,11 +129,7 @@ export class WorkflowService {
           `Service with ID "${action.serviceId}" not found.`,
         );
       }
-      if (!action.data || Object.keys(action.data).length === 0) {
-        throw new NotFoundException(
-          `Data for action ${action.name} is required.`,
-        );
-      }
+      this.findExistingAction(action);
     }
 
     for (const reaction of reactions) {
@@ -148,48 +144,52 @@ export class WorkflowService {
           `Service with ID "${reaction.serviceId}" not found.`,
         );
       }
-      if (!reaction.data || Object.keys(reaction.data).length === 0) {
-        throw new NotFoundException(
-          `Data for action ${reaction.name} is required.`,
-        );
-      }
+      this.findExistingReaction(reaction);
     }
   }
 
-  private async findExistingActions(actions: any[]) {
-    return Promise.all(
-      actions.map(async (action) => {
-        const existingAction = await this.prisma.actions.findFirst({
-          where: {
-            AND: [{ name: action.name }, { serviceId: action.serviceId }],
-          },
-        });
-        if (!existingAction) {
-          throw new NotFoundException(
-            `Action "${action.name}" not found for the specified service.`,
-          );
-        }
-        return { id: existingAction.id };
-      }),
-    );
+  private async findExistingAction(action: any) {
+    const existingAction = await this.prisma.actions.findFirst({
+      where: {
+        AND: [{ name: action.name }, { serviceId: action.serviceId }],
+      },
+    });
+
+    if (!existingAction) {
+      throw new NotFoundException(
+        `Action "${action.name}" not found for the specified service.`,
+      );
+    }
+
+    if (!action.data) {
+      throw new NotFoundException(
+        `Data for action ${action.name} is required.`,
+      );
+    }
+
+    return { id: existingAction.id };
   }
 
-  private async findExistingReactions(reactions: any[]) {
-    return Promise.all(
-      reactions.map(async (reaction) => {
-        const existingReaction = await this.prisma.reactions.findFirst({
-          where: {
-            AND: [{ name: reaction.name }, { serviceId: reaction.serviceId }],
-          },
-        });
-        if (!existingReaction) {
-          throw new NotFoundException(
-            `Reaction "${reaction.name}" not found for the specified service.`,
-          );
-        }
-        return { id: existingReaction.id };
-      }),
-    );
+  private async findExistingReaction(reaction: any) {
+    const existingReaction = await this.prisma.reactions.findFirst({
+      where: {
+        AND: [{ name: reaction.name }, { serviceId: reaction.serviceId }],
+      },
+    });
+
+    if (!existingReaction) {
+      throw new NotFoundException(
+        `Reaction "${reaction.name}" not found for the specified service.`,
+      );
+    }
+
+    if (!reaction.data) {
+      throw new NotFoundException(
+        `Data for reaction ${reaction.name} is required.`,
+      );
+    }
+
+    return { id: existingReaction.id };
   }
 
   /**
@@ -215,23 +215,19 @@ export class WorkflowService {
       activeReactions: workflow.activeReactions,
     });
 
-    // Delete in a transaction to ensure all related records are deleted
     await this.prisma.$transaction(async (prisma) => {
-      // Delete related active actions
       await prisma.activeAction.deleteMany({
         where: {
           workflowId: id,
         },
       });
 
-      // Delete related active reactions
       await prisma.activeReaction.deleteMany({
         where: {
           workflowId: id,
         },
       });
 
-      // Finally, delete the workflow itself
       await prisma.workflows.delete({
         where: { id },
       });
