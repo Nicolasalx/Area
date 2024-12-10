@@ -12,7 +12,7 @@ export async function GET(request: Request) {
 
   // Get user info and token
   return axios
-    .get(`http://localhost:8080/auth/google/callback/?code=${code}`)
+    .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/google/callback/?code=${code}`)
     .then((res) => res.data)
     .then(async (data) => {
       const sessionToken = data.token;
