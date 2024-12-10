@@ -3,6 +3,7 @@ import { ActiveAction, ActiveReaction } from '@prisma/client';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { GithubService } from '../../action-service/github/github.service';
 import { CronService } from '../../action-service/cron/cron.service';
+import { GoogleActionService } from '../../action-service/google/google.service';
 
 @Injectable()
 export class TriggerService implements OnModuleInit {
@@ -10,6 +11,7 @@ export class TriggerService implements OnModuleInit {
     private readonly prisma: PrismaService,
     private readonly githubService: GithubService,
     private readonly cronService: CronService,
+    private readonly googleActionService: GoogleActionService,
   ) {}
 
   onModuleInit() {
@@ -49,6 +51,21 @@ export class TriggerService implements OnModuleInit {
         break;
       case 'timer_scheduled_action':
         await this.cronService.handleTimerAction(action, reaction);
+        break;
+      case 'receive_new_email':
+        await this.googleActionService.receiveNewEmail(action, reaction);
+        break;
+      case 'new_calendar_event':
+        await this.googleActionService.newCalendarEvent(action, reaction);
+        break;
+      case 'new_task':
+        await this.googleActionService.newTask(action, reaction);
+        break;
+      case 'new_playlist_youtube':
+        await this.googleActionService.newPlaylistYoutube(action, reaction);
+        break;
+      case 'new_drive_element':
+        await this.googleActionService.newDriveElement(action, reaction);
         break;
       default:
         return;
