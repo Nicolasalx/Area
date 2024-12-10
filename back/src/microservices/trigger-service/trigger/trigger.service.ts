@@ -44,13 +44,13 @@ export class TriggerService implements OnModuleInit {
         await this.githubService.handleGithubPush(action, reaction);
         break;
       case 'daily_cron_action':
-        await this.cronService.handleDailyCronAction(action, reaction);
+        await this.cronService.handleDailyCronAction(action);
         break;
       case 'weekly_cron_action':
-        await this.cronService.handleWeeklyCronAction(action, reaction);
+        await this.cronService.handleWeeklyCronAction(action);
         break;
       case 'timer_scheduled_action':
-        await this.cronService.handleTimerAction(action, reaction);
+        await this.cronService.handleTimerAction(action);
         break;
       case 'receive_new_email':
         await this.googleActionService.receiveNewEmail(action, reaction);
