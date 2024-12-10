@@ -31,7 +31,9 @@ export class TriggerService implements OnModuleInit {
       });
       workflows.forEach((workflow) => {
         const action = workflow.activeActions.at(0);
-        this.selectAction(action, workflow.activeReactions);
+        if (workflow.isActive) {
+          this.selectAction(action, workflow.activeReactions);
+        }
       });
     } catch (error) {
       console.error('Error fetching workflows:', error);
