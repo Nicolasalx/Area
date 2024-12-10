@@ -45,6 +45,12 @@ export class TriggerService implements OnModuleInit {
       case 'check_push_github':
         await this.githubService.handleGithubPush(action, reaction);
         break;
+      case 'check_new_branch':
+        await this.githubService.handleNewBranch(action, reaction);
+        break;
+      case 'check_new_pr':
+        await this.githubService.handleNewPullRequest(action, reaction);
+        break;
       case 'daily_cron_action':
         await this.cronService.handleDailyCronAction(action);
         break;
