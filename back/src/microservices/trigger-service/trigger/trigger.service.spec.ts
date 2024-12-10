@@ -4,13 +4,20 @@ import { PrismaServiceModule } from '@prismaService/prisma-service.module';
 import { GithubService } from '../../action-service/github/github.service';
 import { ActionService } from '../../action-service/action/action.service';
 import { CronService } from '../../action-service/cron/cron.service';
+import { GoogleActionService } from '../../action-service/google/google.service';
 
 describe('TriggerService', () => {
   let service: TriggerService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [TriggerService, GithubService, ActionService, CronService],
+      providers: [
+        TriggerService,
+        GithubService,
+        ActionService,
+        CronService,
+        GoogleActionService,
+      ],
       imports: [PrismaServiceModule],
     }).compile();
 

@@ -6,6 +6,7 @@ import { GithubService } from '../action-service/github/github.service';
 import { GoogleService } from '../reaction-service/google/google.service';
 import { ActionService } from '../action-service/action/action.service';
 import { CronService } from '../action-service/cron/cron.service';
+import { GoogleActionService } from '../action-service/google/google.service';
 
 @Module({
   imports: [PrismaServiceModule],
@@ -15,6 +16,7 @@ import { CronService } from '../action-service/cron/cron.service';
     ActionService,
     GoogleService,
     CronService,
+    GoogleActionService,
   ],
   controllers: [TriggerController],
 })
