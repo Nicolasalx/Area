@@ -51,7 +51,7 @@ export class UserService {
       const existingUser = await this.prisma.users.findFirst({
         where: {
           email,
-          type
+          type,
         },
       });
 
@@ -154,7 +154,9 @@ export class UserService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new InternalServerErrorException(`Could not delete user: ${error.message}`);
+      throw new InternalServerErrorException(
+        `Could not delete user: ${error.message}`,
+      );
     }
   }
 }

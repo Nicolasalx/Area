@@ -8,7 +8,11 @@ import {
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { UserService } from '@userService/user/user.service';
-import { EmailGithubResponse, UserGithubResponse, UserGoogleResponse } from '../../../common/interfaces/user/user';
+import {
+  EmailGithubResponse,
+  UserGithubResponse,
+  UserGoogleResponse,
+} from '../../../common/interfaces/user/user';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -203,10 +207,9 @@ export class AuthService {
         googleUser: googleUser,
         token: token,
       };
-      console.log('Response: ', response);
       return response;
     } catch (error) {
-      this.logger.log('ERROR getGoogleOAuth: ', error);
+      this.logger.error('ERROR getGoogleOAuth: ', error);
       throw new HttpException(
         {
           status: HttpStatus.FORBIDDEN,
@@ -228,17 +231,18 @@ export class AuthService {
       client_secret: process.env.GITHUB_CLIENT_SECRET!,
     };
     const config = {
-      headers : {
+      headers: {
         Accept: 'application/json',
-      }
-    }
+      },
+    };
     try {
-      console.log("values: ", values, config);
-      const response = await this.httpService.axiosRef.post(url, values, config);
-      console.log("access_token: ", response.data);
+      const response = await this.httpService.axiosRef.post(
+        url,
+        values,
+        config,
+      );
       return response.data;
     } catch (error) {
-      console.error('Failed to get Github OAuth tokens: ', error);
       this.logger.error('Failed to get Github OAuth tokens', error);
       throw new HttpException(
         {
@@ -256,27 +260,29 @@ export class AuthService {
   async getGithubUser(access_token: string) {
     const url = 'https://api.github.com/user';
     try {
-      const response = await this.httpService.axiosRef.request<UserGithubResponse>({
+      const response =
+        await this.httpService.axiosRef.request<UserGithubResponse>({
           url: url,
           headers: {
             Authorization: `Bearer ${access_token}`,
           },
         });
-      console.log("Response user Github: ", response.data);
       if (response.data.email == null) {
-        const emailResponse = await this.httpService.axiosRef.request<[EmailGithubResponse]>({
+        const emailResponse = await this.httpService.axiosRef.request<
+          [EmailGithubResponse]
+        >({
           url: 'https://api.github.com/user/emails',
           headers: {
             Authorization: `Bearer ${access_token}`,
           },
         });
-        const getPrimaryEmailGithub = (data: [EmailGithubResponse]) : string => {
-          for (let {email, primary} of data) {
+        const getPrimaryEmailGithub = (data: [EmailGithubResponse]): string => {
+          for (let { email, primary } of data) {
             if (primary == true) {
               return email;
             }
           }
-        }
+        };
         response.data.email = getPrimaryEmailGithub(emailResponse.data);
       }
       let user = await this.userService.getUserByServiceId(
@@ -292,12 +298,10 @@ export class AuthService {
           response.data.avatar_url,
         );
       }
-      console.log("User with Github: ", user);
       return {
         ...user,
       };
     } catch (error) {
-      console.error('ERROR getGithubUser: ', error);
       this.logger.error('ERROR getGithubUser', error);
       throw new HttpException(
         {
@@ -317,8 +321,6 @@ export class AuthService {
       // Get tokens from Github
       const responseTokens = await this.getGithubOAuthTokens(code);
 
-      console.log("1 ", responseTokens);
-      console.log("2 ", responseTokens.access_token);
       // Get user with tokens
       const githubUser = await this.getGithubUser(responseTokens.access_token);
 
@@ -332,10 +334,8 @@ export class AuthService {
         githubUser: githubUser,
         token: token,
       };
-      console.log('Response: ', response);
       return response;
     } catch (error) {
-      // console.error('ERROR getGithubOAuth: ', error);
       this.logger.error('ERROR getGithubOAuth', error);
       throw new HttpException(
         {
