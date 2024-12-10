@@ -6,10 +6,7 @@ export async function GET() {
   const params = {
     client_id: process.env.GITHUB_CLIENT_ID!,
     redirect_uri: process.env.GITHUB_REDIRECT_URI!,
-    scope: [
-      "read:user",
-      "user:email",
-    ].join(" "),
+    scope: ["read:user", "user:email"].join(" "),
   };
 
   githubAuthUrl.search = new URLSearchParams(params).toString();
