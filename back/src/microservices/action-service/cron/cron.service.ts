@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ActionService } from '../action/action.service';
-import { ActiveAction, ActiveReaction } from '@prisma/client';
+import { ActiveAction } from '@prisma/client';
 
 interface DailyCronData {
   hour: string;
