@@ -20,7 +20,7 @@ describe('TriggerService', () => {
         TimerService,
         GoogleActionService,
         SchedulerRegistry,
-        CronService
+        CronService,
       ],
       imports: [PrismaServiceModule],
     }).compile();
