@@ -51,6 +51,20 @@ export class WorkflowController {
                 isActive: true,
                 createdAt: '2024-12-07T22:28:57.900Z',
               },
+              data: [
+                {
+                  name: 'from',
+                  description: "The sender's email address of the request",
+                },
+                {
+                  name: 'subject',
+                  description: 'The subject of the email sent in the request',
+                },
+                {
+                  name: 'description',
+                  description: 'The plain text body of the email',
+                },
+              ],
             },
           ],
           reactions: [
@@ -70,6 +84,28 @@ export class WorkflowController {
                 isActive: true,
                 createdAt: '2024-12-07T22:28:57.900Z',
               },
+              data: [
+                {
+                  name: 'from',
+                  description: "The sender's email address of the request",
+                },
+                {
+                  name: 'to',
+                  description: "The recipient's email address of the request",
+                },
+                {
+                  name: 'subject',
+                  description: 'The subject of the email sent in the request',
+                },
+                {
+                  name: 'text',
+                  description: 'The plain text body of the email',
+                },
+                {
+                  name: 'html',
+                  description: 'The HTML formatted body of the email',
+                },
+              ],
             },
           ],
         },

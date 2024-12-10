@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { GoogleService } from '../google/google.service';
+import { DiscordService } from '../discord/discord.service';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { ReactionDto } from '@common/dto/reaction.dto';
 
@@ -7,6 +8,7 @@ import { ReactionDto } from '@common/dto/reaction.dto';
 export class ReactionService {
   constructor(
     private readonly googleService: GoogleService,
+    private readonly discordService: DiscordService,
     private readonly prisma: PrismaService,
   ) {}
 
@@ -26,6 +28,7 @@ export class ReactionService {
       createdAt: reaction.createdAt,
       serviceId: reaction.serviceId,
       service: reaction.service,
+      body: reaction.body,
     }));
   }
 
@@ -39,6 +42,8 @@ export class ReactionService {
     switch (service.toLowerCase()) {
       case 'google':
         return await this.googleService.handleAction(reaction, data);
+      case 'discord':
+        return await this.discordService.handleAction(reaction, data);
       default:
         throw new Error('Service not recognized');
     }
