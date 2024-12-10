@@ -37,11 +37,29 @@ describe('AuthService', () => {
             serviceTokens: {
               deleteMany: jest.fn(),
             },
+            activeAction: {
+              deleteMany: jest.fn(),
+            },
+            activeReaction: {
+              deleteMany: jest.fn(),
+            },
             $transaction: jest.fn((callback) =>
               callback({
-                workflows: { deleteMany: jest.fn() },
-                serviceTokens: { deleteMany: jest.fn() },
-                users: { delete: jest.fn() },
+                activeAction: {
+                  deleteMany: jest.fn().mockResolvedValue({ count: 1 }),
+                },
+                activeReaction: {
+                  deleteMany: jest.fn().mockResolvedValue({ count: 1 }),
+                },
+                workflows: {
+                  deleteMany: jest.fn().mockResolvedValue({ count: 1 }),
+                },
+                serviceTokens: {
+                  deleteMany: jest.fn().mockResolvedValue({ count: 1 }),
+                },
+                users: {
+                  delete: jest.fn().mockResolvedValue({ id: 'user-id' }),
+                },
               }),
             ),
           },
@@ -137,15 +155,6 @@ describe('AuthService', () => {
       };
 
       (prismaService.users.findUnique as jest.Mock).mockResolvedValue(mockUser);
-      (prismaService.$transaction as jest.Mock).mockImplementation((callback) =>
-        callback({
-          workflows: { deleteMany: jest.fn().mockResolvedValue({ count: 1 }) },
-          serviceTokens: {
-            deleteMany: jest.fn().mockResolvedValue({ count: 1 }),
-          },
-          users: { delete: jest.fn().mockResolvedValue(mockUser) },
-        }),
-      );
 
       const result = await service.deleteUser(userId);
 
