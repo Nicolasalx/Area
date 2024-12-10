@@ -1,5 +1,28 @@
+import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:http/http.dart' as http;
+
+class Auth {
+  static Future<void> login(String email, String passwd) async {
+    try {
+      final response = await http.post(
+        Uri.parse('${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/auth/login'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({'email': email, 'password': passwd}),
+      );
+
+      if (response.statusCode == 200) {
+        print("Connected");
+      }
+    } catch (error) {
+      return;
+    }
+  }
+}
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,6 +35,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final formkey = GlobalKey<FormState>();
+    final email = TextEditingController();
+    final passwd = TextEditingController();
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -71,6 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                         Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: TextFormField(
+                            controller: email,
                             validator: MultiValidator([
                               RequiredValidator(errorText: 'Email is required'),
                               EmailValidator(
@@ -105,6 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                         Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: TextFormField(
+                            controller: passwd,
                             decoration: const InputDecoration(
                               hintText: 'Enter your password',
                               prefixIcon: Icon(
@@ -141,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 onPressed: () {
                                   if (formkey.currentState!.validate()) {
-                                    print('form submited');
+                                    Auth.login(email.text, passwd.text);
                                   }
                                 },
                                 child: const Text(
