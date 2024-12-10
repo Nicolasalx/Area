@@ -130,7 +130,7 @@ export class UserController {
     return this.userService.getUserById(id);
   }
 
-  @ApiOperation({ summary: 'Delete user by email' })
+  @ApiOperation({ summary: 'Delete user by id' })
   @ApiResponse({ status: 200, description: 'User successfully deleted' })
   @ApiResponse({
     status: 401,
@@ -142,9 +142,9 @@ export class UserController {
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Delete(':email')
-  async deleteUser(@Param('email') email: string) {
-    this.logger.debug(`Deleting user with email: ${email}`);
-    return this.userService.deleteUser(email);
+  @Delete(':id')
+  async deleteUser(@Param('id') id: string) {
+    this.logger.debug(`Deleting user with id: ${id}`);
+    return this.userService.deleteUser(id);
   }
 }

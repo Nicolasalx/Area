@@ -48,8 +48,11 @@ export class UserService {
       this.logger.debug(`Creating user with email: ${email}`);
 
       // Check if user already exists
-      const existingUser = await this.prisma.users.findUnique({
-        where: { email },
+      const existingUser = await this.prisma.users.findFirst({
+        where: {
+          email,
+          type,
+        },
       });
 
       if (existingUser) {
@@ -111,36 +114,65 @@ export class UserService {
     }
   }
 
-  async deleteUser(email: string): Promise<{ message: string }> {
+  async deleteUser(id: string): Promise<{ message: string }> {
     try {
-      this.logger.debug(`Attempting to delete user with email: ${email}`);
+      this.logger.debug(`Attempting to delete user with id: ${id}`);
 
       const user = await this.prisma.users.findUnique({
-        where: { email },
+        where: { id },
       });
 
       if (!user) {
-        throw new NotFoundException(`User with email ${email} not found`);
+        throw new NotFoundException(`User with id ${id} not found`);
       }
 
-      await this.prisma.serviceTokens.deleteMany({
-        where: { userId: user.id },
+      await this.prisma.$transaction(async (tx) => {
+        await tx.activeAction.deleteMany({
+          where: {
+            workflow: {
+              userId: id,
+            },
+          },
+        });
+
+        await tx.activeReaction.deleteMany({
+          where: {
+            workflow: {
+              userId: id,
+            },
+          },
+        });
+
+        await tx.workflows.deleteMany({
+          where: { userId: id },
+        });
+
+        await tx.serviceTokens.deleteMany({
+          where: { userId: id },
+        });
+
+        await tx.users.delete({
+          where: { id },
+        });
       });
 
-      await this.prisma.users.delete({
-        where: { email: email },
-      });
-
-      this.logger.debug(`User with email ${email} successfully deleted`);
+      this.logger.debug(`User with id ${id} successfully deleted`);
       return { message: 'User successfully deleted' };
     } catch (error) {
-      this.logger.error(`Error deleting user with email ${email}:`, error);
+      this.logger.error(`Error deleting user with id ${id}:`, error);
 
+      if (error.code === 'P2003') {
+        throw new Error(
+          'Cannot delete user due to existing references. Error: ' +
+            error.message,
+        );
+      }
       if (error instanceof NotFoundException) {
         throw error;
       }
-
-      throw new InternalServerErrorException('Could not delete user');
+      throw new InternalServerErrorException(
+        `Could not delete user: ${error.message}`,
+      );
     }
   }
 }

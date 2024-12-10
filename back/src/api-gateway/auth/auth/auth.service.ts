@@ -8,10 +8,15 @@ import {
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { UserService } from '@userService/user/user.service';
-import { UserGoogleResponse } from '../../../common/interfaces/user/user';
+import {
+  EmailGithubResponse,
+  UserGithubResponse,
+  UserGoogleResponse,
+} from '../../../common/interfaces/user/user';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { ConnectionType } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -25,8 +30,11 @@ export class AuthService {
   ) {}
 
   async login(email: string, password: string) {
-    const user = await this.prisma.users.findUnique({
-      where: { email },
+    const user = await this.prisma.users.findFirst({
+      where: {
+        email,
+        type: ConnectionType.CLASSIC,
+      },
     });
 
     if (!user) {
@@ -130,6 +138,7 @@ export class AuthService {
       throw new Error(`Failed to delete user: ${error.message}`);
     }
   }
+
   async getGoogleOAuthTokens(code: string) {
     const url = 'https://oauth2.googleapis.com/token';
     const values = {
@@ -182,7 +191,6 @@ export class AuthService {
       }
       return {
         ...user,
-        picture: response.data.picture,
       };
     } catch (error) {
       this.logger.error('ERROR getGoogleUser: ', error);
@@ -217,14 +225,140 @@ export class AuthService {
         googleUser: googleUser,
         token: token,
       };
-      console.log('Response: ', response);
       return response;
     } catch (error) {
-      this.logger.log('ERROR getGoogleOAuth: ', error);
+      this.logger.error('ERROR getGoogleOAuth: ', error);
       throw new HttpException(
         {
           status: HttpStatus.FORBIDDEN,
           error: 'Failed to get Google OAuth',
+        },
+        HttpStatus.FORBIDDEN,
+        {
+          cause: error,
+        },
+      );
+    }
+  }
+
+  async getGithubOAuthTokens(code: string) {
+    const url = 'https://github.com/login/oauth/access_token';
+    const values = {
+      code: code,
+      client_id: process.env.GITHUB_CLIENT_ID!,
+      client_secret: process.env.GITHUB_CLIENT_SECRET!,
+    };
+    const config = {
+      headers: {
+        Accept: 'application/json',
+      },
+    };
+    try {
+      const response = await this.httpService.axiosRef.post(
+        url,
+        values,
+        config,
+      );
+      return response.data;
+    } catch (error) {
+      this.logger.error('Failed to get Github OAuth tokens', error);
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Failed to get Github OAuth tokens',
+        },
+        HttpStatus.FORBIDDEN,
+        {
+          cause: error,
+        },
+      );
+    }
+  }
+
+  async getGithubUser(access_token: string) {
+    const url = 'https://api.github.com/user';
+    try {
+      const response =
+        await this.httpService.axiosRef.request<UserGithubResponse>({
+          url: url,
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        });
+      if (response.data.email == null) {
+        const emailResponse = await this.httpService.axiosRef.request<
+          [EmailGithubResponse]
+        >({
+          url: 'https://api.github.com/user/emails',
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        });
+        const getPrimaryEmailGithub = (data: [EmailGithubResponse]): string => {
+          for (const { email, primary } of data) {
+            if (primary == true) {
+              return email;
+            }
+          }
+        };
+        response.data.email = getPrimaryEmailGithub(emailResponse.data);
+      }
+      let user = await this.userService.getUserByServiceId(
+        'GITHUB',
+        response.data.email,
+      );
+      if (user == null) {
+        user = await this.userService.createUser(
+          response.data.login,
+          response.data.email,
+          access_token,
+          'GITHUB',
+          response.data.avatar_url,
+        );
+      }
+      return {
+        ...user,
+      };
+    } catch (error) {
+      this.logger.error('ERROR getGithubUser', error);
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Failed to get Github user',
+        },
+        HttpStatus.FORBIDDEN,
+        {
+          cause: error,
+        },
+      );
+    }
+  }
+
+  async getGithubOAuth(code: string) {
+    try {
+      // Get tokens from Github
+      const responseTokens = await this.getGithubOAuthTokens(code);
+
+      // Get user with tokens
+      const githubUser = await this.getGithubUser(responseTokens.access_token);
+
+      const token = this.jwtService.sign({
+        sub: githubUser.id,
+        email: githubUser.email,
+      });
+
+      // Return JSON data to the opener window
+      const response = {
+        githubUser: githubUser,
+        token: token,
+      };
+      return response;
+    } catch (error) {
+      this.logger.error('ERROR getGithubOAuth', error);
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Failed to get Github OAuth',
         },
         HttpStatus.FORBIDDEN,
         {
