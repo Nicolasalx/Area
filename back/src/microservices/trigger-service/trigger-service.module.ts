@@ -5,16 +5,20 @@ import { PrismaServiceModule } from '@prismaService/prisma-service.module';
 import { GithubService } from '../action-service/github/github.service';
 import { GoogleService } from '../reaction-service/google/google.service';
 import { ActionService } from '../action-service/action/action.service';
-import { CronService } from '../action-service/cron/cron.service';
+import { TimerService } from '../action-service/timer/timer.service';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
-  imports: [PrismaServiceModule],
+  imports: [
+    PrismaServiceModule,
+    ScheduleModule.forRoot()
+  ],
   providers: [
     TriggerService,
     GithubService,
     ActionService,
     GoogleService,
-    CronService,
+    TimerService,
   ],
   controllers: [TriggerController],
 })

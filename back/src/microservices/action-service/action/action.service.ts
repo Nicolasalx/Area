@@ -6,7 +6,7 @@ import axios from 'axios';
 
 @Injectable()
 export class ActionService {
-  constructor(private prisma: PrismaService) {}
+  constructor(public prisma: PrismaService) {}
 
   async getActions(): Promise<ActionDto[]> {
     const actions = await this.prisma.actions.findMany({
