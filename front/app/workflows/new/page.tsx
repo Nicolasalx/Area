@@ -12,6 +12,9 @@ import TriggerList from "./components/TriggerList";
 import ReactionList from "./components/ReactionList";
 import NameForm from "./components/NameForm";
 import ProgressIndicator from "./components/ProgressIndicator";
+import DataForm from "./components/DataForm";
+import api from "@/lib/api";
+import Loading from "./loading";
 
 interface Service {
   id: number;
@@ -25,6 +28,12 @@ interface Action {
   description: string;
   serviceId: number;
   service?: Service;
+  body?: Array<{
+    name: string;
+    description: string;
+    required?: boolean;
+    type?: string;
+  }>;
 }
 
 interface Reaction {
@@ -33,21 +42,29 @@ interface Reaction {
   description: string;
   serviceId: number;
   service?: Service;
+  body?: Array<{
+    name: string;
+    description: string;
+    required?: boolean;
+    type?: string;
+  }>;
 }
 
 type Step =
   | "trigger-service"
   | "trigger"
+  | "trigger-data"
   | "reaction-service"
   | "reaction"
+  | "reaction-data"
   | "name";
 
 export default function NewWorkflowPage() {
   const router = useRouter();
-  const { user, token } = useAuth();
+  const { user } = useAuth();
   const { showToast } = useToast();
   const [name, setName] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [availableActions, setAvailableActions] = useState<Action[]>([]);
   const [availableReactions, setAvailableReactions] = useState<Reaction[]>([]);
   const [selectedAction, setSelectedAction] = useState<Action | null>(null);
@@ -56,6 +73,9 @@ export default function NewWorkflowPage() {
   );
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [currentStep, setCurrentStep] = useState<Step>("trigger-service");
+  const [actionData, setActionData] = useState<Record<string, string>>({});
+  const [reactionData, setReactionData] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
 
   const serviceMap = new Map<number, Service>();
   const actionsByService = new Map<number, Action[]>();
@@ -82,87 +102,78 @@ export default function NewWorkflowPage() {
 
   useEffect(() => {
     const fetchServices = async () => {
-      if (!token) return;
-
       try {
-        const actionsResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/actions`,
-          {
-            headers: {
-              Authorization: token,
-            },
-          },
-        );
-        if (!actionsResponse.ok) throw new Error("Failed to fetch actions");
-        const actionsData = await actionsResponse.json();
-        console.log("Actions:", actionsData);
-        setAvailableActions(actionsData);
+        const [actionsResponse, reactionsResponse] = await Promise.all([
+          api.get("/actions"),
+          api.get("/reactions"),
+        ]);
 
-        const reactionsResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/reactions`,
-          {
-            headers: {
-              Authorization: token,
-            },
-          },
-        );
-        if (!reactionsResponse.ok) throw new Error("Failed to fetch reactions");
-        const reactionsData = await reactionsResponse.json();
-        console.log("Reactions:", reactionsData);
-        setAvailableReactions(reactionsData);
+        console.log("Actions:", actionsResponse.data);
+        setAvailableActions(actionsResponse.data);
+
+        console.log("Reactions:", reactionsResponse.data);
+        setAvailableReactions(reactionsResponse.data);
       } catch (error) {
         console.error("Error fetching services:", error);
         showToast("Failed to load available services", "error");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchServices();
-  }, [token, showToast]);
-
-  const handleNext = () => {
-    switch (currentStep) {
-      case "trigger-service":
-        if (selectedService) {
-          setCurrentStep("trigger");
-        }
-        break;
-      case "trigger":
-        if (selectedAction) {
-          setSelectedService(null);
-          setCurrentStep("reaction-service");
-        }
-        break;
-      case "reaction-service":
-        if (selectedService) {
-          setCurrentStep("reaction");
-        }
-        break;
-      case "reaction":
-        if (selectedReaction) {
-          setCurrentStep("name");
-        }
-        break;
-    }
-  };
+  }, [showToast]);
 
   const handleBack = () => {
     switch (currentStep) {
       case "trigger":
-        setSelectedAction(null);
         setCurrentStep("trigger-service");
+        setSelectedAction(null);
+        break;
+      case "trigger-data":
+        setCurrentStep("trigger");
+        setActionData({});
         break;
       case "reaction-service":
-        setCurrentStep("trigger");
+        setCurrentStep("trigger-data");
+        setSelectedService(null);
         break;
       case "reaction":
-        setSelectedReaction(null);
         setCurrentStep("reaction-service");
+        setSelectedReaction(null);
+        break;
+      case "reaction-data":
+        setCurrentStep("reaction");
+        setReactionData({});
         break;
       case "name":
+        setCurrentStep("reaction-data");
+        setName("");
+        break;
+    }
+  };
+
+  const handleNext = () => {
+    switch (currentStep) {
+      case "trigger-service":
+        setCurrentStep("trigger");
+        break;
+      case "trigger":
+        setCurrentStep("trigger-data");
+        break;
+      case "trigger-data":
+        setCurrentStep("reaction-service");
+        setSelectedService(null);
+        break;
+      case "reaction-service":
         setCurrentStep("reaction");
         break;
-      default:
-        router.back();
+      case "reaction":
+        setCurrentStep("reaction-data");
+        break;
+      case "reaction-data":
+        setCurrentStep("name");
+        break;
     }
   };
 
@@ -172,10 +183,14 @@ export default function NewWorkflowPage() {
         return "Select a Service for the Action";
       case "trigger":
         return `Select an Action from ${selectedService?.name}`;
+      case "trigger-data":
+        return `Configure ${selectedAction?.name} Action`;
       case "reaction-service":
         return "Select a Service for the Reaction";
       case "reaction":
         return `Select a Reaction from ${selectedService?.name}`;
+      case "reaction-data":
+        return `Configure ${selectedReaction?.name} Reaction`;
       case "name":
         return "Name Your Area";
     }
@@ -185,9 +200,11 @@ export default function NewWorkflowPage() {
     switch (currentStep) {
       case "trigger-service":
       case "trigger":
+      case "trigger-data":
         return "trigger";
       case "reaction-service":
       case "reaction":
+      case "reaction-data":
         return "reaction";
       case "name":
         return "name";
@@ -195,7 +212,7 @@ export default function NewWorkflowPage() {
   };
 
   const handleSubmit = async () => {
-    if (!user?.id || !token) return;
+    if (!user?.id) return;
 
     if (!name.trim()) {
       showToast("Please enter a name for your workflow", "error");
@@ -217,7 +234,7 @@ export default function NewWorkflowPage() {
       return;
     }
 
-    setLoading(true);
+    setSubmitting(true);
 
     try {
       const payload = {
@@ -225,48 +242,27 @@ export default function NewWorkflowPage() {
         sessionId: user.id,
         actions: [
           {
-            id: selectedAction.id,
             name: selectedAction.name,
             serviceId: selectedAction.service.id,
+            data: actionData,
+            isActive: true,
           },
         ],
         reactions: [
           {
-            id: selectedReaction.id,
             name: selectedReaction.name,
             serviceId: selectedReaction.service.id,
+            data: reactionData,
+            isActive: true,
+            trigger: { reaction: selectedReaction.name },
           },
         ],
       };
 
       console.log("Creating workflow with payload:", payload);
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/workflow`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token,
-          },
-          body: JSON.stringify(payload),
-        },
-      );
-
-      if (!response.ok) {
-        const errorData = await response.text();
-        console.error("Workflow creation failed:", {
-          status: response.status,
-          statusText: response.statusText,
-          data: errorData,
-        });
-        throw new Error(
-          `Failed to create workflow: ${response.status} ${response.statusText}\n${errorData}`,
-        );
-      }
-
-      const data = await response.json();
-      console.log("Workflow created successfully:", data);
+      const response = await api.post("/workflow", payload);
+      console.log("Workflow created successfully:", response.data);
 
       showToast("Workflow created successfully", "success");
       router.push("/workflows");
@@ -277,7 +273,7 @@ export default function NewWorkflowPage() {
         "error",
       );
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
@@ -287,10 +283,90 @@ export default function NewWorkflowPage() {
     { key: "name", label: "Name" },
   ];
 
+  const renderStep = () => {
+    switch (currentStep) {
+      case "trigger-service":
+        return (
+          <ServiceList
+            services={Array.from(serviceMap.values())}
+            selectedService={selectedService}
+            onSelect={setSelectedService}
+            forTrigger={true}
+            actionsByService={actionsByService}
+          />
+        );
+      case "trigger":
+        return (
+          <TriggerList
+            triggers={actionsByService.get(selectedService?.id ?? -1) ?? []}
+            selectedTrigger={selectedAction}
+            onSelect={setSelectedAction}
+          />
+        );
+      case "trigger-data":
+        return (
+          <DataForm
+            title={`Configure ${selectedAction?.name}`}
+            fields={selectedAction?.body ?? []}
+            prefix="action_"
+            onSubmit={(data) => {
+              setActionData(data);
+              handleNext();
+            }}
+            onBack={handleBack}
+          />
+        );
+      case "reaction-service":
+        return (
+          <ServiceList
+            services={Array.from(serviceMap.values())}
+            selectedService={selectedService}
+            onSelect={setSelectedService}
+            forTrigger={false}
+            reactionsByService={reactionsByService}
+          />
+        );
+      case "reaction":
+        return (
+          <ReactionList
+            reactions={reactionsByService.get(selectedService?.id ?? -1) ?? []}
+            selectedReaction={selectedReaction}
+            onSelect={setSelectedReaction}
+          />
+        );
+      case "reaction-data":
+        return (
+          <DataForm
+            title={`Configure ${selectedReaction?.name}`}
+            fields={selectedReaction?.body ?? []}
+            prefix="reaction_"
+            onSubmit={(data) => {
+              setReactionData(data);
+              handleNext();
+            }}
+            onBack={handleBack}
+          />
+        );
+      case "name":
+        return (
+          <NameForm
+            value={name}
+            onChange={setName}
+            selectedAction={selectedAction}
+            selectedReaction={selectedReaction}
+          />
+        );
+    }
+  };
+
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <div className="flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-gray-50">
+      {/* Fixed Header */}
       <div className="container mx-auto flex-none p-4">
-        {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Text variant="h2" className="mb-2">
@@ -298,7 +374,6 @@ export default function NewWorkflowPage() {
             </Text>
           </div>
 
-          {/* Progress Indicator */}
           <ProgressIndicator
             steps={progressSteps}
             currentStep={getProgressStep()}
@@ -312,70 +387,27 @@ export default function NewWorkflowPage() {
 
       {/* Scrollable Content */}
       <div className="flex-1 overflow-auto">
-        <div className="container mx-auto p-4">
-          {currentStep === "trigger-service" && (
-            <ServiceList
-              services={Array.from(serviceMap.values()).filter(
-                (service) => actionsByService.get(service.id)?.length ?? 0 > 0,
-              )}
-              selectedService={selectedService}
-              onSelect={setSelectedService}
-              forTrigger={true}
-              actionsByService={actionsByService}
-            />
-          )}
-
-          {currentStep === "trigger" && selectedService && (
-            <TriggerList
-              triggers={actionsByService.get(selectedService.id) || []}
-              selectedTrigger={selectedAction}
-              onSelect={setSelectedAction}
-            />
-          )}
-
-          {currentStep === "reaction-service" && (
-            <ServiceList
-              services={Array.from(serviceMap.values()).filter(
-                (service) =>
-                  reactionsByService.get(service.id)?.length ?? 0 > 0,
-              )}
-              selectedService={selectedService}
-              onSelect={setSelectedService}
-              forTrigger={false}
-              reactionsByService={reactionsByService}
-            />
-          )}
-
-          {currentStep === "reaction" && selectedService && (
-            <ReactionList
-              reactions={reactionsByService.get(selectedService.id) || []}
-              selectedReaction={selectedReaction}
-              onSelect={setSelectedReaction}
-            />
-          )}
-
-          {currentStep === "name" && (
-            <NameForm
-              name={name}
-              onNameChange={setName}
-              selectedAction={selectedAction}
-              selectedReaction={selectedReaction}
-            />
-          )}
-        </div>
+        <div className="container mx-auto p-4">{renderStep()}</div>
       </div>
 
-      {/* Navigation - Fixed at bottom */}
+      {/* Fixed Footer */}
       <div className="flex-none border-t border-gray-100 bg-white p-4">
         <div className="container mx-auto flex items-center justify-between px-8">
-          <Button
-            onClick={handleBack}
-            className="bg-gray-100 text-gray-700 hover:bg-gray-200"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
-          </Button>
-          {currentStep !== "name" ? (
+          {currentStep !== "trigger-service" &&
+            currentStep !== "trigger-data" &&
+            currentStep !== "reaction-data" && (
+              <Button
+                onClick={handleBack}
+                className="bg-gray-100 text-gray-700 hover:bg-gray-200"
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back
+              </Button>
+            )}
+
+          {currentStep !== "name" &&
+          currentStep !== "trigger-data" &&
+          currentStep !== "reaction-data" ? (
             <Button
               onClick={handleNext}
               disabled={
@@ -393,13 +425,13 @@ export default function NewWorkflowPage() {
               Next
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
-          ) : (
+          ) : currentStep === "name" ? (
             <Button
               onClick={handleSubmit}
-              disabled={loading || !name.trim()}
+              disabled={submitting || !name.trim()}
               className="bg-black text-white hover:bg-gray-800 disabled:bg-gray-200"
             >
-              {loading ? (
+              {submitting ? (
                 <>
                   <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
                   Creating...
@@ -411,7 +443,7 @@ export default function NewWorkflowPage() {
                 </>
               )}
             </Button>
-          )}
+          ) : null}
         </div>
       </div>
     </div>

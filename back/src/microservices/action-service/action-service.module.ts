@@ -6,9 +6,10 @@ import { GithubService } from './github/github.service';
 import { ReactionService } from '../reaction-service/reaction/reaction.service';
 import { GoogleService } from '../reaction-service/google/google.service';
 import { DiscordService } from '../reaction-service/discord/discord.service';
+import { SharedAuthModule } from '../../shared/auth/auth.module';
 
 @Module({
-  imports: [PrismaServiceModule],
+  imports: [PrismaServiceModule, SharedAuthModule],
   providers: [
     ActionService,
     GithubService,

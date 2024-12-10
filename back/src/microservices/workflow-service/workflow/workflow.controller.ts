@@ -6,12 +6,22 @@ import {
   Param,
   Post,
   Patch,
+  UseGuards,
+  NotFoundException,
 } from '@nestjs/common';
 import { WorkflowService } from './workflow.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { WorkflowDto } from '@common/dto/workflow.dto';
+import { JwtAuthGuard } from '../../../shared/auth/jwt-auth.guard';
 
 @ApiTags('Workflows')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('workflow')
 export class WorkflowController {
   constructor(private readonly workflowService: WorkflowService) {}
@@ -242,6 +252,17 @@ export class WorkflowController {
       },
     },
   })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+    schema: {
+      example: {
+        message: 'Failed to delete workflow',
+        error: 'Internal Server Error',
+        statusCode: 500,
+      },
+    },
+  })
   async deleteWorkflow(@Param('id') id: string) {
     try {
       await this.workflowService.deleteWorkflow(id);
@@ -249,7 +270,11 @@ export class WorkflowController {
         message: 'Workflow successfully deleted.',
       };
     } catch (error) {
-      throw error;
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.error('Error deleting workflow:', error);
+      throw new Error('Failed to delete workflow: ' + error.message);
     }
   }
 

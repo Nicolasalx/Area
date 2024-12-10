@@ -8,30 +8,55 @@ import { Plus } from "lucide-react";
 import Button from "@/components/ui/Button";
 import WorkflowsBody from "./components/WorkflowsBody";
 import WorkflowsLoading from "./loading";
+import api from "@/lib/api";
+import { AxiosError } from "axios";
 
 interface Workflow {
-  id: number;
+  id: string;
   name: string;
   userId: string;
   isActive: boolean;
-  actions: Array<{
+  createdAt: string;
+  activeActions: Array<{
     id: number;
     name: string;
+    description: string;
+    isActive: boolean;
+    createdAt: string;
+    serviceId: number;
     service: {
+      id: number;
       name: string;
+      description: string;
+      isActive: boolean;
+      createdAt: string;
     };
   }>;
-  reactions: Array<{
+  activeReactions: Array<{
     id: number;
     name: string;
+    description: string;
+    trigger: { reaction: string };
+    isActive: boolean;
+    createdAt: string;
+    serviceId: number;
     service: {
+      id: number;
       name: string;
+      description: string;
+      isActive: boolean;
+      createdAt: string;
     };
   }>;
 }
 
+interface WorkflowResponse {
+  message: string;
+  data: Workflow[];
+}
+
 export default function WorkflowsPage() {
-  const { user, token, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,59 +64,68 @@ export default function WorkflowsPage() {
 
   useEffect(() => {
     const fetchWorkflows = async () => {
-      if (!user?.id || !token) return;
+      if (!user?.id) return;
 
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/workflow/${user.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
+        console.log("Fetching workflows for user:", user.id);
+        console.log("API base URL:", process.env.NEXT_PUBLIC_BACKEND_URL);
 
-        if (response.status === 404) {
+        const response = await api.get<WorkflowResponse>(
+          `/workflow/${user.id}`,
+        );
+        console.log("Workflows response:", response);
+
+        if (Array.isArray(response.data.data)) {
+          setWorkflows(response.data.data);
+        } else {
+          console.error("Unexpected data format:", response.data);
+          setWorkflows([]);
+        }
+      } catch (err) {
+        console.error("Fetch error:", {
+          message: err instanceof Error ? err.message : "Unknown error",
+          status: err instanceof AxiosError ? err.response?.status : undefined,
+          data: err instanceof AxiosError ? err.response?.data : undefined,
+          config:
+            err instanceof AxiosError
+              ? {
+                  url: err.config?.url,
+                  baseURL: err.config?.baseURL,
+                  headers: err.config?.headers,
+                }
+              : undefined,
+        });
+
+        if (err instanceof AxiosError && err.response?.status === 404) {
+          console.log("No workflows found, setting empty array");
           setWorkflows([]);
           return;
         }
 
-        if (!response.ok) {
-          const errorData = await response.text();
-          console.error("API Error:", {
-            status: response.status,
-            statusText: response.statusText,
-            data: errorData,
-          });
-          throw new Error(
-            `Failed to fetch workflows: ${response.status} ${response.statusText}`,
-          );
-        }
-        const data = await response.json();
-        console.log("Workflows fetched:", data);
-        setWorkflows(data.data);
-      } catch (err) {
-        console.error("Fetch error:", err);
         setError(
-          err instanceof Error ? err.message : "Failed to fetch workflows",
+          err instanceof AxiosError
+            ? err.response?.data?.message || err.message
+            : err instanceof Error
+              ? err.message
+              : "Failed to fetch workflows",
         );
       } finally {
         setLoading(false);
       }
     };
 
-    if (user?.id && token) {
+    if (user?.id) {
       fetchWorkflows();
     }
-  }, [user, token, authLoading, router]);
+  }, [user, authLoading, router]);
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     setWorkflows((prevWorkflows) =>
       prevWorkflows.filter((workflow) => workflow.id !== id),
     );
   };
 
-  const handleToggle = (id: number, isActive: boolean) => {
+  const handleToggle = (id: string, isActive: boolean) => {
     setWorkflows((prevWorkflows) =>
       prevWorkflows.map((workflow) =>
         workflow.id === id ? { ...workflow, isActive } : workflow,
@@ -114,7 +148,7 @@ export default function WorkflowsPage() {
       {loading ? (
         <WorkflowsLoading />
       ) : error ? (
-        <div className="flex min-h-screen items-center justify-center text-red-500">
+        <div className="flex min-h-[300px] items-center justify-center text-red-500">
           {error}
         </div>
       ) : (

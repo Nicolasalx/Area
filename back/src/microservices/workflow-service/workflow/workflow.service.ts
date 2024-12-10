@@ -11,8 +11,12 @@ export class WorkflowService {
    * @param id User's ID
    */
   async getWorkflowsByUserId(id: string) {
+    console.log('Getting workflows for user:', id);
+
     const workflows = await this.prisma.workflows.findMany({
-      where: { userId: id },
+      where: {
+        OR: [{ userId: id }, { usersId: id }],
+      },
       include: {
         activeActions: {
           include: {
@@ -24,13 +28,11 @@ export class WorkflowService {
             service: { select: { id: true, name: true, description: true } },
           },
         },
+        Users: true,
       },
     });
 
-    if (!workflows.length) {
-      throw new NotFoundException(`No workflow found for user with ID ${id}`);
-    }
-
+    console.log('Found workflows:', workflows);
     return workflows;
   }
 
@@ -40,6 +42,13 @@ export class WorkflowService {
    */
   async createWorkflow(workflowDto: WorkflowDto) {
     const { name, sessionId, actions, reactions } = workflowDto;
+
+    console.log('Creating workflow with data:', {
+      name,
+      sessionId,
+      actions,
+      reactions,
+    });
 
     const user = await this.prisma.users.findUnique({
       where: { id: sessionId },
@@ -54,6 +63,8 @@ export class WorkflowService {
       data: {
         name,
         userId: sessionId,
+        usersId: sessionId,
+        isActive: true,
         activeActions: {
           create: actions.map((action) => ({
             name: action.name,
@@ -74,8 +85,22 @@ export class WorkflowService {
           })),
         },
       },
+      include: {
+        activeActions: {
+          include: {
+            service: true,
+          },
+        },
+        activeReactions: {
+          include: {
+            service: true,
+          },
+        },
+        Users: true,
+      },
     });
 
+    console.log('Created workflow:', workflow);
     return workflow;
   }
 
@@ -162,14 +187,42 @@ export class WorkflowService {
   async deleteWorkflow(id: string) {
     const workflow = await this.prisma.workflows.findUnique({
       where: { id },
+      include: {
+        activeActions: true,
+        activeReactions: true,
+      },
     });
 
     if (!workflow) {
       throw new NotFoundException(`Workflow with ID ${id} not found`);
     }
 
-    await this.prisma.workflows.delete({
-      where: { id },
+    console.log('Deleting workflow:', {
+      id,
+      activeActions: workflow.activeActions,
+      activeReactions: workflow.activeReactions,
+    });
+
+    // Delete in a transaction to ensure all related records are deleted
+    await this.prisma.$transaction(async (prisma) => {
+      // Delete related active actions
+      await prisma.activeAction.deleteMany({
+        where: {
+          workflowId: id,
+        },
+      });
+
+      // Delete related active reactions
+      await prisma.activeReaction.deleteMany({
+        where: {
+          workflowId: id,
+        },
+      });
+
+      // Finally, delete the workflow itself
+      await prisma.workflows.delete({
+        where: { id },
+      });
     });
   }
 

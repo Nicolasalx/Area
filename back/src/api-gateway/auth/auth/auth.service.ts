@@ -61,10 +61,20 @@ export class AuthService {
       throw new UnauthorizedException('Password verification failed');
     }
 
-    const token = this.jwtService.sign({
+    const payload = {
       sub: user.id,
       email: user.email,
-    });
+    };
+
+    this.logger.debug(
+      `Generating token with payload: ${JSON.stringify(payload)}`,
+    );
+    this.logger.debug(
+      `Using JWT secret: ${process.env.JWT_SECRET || 'your-secret-key'}`,
+    );
+
+    const token = this.jwtService.sign(payload);
+    this.logger.debug(`Generated token: ${token.substring(0, 20)}...`);
 
     return {
       token,
