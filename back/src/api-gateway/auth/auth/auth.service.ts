@@ -66,15 +66,7 @@ export class AuthService {
       email: user.email,
     };
 
-    this.logger.debug(
-      `Generating token with payload: ${JSON.stringify(payload)}`,
-    );
-    this.logger.debug(
-      `Using JWT secret: ${process.env.JWT_SECRET || 'your-secret-key'}`,
-    );
-
     const token = this.jwtService.sign(payload);
-    this.logger.debug(`Generated token: ${token.substring(0, 20)}...`);
 
     return {
       token,
@@ -97,6 +89,22 @@ export class AuthService {
 
     try {
       await this.prisma.$transaction(async (tx) => {
+        await tx.activeAction.deleteMany({
+          where: {
+            workflow: {
+              userId: userId,
+            },
+          },
+        });
+
+        await tx.activeReaction.deleteMany({
+          where: {
+            workflow: {
+              userId: userId,
+            },
+          },
+        });
+
         await tx.workflows.deleteMany({
           where: { userId: userId },
         });
