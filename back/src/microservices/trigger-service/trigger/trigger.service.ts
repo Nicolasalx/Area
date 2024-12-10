@@ -41,7 +41,9 @@ export class TriggerService implements OnModuleInit {
       });
       workflows.forEach((workflow) => {
         const action = workflow.activeActions.at(0);
-        this.selectAction(action, workflow.activeReactions);
+        if (workflow.isActive) {
+          this.selectAction(action, workflow.activeReactions);
+        }
       });
     } catch (error) {
       console.error('Error fetching workflows:', error);
@@ -52,6 +54,12 @@ export class TriggerService implements OnModuleInit {
     switch (action.name) {
       case 'check_push_github':
         await this.githubService.handleGithubPush(action, reaction);
+        break;
+      case 'check_new_branch':
+        await this.githubService.handleNewBranch(action, reaction);
+        break;
+      case 'check_new_pr':
+        await this.githubService.handleNewPullRequest(action, reaction);
         break;
       case 'receive_new_email':
         await this.googleActionService.receiveNewEmail(action, reaction);
