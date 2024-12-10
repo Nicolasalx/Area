@@ -8,10 +8,10 @@ import { useRouter } from "next/navigation";
 import { LogOut, LogIn } from "lucide-react";
 
 export default function Page() {
-  const { user, logout, isLoading } = useAuth();
+  const { user, logout, loading } = useAuth();
   const router = useRouter();
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Text>Loading...</Text>
