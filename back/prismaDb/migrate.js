@@ -33,7 +33,7 @@ async function executeSqlFile(filePath) {
         (err.code === '23505' && err.meta?.message.includes('already exists'))
       ) {
         console.log(
-          `Skipping query due to existing data: ${err.meta?.message}`,
+          `\x1b[31mIn script ${filePath}: Skipping query due to existing data: ${err.meta?.message}\x1b[0m`,
         );
       } else {
         console.error('Error during query execution:', err);

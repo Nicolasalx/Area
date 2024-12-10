@@ -2,12 +2,14 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ActiveAction, ActiveReaction } from '@prisma/client';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { GithubService } from '../../action-service/github/github.service';
+import { CronService } from '../../action-service/cron/cron.service';
 
 @Injectable()
 export class TriggerService implements OnModuleInit {
   constructor(
     private readonly prisma: PrismaService,
     private readonly githubService: GithubService,
+    private readonly cronService: CronService,
   ) {}
 
   onModuleInit() {
@@ -38,6 +40,15 @@ export class TriggerService implements OnModuleInit {
     switch (action.name) {
       case 'check_push_github':
         await this.githubService.handleGithubPush(action, reaction);
+        break;
+      case 'daily_cron_action':
+        await this.cronService.handleDailyCronAction(action, reaction);
+        break;
+      case 'weekly_cron_action':
+        await this.cronService.handleWeeklyCronAction(action, reaction);
+        break;
+      case 'timer_scheduled_action':
+        await this.cronService.handleTimerAction(action, reaction);
         break;
       default:
         return;
