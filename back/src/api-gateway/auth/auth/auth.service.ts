@@ -12,8 +12,6 @@ import { EmailGithubResponse, UserGithubResponse, UserGoogleResponse } from '../
 import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { application } from 'express';
-import { json } from 'stream/consumers';
 import { ConnectionType } from '@prisma/client';
 
 @Injectable()
@@ -93,15 +91,15 @@ export class AuthService {
 
     try {
       await this.prisma.$transaction(async (tx) => {
-        await tx.workflows.deleteMany({
+        tx.workflows.deleteMany({
           where: { userId: userId },
         });
 
-        await tx.serviceTokens.deleteMany({
+        tx.serviceTokens.deleteMany({
           where: { userId: userId },
         });
 
-        await tx.users.delete({
+        tx.users.delete({
           where: { id: userId },
         });
       });

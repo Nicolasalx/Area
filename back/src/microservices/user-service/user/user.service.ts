@@ -114,36 +114,47 @@ export class UserService {
     }
   }
 
-//   async deleteUser(email: string): Promise<{ message: string }> {
-//     try {
-//       this.logger.debug(`Attempting to delete user with email: ${email}`);
+  async deleteUser(id: string): Promise<{ message: string }> {
+    try {
+      this.logger.debug(`Attempting to delete user with id: ${id}`);
 
-//       const user = await this.prisma.users.findUnique({
-//         where: { email },
-//       });
+      const user = await this.prisma.users.findUnique({
+        where: { id },
+      });
 
-//       if (!user) {
-//         throw new NotFoundException(`User with email ${email} not found`);
-//       }
+      if (!user) {
+        throw new NotFoundException(`User with id ${id} not found`);
+      }
 
-//       await this.prisma.serviceTokens.deleteMany({
-//         where: { userId: user.id },
-//       });
+      await this.prisma.$transaction(async (tx) => {
+        tx.workflows.deleteMany({
+          where: { userId: id },
+        });
 
-//       await this.prisma.users.delete({
-//         where: { email: email },
-//       });
+        tx.serviceTokens.deleteMany({
+          where: { userId: id },
+        });
 
-//       this.logger.debug(`User with email ${email} successfully deleted`);
-//       return { message: 'User successfully deleted' };
-//     } catch (error) {
-//       this.logger.error(`Error deleting user with email ${email}:`, error);
+        tx.users.delete({
+          where: { id },
+        });
+      });
 
-//       if (error instanceof NotFoundException) {
-//         throw error;
-//       }
+      this.logger.debug(`User with id ${id} successfully deleted`);
+      return { message: 'User successfully deleted' };
+    } catch (error) {
+      this.logger.error(`Error deleting user with id ${id}:`, error);
 
-//       throw new InternalServerErrorException('Could not delete user');
-//     }
-//   }
+      if (error.code === 'P2003') {
+        throw new Error(
+          'Cannot delete user due to existing references. Error: ' +
+            error.message,
+        );
+      }
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(`Could not delete user: ${error.message}`);
+    }
+  }
 }
