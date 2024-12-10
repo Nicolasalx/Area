@@ -11,7 +11,13 @@ describe('TriggerService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [TriggerService, GithubService, ActionService, CronService, GoogleActionService],
+      providers: [
+        TriggerService,
+        GithubService,
+        ActionService,
+        CronService,
+        GoogleActionService,
+      ],
       imports: [PrismaServiceModule],
     }).compile();
 
