@@ -1,11 +1,14 @@
 import 'dart:convert';
+import 'package:area/logout.dart';
+import 'package:area/user.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:http/http.dart' as http;
+import 'globals.dart' as globals;
 
 class Auth {
-  static Future<void> login(String email, String passwd) async {
+  static Future<bool> login(String email, String passwd) async {
     try {
       final response = await http.post(
         Uri.parse('${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/auth/login'),
@@ -16,10 +19,21 @@ class Auth {
       );
 
       if (response.statusCode == 200) {
-        print("Connected");
+        globals.isLoggedIn = true;
+        JsonLoginResponse jsonResponse =
+            JsonLoginResponse.fromJson(json.decode(response.body));
+        await globals.storage
+            .write(key: 'token', value: jsonResponse.data.token);
+        await globals.storage
+            .write(key: 'email', value: jsonResponse.data.user.email);
+        await globals.storage
+            .write(key: 'name', value: jsonResponse.data.user.name);
+        print(await globals.storage.read(key: 'name'));
+        return true;
       }
+      return false;
     } catch (error) {
-      return;
+      return false;
     }
   }
 }
@@ -168,7 +182,17 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 onPressed: () {
                                   if (formkey.currentState!.validate()) {
-                                    Auth.login(email.text, passwd.text);
+                                    Future<bool> future =
+                                        Auth.login(email.text, passwd.text);
+                                    future.then((onValue) {
+                                      if (context.mounted) {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return const LogoutPage();
+                                        }));
+                                      }
+                                    });
                                   }
                                 },
                                 child: const Text(
