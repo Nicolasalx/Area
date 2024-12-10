@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:area/logout.dart';
+import 'package:area/main.dart';
 import 'package:area/user.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
@@ -186,11 +187,11 @@ class _LoginPageState extends State<LoginPage> {
                                         Auth.login(email.text, passwd.text);
                                     future.then((onValue) {
                                       if (context.mounted) {
-                                        Navigator.push(context,
-                                            MaterialPageRoute(
-                                                builder: (context) {
-                                          return const LogoutPage();
-                                        }));
+                                        globals.navigatorKey.currentState!
+                                            .popUntil(
+                                                ModalRoute.withName(routeHome));
+                                        globals.navigatorKey.currentState!
+                                            .pushNamed(routeLogout);
                                       }
                                     });
                                   }

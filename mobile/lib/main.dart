@@ -1,6 +1,12 @@
 import 'package:area/login.dart';
+import 'package:area/logout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'globals.dart' as globals;
+
+const routeHome = '/';
+const routeLogin = '/login';
+const routeLogout = '/logout';
 
 Future<void> main() async {
   await dotenv.load(fileName: "lib/.env");
@@ -82,7 +88,25 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      body: const LoginPage(),
+      body: Navigator(
+        key: globals.navigatorKey,
+        onGenerateRoute: _onGenerateRoute,
+      ), /*const LoginPage(),*/
     );
   }
+}
+
+Route<Widget> _onGenerateRoute(RouteSettings settings) {
+  final page = switch (settings.name) {
+    routeHome => const LoginPage(),
+    routeLogin => const LoginPage(),
+    routeLogout => const LogoutPage(),
+    _ => throw StateError('Unexpected route name: ${settings.name}!')
+  };
+  return MaterialPageRoute(
+    builder: (context) {
+      return page;
+    },
+    settings: settings,
+  );
 }

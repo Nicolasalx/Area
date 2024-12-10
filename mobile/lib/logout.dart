@@ -1,7 +1,7 @@
 import 'dart:convert';
+import 'package:area/main.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
-import 'package:form_field_validator/form_field_validator.dart';
 import 'package:http/http.dart' as http;
 import 'globals.dart' as globals;
 
@@ -93,6 +93,11 @@ class _LogoutPageState extends State<LogoutPage> {
                         globals.storage.delete(key: 'name');
                         globals.storage.delete(key: 'email');
                         globals.storage.delete(key: 'token');
+                        print(globals.navigatorKey);
+                        globals.navigatorKey.currentState!
+                            .popUntil(ModalRoute.withName(routeHome));
+                        globals.navigatorKey.currentState!
+                            .pushNamed(routeLogin);
                       },
                       child: const Text(
                         'Sign out',
