@@ -1,3 +1,3 @@
 export interface ActionCronExpression {
-    patern: string;
+  patern: string;
 }

@@ -11,10 +11,7 @@ import { GoogleActionService } from '../action-service/google/google.service';
 import { CronService } from '../action-service/cron/cron.service';
 
 @Module({
-  imports: [
-    PrismaServiceModule,
-    ScheduleModule.forRoot()
-  ],
+  imports: [PrismaServiceModule, ScheduleModule.forRoot()],
   providers: [
     TriggerService,
     GithubService,

@@ -6,12 +6,15 @@ import { SharedAuthModule } from '../../shared/auth/auth.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
-  imports: [PrismaServiceModule, SharedAuthModule, EventEmitterModule.forRoot({
-    wildcard: true,
-    delimiter: '.',
-  })
+  imports: [
+    PrismaServiceModule,
+    SharedAuthModule,
+    EventEmitterModule.forRoot({
+      wildcard: true,
+      delimiter: '.',
+    }),
   ],
   controllers: [WorkflowController],
   providers: [WorkflowService],
 })
-export class WorkflowServiceModule { }
+export class WorkflowServiceModule {}

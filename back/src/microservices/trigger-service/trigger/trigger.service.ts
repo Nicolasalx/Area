@@ -22,7 +22,7 @@ export class TriggerService implements OnModuleInit {
     private readonly timerService: TimerService,
     private readonly cronService: CronService,
     private readonly googleActionService: GoogleActionService,
-  ) { }
+  ) {}
 
   onModuleInit() {
     setInterval(async () => {
@@ -73,7 +73,10 @@ export class TriggerService implements OnModuleInit {
     }
   }
 
-  private async registerTimerAction(action: ActiveAction, reactions: ActiveReaction[]) {
+  private async registerTimerAction(
+    action: ActiveAction,
+    reactions: ActiveReaction[],
+  ) {
     if (!action.data) {
       console.error('Invalid action data:', action);
       return;
@@ -111,7 +114,10 @@ export class TriggerService implements OnModuleInit {
       console.error(`Invalid date ${jobId}: target date is in the past`);
     }
   }
-  private async registerCronAction(action: ActiveAction, reactions: ActiveReaction[]) {
+  private async registerCronAction(
+    action: ActiveAction,
+    reactions: ActiveReaction[],
+  ) {
     if (!action.data) {
       console.error('Invalid cron action data:', action);
       return;
@@ -131,12 +137,13 @@ export class TriggerService implements OnModuleInit {
           }
         },
         null,
-        true
+        true,
       );
 
       this.schedulerRegistry.addCronJob(jobId, job);
-      console.log(`Scheduled cron job ${jobId} with pattern ${cronData.patern}`);
-
+      console.log(
+        `Scheduled cron job ${jobId} with pattern ${cronData.patern}`,
+      );
     } catch (error) {
       console.error(`Failed to schedule cron job ${jobId}: ${error.message}`);
       if (this.schedulerRegistry.doesExist('cron', jobId)) {

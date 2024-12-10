@@ -4,7 +4,7 @@ import { ActiveAction, ActiveReaction } from '@prisma/client';
 
 @Injectable()
 export class TimerService {
-  constructor(private readonly actionService: ActionService) { }
+  constructor(private readonly actionService: ActionService) {}
 
   async handleTimerAction(
     action: ActiveAction,
@@ -16,7 +16,7 @@ export class TimerService {
     try {
       await this.actionService.prisma.activeAction.update({
         where: { id: action.id },
-        data: { isActive: false }
+        data: { isActive: false },
       });
     } catch (error) {
       console.error('Failed to deactivate timer action:', error);

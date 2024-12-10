@@ -7,9 +7,10 @@ import { WorkflowEventPayload } from '@common/interfaces/workflow-event.interfac
 
 @Injectable()
 export class WorkflowService {
-  constructor(private readonly prisma: PrismaService,
+  constructor(
+    private readonly prisma: PrismaService,
     private readonly eventEmitter: EventEmitter2,
-  ) { }
+  ) {}
 
   /**
    * Retrieves all workflows for a user by their ID
@@ -110,7 +111,7 @@ export class WorkflowService {
     this.eventEmitter.emit(WORKFLOW_EVENTS.CREATED, {
       workflow,
       action: workflow.activeActions.at(0), // ! Will be changed to support multiple actions later
-      reactions: workflow.activeReactions
+      reactions: workflow.activeReactions,
     } as WorkflowEventPayload);
 
     return workflow;

@@ -1,7 +1,7 @@
-import { ActiveAction, ActiveReaction } from "@prisma/client";
+import { ActiveAction, ActiveReaction } from '@prisma/client';
 
 export interface WorkflowEventPayload {
-    workflow: any;
-    action: ActiveAction;
-    reactions: ActiveReaction[];
+  workflow: any;
+  action: ActiveAction;
+  reactions: ActiveReaction[];
 }

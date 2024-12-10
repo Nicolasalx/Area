@@ -1,4 +1,4 @@
 export interface ActionDate {
-    date: string;
-    hour: string;
+  date: string;
+  hour: string;
 }
