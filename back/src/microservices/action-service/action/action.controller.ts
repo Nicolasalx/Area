@@ -1,9 +1,17 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ActionService } from './action.service';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { ActionDto } from '@common/dto/action.dto';
+import { JwtAuthGuard } from '../../../shared/auth/jwt-auth.guard';
 
 @ApiTags('Actions')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('actions')
 export class ActionController {
   constructor(private readonly actionService: ActionService) {}
@@ -17,6 +25,10 @@ export class ActionController {
     status: 200,
     description: 'A list of all actions successfully retrieved.',
     type: [ActionDto],
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - Invalid or missing authentication token',
   })
   @ApiResponse({
     status: 500,

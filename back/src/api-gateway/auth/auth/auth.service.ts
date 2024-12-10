@@ -61,10 +61,12 @@ export class AuthService {
       throw new UnauthorizedException('Password verification failed');
     }
 
-    const token = this.jwtService.sign({
+    const payload = {
       sub: user.id,
       email: user.email,
-    });
+    };
+
+    const token = this.jwtService.sign(payload);
 
     return {
       token,
@@ -87,6 +89,22 @@ export class AuthService {
 
     try {
       await this.prisma.$transaction(async (tx) => {
+        await tx.activeAction.deleteMany({
+          where: {
+            workflow: {
+              userId: userId,
+            },
+          },
+        });
+
+        await tx.activeReaction.deleteMany({
+          where: {
+            workflow: {
+              userId: userId,
+            },
+          },
+        });
+
         await tx.workflows.deleteMany({
           where: { userId: userId },
         });

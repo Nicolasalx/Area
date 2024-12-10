@@ -2,6 +2,7 @@
 
 import Card from "@/components/ui/Card";
 import Text from "@/components/ui/Text";
+import { getServiceIcon } from "../../utils";
 import { Check } from "lucide-react";
 
 interface Service {
@@ -15,7 +16,6 @@ interface Action {
   name: string;
   description: string;
   serviceId: number;
-  service?: Service;
 }
 
 interface Reaction {
@@ -23,7 +23,6 @@ interface Reaction {
   name: string;
   description: string;
   serviceId: number;
-  service?: Service;
 }
 
 interface ServiceListProps {
@@ -43,54 +42,79 @@ export default function ServiceList({
   actionsByService,
   reactionsByService,
 }: ServiceListProps) {
+  const filteredServices = services.filter((service) => {
+    if (forTrigger) {
+      return actionsByService?.get(service.id)?.length ?? 0 > 0;
+    } else {
+      return reactionsByService?.get(service.id)?.length ?? 0 > 0;
+    }
+  });
+
+  if (!filteredServices.length) {
+    return (
+      <div className="flex min-h-[300px]">
+        <div className="text-center">
+          <Text variant="h3" className="mb-2">
+            No Services Available
+          </Text>
+          <Text color="gray">
+            {forTrigger
+              ? "No services with actions are currently available"
+              : "No services with reactions are currently available"}
+          </Text>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="grid grid-cols-1 gap-6 py-1 md:grid-cols-2 lg:grid-cols-3">
-      {services.map((service) => (
-        <Card
-          key={service.id}
-          className={`group cursor-pointer bg-white transition-all duration-200 hover:shadow-md ${
-            selectedService?.id === service.id
-              ? "ring-2 ring-black"
-              : "hover:ring-1 hover:ring-gray-200"
-          }`}
-          onClick={() => onSelect(service)}
-        >
-          <Card.Header className="p-6">
-            <div className="mb-4 flex items-center justify-between">
-              <Text variant="h4" className="text-lg font-medium capitalize">
-                {service.name}
-              </Text>
-              <div
-                className={`flex h-6 w-6 items-center justify-center rounded-full transition-colors ${
-                  selectedService?.id === service.id
-                    ? "bg-black"
-                    : "bg-transparent"
-                }`}
-              >
-                <Check
-                  className={`h-4 w-4 ${
-                    selectedService?.id === service.id
-                      ? "text-white"
-                      : "text-transparent"
-                  }`}
-                />
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {filteredServices.map((service) => {
+        const isSelected = selectedService?.id === service.id;
+        const availableCount = forTrigger
+          ? actionsByService?.get(service.id)?.length || 0
+          : reactionsByService?.get(service.id)?.length || 0;
+
+        return (
+          <Card
+            key={service.id}
+            onClick={() => onSelect(service)}
+            className={`cursor-pointer transition-all duration-200 hover:border-black hover:shadow-md ${
+              isSelected ? "border-black" : ""
+            }`}
+            shadow={isSelected ? "medium" : "small"}
+          >
+            <Card.Body className="p-6">
+              <div className="relative">
+                {isSelected && (
+                  <div className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-black text-white">
+                    <Check className="h-4 w-4" />
+                  </div>
+                )}
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
+                    {getServiceIcon(service.name)}
+                  </div>
+                  <div>
+                    <Text className="font-medium">
+                      {service.name.charAt(0).toUpperCase() +
+                        service.name.slice(1)}
+                    </Text>
+                    <Text variant="caption" color="gray">
+                      {availableCount}{" "}
+                      {forTrigger
+                        ? `action${availableCount !== 1 ? "s" : ""}`
+                        : `reaction${availableCount !== 1 ? "s" : ""}`}{" "}
+                      available
+                    </Text>
+                  </div>
+                </div>
+                <Text color="gray">{service.description}</Text>
               </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Text variant="caption" className="text-gray-500">
-                {forTrigger
-                  ? `${actionsByService?.get(service.id)?.length || 0} triggers available`
-                  : `${reactionsByService?.get(service.id)?.length || 0} reactions available`}
-              </Text>
-            </div>
-          </Card.Header>
-          <Card.Body className="border-t border-gray-100 p-6">
-            <Text variant="body" className="text-gray-600">
-              {service.description}
-            </Text>
-          </Card.Body>
-        </Card>
-      ))}
+            </Card.Body>
+          </Card>
+        );
+      })}
     </div>
   );
 }

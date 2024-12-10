@@ -8,10 +8,18 @@ import {
   HttpCode,
   HttpStatus,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ConnectionType, Users } from '@prisma/client';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
+import { JwtAuthGuard } from '../../../shared/auth/jwt-auth.guard';
 
 class CreateUserDto {
   username: string;
@@ -94,6 +102,12 @@ export class UserController {
 
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({ status: 200, description: 'Returns all users' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - Invalid or missing authentication token',
+  })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Get()
   async getUsers(): Promise<Users[]> {
     return this.userService.getUsers();
@@ -101,6 +115,16 @@ export class UserController {
 
   @ApiOperation({ summary: 'Get user by ID' })
   @ApiResponse({ status: 200, description: 'Returns a user by ID' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - Invalid or missing authentication token',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found',
+  })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getUserById(@Param('id') id: string): Promise<Users> {
     return this.userService.getUserById(id);
@@ -108,6 +132,16 @@ export class UserController {
 
   @ApiOperation({ summary: 'Delete user by email' })
   @ApiResponse({ status: 200, description: 'User successfully deleted' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - Invalid or missing authentication token',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found',
+  })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Delete(':email')
   async deleteUser(@Param('email') email: string) {
     this.logger.debug(`Deleting user with email: ${email}`);
