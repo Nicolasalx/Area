@@ -1,9 +1,24 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
 import { ReactionService } from './reaction.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiBearerAuth,
+  ApiBody,
+} from '@nestjs/swagger';
 import { ReactionDto } from '@common/dto/reaction.dto';
+import { JwtAuthGuard } from '../../../shared/auth/jwt-auth.guard';
+
+class HandleReactionDto {
+  service: string;
+  reaction: string;
+  data: any;
+}
 
 @ApiTags('Reactions')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('reactions')
 export class ReactionController {
   constructor(private readonly reactionService: ReactionService) {}
@@ -19,6 +34,10 @@ export class ReactionController {
     type: [ReactionDto],
   })
   @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - Invalid or missing authentication token',
+  })
+  @ApiResponse({
     status: 500,
     description: 'Internal server error occurred while fetching reactions.',
   })
@@ -27,10 +46,37 @@ export class ReactionController {
     return this.reactionService.getReactions();
   }
 
+  @ApiOperation({
+    summary: 'Handle a reaction',
+    description:
+      'Process a reaction for a specific service with provided data.',
+  })
+  @ApiBody({
+    type: HandleReactionDto,
+    description: 'Reaction details and data',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Reaction successfully handled',
+    schema: {
+      type: 'string',
+      example: 'Reaction processed successfully',
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - Invalid or missing authentication token',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Failed to process the reaction',
+    schema: {
+      type: 'string',
+      example: 'Failed to process the request',
+    },
+  })
   @Post()
-  async handleReaction(
-    @Body() body: { service: string; reaction: string; data: any },
-  ): Promise<string> {
+  async handleReaction(@Body() body: HandleReactionDto): Promise<string> {
     const { service, reaction, data } = body;
 
     console.log(`Received request to handle reaction for service: ${service}`);

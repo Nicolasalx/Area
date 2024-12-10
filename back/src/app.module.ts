@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ApiGatewayModule } from './api-gateway/api-gateway.module';
@@ -12,6 +13,9 @@ import { ReactionServiceModule } from './microservices/reaction-service/reaction
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     ApiGatewayModule,
     UserServiceModule,
     TriggerServiceModule,

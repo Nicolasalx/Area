@@ -127,15 +127,31 @@ export class UserService {
       }
 
       await this.prisma.$transaction(async (tx) => {
-        tx.workflows.deleteMany({
+        await tx.activeAction.deleteMany({
+          where: {
+            workflow: {
+              userId: id,
+            },
+          },
+        });
+
+        await tx.activeReaction.deleteMany({
+          where: {
+            workflow: {
+              userId: id,
+            },
+          },
+        });
+
+        await tx.workflows.deleteMany({
           where: { userId: id },
         });
 
-        tx.serviceTokens.deleteMany({
+        await tx.serviceTokens.deleteMany({
           where: { userId: id },
         });
 
-        tx.users.delete({
+        await tx.users.delete({
           where: { id },
         });
       });

@@ -156,6 +156,7 @@ export class AuthController {
       if (!userId) {
         throw new UnauthorizedException('User ID not found in token');
       }
+      this.logger.debug(`Delete attempt for id: ${userId}`);
 
       const result = await this.authService.deleteUser(userId);
 
@@ -165,6 +166,7 @@ export class AuthController {
         data: result,
       };
 
+      this.logger.debug('Delete successful');
       return response;
     } catch (err) {
       throw err;

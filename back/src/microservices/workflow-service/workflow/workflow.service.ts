@@ -1,32 +1,44 @@
 import { WorkflowDto } from '@common/dto/workflow.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { WORKFLOW_EVENTS } from 'src/shared/event/workflow.events';
+import { WorkflowEventPayload } from '@common/interfaces/workflow-event.interface';
 
 @Injectable()
 export class WorkflowService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   /**
    * Retrieves all workflows for a user by their ID
    * @param id User's ID
    */
   async getWorkflowsByUserId(id: string) {
+    console.log('Getting workflows for user:', id);
+
     const workflows = await this.prisma.workflows.findMany({
-      where: { userId: id },
+      where: {
+        OR: [{ userId: id }, { usersId: id }],
+      },
       include: {
-        actions: {
-          include: { service: true },
+        activeActions: {
+          include: {
+            service: { select: { id: true, name: true, description: true } },
+          },
         },
-        reactions: {
-          include: { service: true },
+        activeReactions: {
+          include: {
+            service: { select: { id: true, name: true, description: true } },
+          },
         },
+        Users: true,
       },
     });
 
-    if (!workflows.length) {
-      throw new NotFoundException(`No workflow found for user with ID ${id}`);
-    }
-
+    console.log('Found workflows:', workflows);
     return workflows;
   }
 
@@ -37,6 +49,13 @@ export class WorkflowService {
   async createWorkflow(workflowDto: WorkflowDto) {
     const { name, sessionId, actions, reactions } = workflowDto;
 
+    console.log('Creating workflow with data:', {
+      name,
+      sessionId,
+      actions,
+      reactions,
+    });
+
     const user = await this.prisma.users.findUnique({
       where: { id: sessionId },
     });
@@ -46,25 +65,54 @@ export class WorkflowService {
 
     await this.verifyServicesExist(actions, reactions);
 
-    const actionsToConnect = await this.findExistingActions(actions);
-    const reactionsToConnect = await this.findExistingReactions(reactions);
-
     const workflow = await this.prisma.workflows.create({
       data: {
         name,
         userId: sessionId,
-        actions: {
-          connect: actionsToConnect,
+        usersId: sessionId,
+        isActive: true,
+        activeActions: {
+          create: actions.map((action) => ({
+            name: action.name,
+            description: `Action for service: ${action.serviceId}`,
+            data: action.data,
+            serviceId: action.serviceId,
+            isActive: true,
+          })),
         },
-        reactions: {
-          connect: reactionsToConnect,
+        activeReactions: {
+          create: reactions.map((reaction) => ({
+            name: reaction.name,
+            description: `Reaction for service: ${reaction.serviceId}`,
+            trigger: reaction.trigger,
+            data: reaction.data,
+            serviceId: reaction.serviceId,
+            isActive: true,
+          })),
         },
       },
       include: {
-        actions: { include: { service: true } },
-        reactions: { include: { service: true } },
+        activeActions: {
+          include: {
+            service: true,
+          },
+        },
+        activeReactions: {
+          include: {
+            service: true,
+          },
+        },
+        Users: true,
       },
     });
+
+    console.log('Created workflow:', workflow);
+
+    this.eventEmitter.emit(WORKFLOW_EVENTS.CREATED, {
+      workflow,
+      action: workflow.activeActions.at(0), // ! Will be changed to support multiple actions later
+      reactions: workflow.activeReactions,
+    } as WorkflowEventPayload);
 
     return workflow;
   }
@@ -82,6 +130,7 @@ export class WorkflowService {
           `Service with ID "${action.serviceId}" not found.`,
         );
       }
+      this.findExistingAction(action);
     }
 
     for (const reaction of reactions) {
@@ -96,43 +145,52 @@ export class WorkflowService {
           `Service with ID "${reaction.serviceId}" not found.`,
         );
       }
+      this.findExistingReaction(reaction);
     }
   }
 
-  private async findExistingActions(actions: any[]) {
-    return Promise.all(
-      actions.map(async (action) => {
-        const existingAction = await this.prisma.actions.findFirst({
-          where: {
-            AND: [{ name: action.name }, { serviceId: action.serviceId }],
-          },
-        });
-        if (!existingAction) {
-          throw new NotFoundException(
-            `Action "${action.name}" not found for the specified service.`,
-          );
-        }
-        return { id: existingAction.id };
-      }),
-    );
+  private async findExistingAction(action: any) {
+    const existingAction = await this.prisma.actions.findFirst({
+      where: {
+        AND: [{ name: action.name }, { serviceId: action.serviceId }],
+      },
+    });
+
+    if (!existingAction) {
+      throw new NotFoundException(
+        `Action "${action.name}" not found for the specified service.`,
+      );
+    }
+
+    if (!action.data) {
+      throw new NotFoundException(
+        `Data for action ${action.name} is required.`,
+      );
+    }
+
+    return { id: existingAction.id };
   }
 
-  private async findExistingReactions(reactions: any[]) {
-    return Promise.all(
-      reactions.map(async (reaction) => {
-        const existingReaction = await this.prisma.reactions.findFirst({
-          where: {
-            AND: [{ name: reaction.name }, { serviceId: reaction.serviceId }],
-          },
-        });
-        if (!existingReaction) {
-          throw new NotFoundException(
-            `Reaction "${reaction.name}" not found for the specified service.`,
-          );
-        }
-        return { id: existingReaction.id };
-      }),
-    );
+  private async findExistingReaction(reaction: any) {
+    const existingReaction = await this.prisma.reactions.findFirst({
+      where: {
+        AND: [{ name: reaction.name }, { serviceId: reaction.serviceId }],
+      },
+    });
+
+    if (!existingReaction) {
+      throw new NotFoundException(
+        `Reaction "${reaction.name}" not found for the specified service.`,
+      );
+    }
+
+    if (!reaction.data) {
+      throw new NotFoundException(
+        `Data for reaction ${reaction.name} is required.`,
+      );
+    }
+
+    return { id: existingReaction.id };
   }
 
   /**
@@ -142,14 +200,38 @@ export class WorkflowService {
   async deleteWorkflow(id: string) {
     const workflow = await this.prisma.workflows.findUnique({
       where: { id },
+      include: {
+        activeActions: true,
+        activeReactions: true,
+      },
     });
 
     if (!workflow) {
       throw new NotFoundException(`Workflow with ID ${id} not found`);
     }
 
-    await this.prisma.workflows.delete({
-      where: { id },
+    console.log('Deleting workflow:', {
+      id,
+      activeActions: workflow.activeActions,
+      activeReactions: workflow.activeReactions,
+    });
+
+    await this.prisma.$transaction(async (prisma) => {
+      await prisma.activeAction.deleteMany({
+        where: {
+          workflowId: id,
+        },
+      });
+
+      await prisma.activeReaction.deleteMany({
+        where: {
+          workflowId: id,
+        },
+      });
+
+      await prisma.workflows.delete({
+        where: { id },
+      });
     });
   }
 
@@ -171,8 +253,16 @@ export class WorkflowService {
       where: { id },
       data: { isActive },
       include: {
-        actions: { include: { service: true } },
-        reactions: { include: { service: true } },
+        activeActions: {
+          include: {
+            service: { select: { id: true, name: true, description: true } },
+          },
+        },
+        activeReactions: {
+          include: {
+            service: { select: { id: true, name: true, description: true } },
+          },
+        },
       },
     });
   }

@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ActionController } from './action.controller';
 import { ActionService } from './action.service';
 import { PrismaServiceModule } from '@prismaService/prisma-service.module';
+import { JwtModule } from '@nestjs/jwt';
 
 describe('ActionController', () => {
   let controller: ActionController;
@@ -11,7 +12,13 @@ describe('ActionController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ActionController],
       providers: [ActionService],
-      imports: [PrismaServiceModule],
+      imports: [
+        PrismaServiceModule,
+        JwtModule.register({
+          secret: 'test-secret',
+          signOptions: { expiresIn: '1h' },
+        }),
+      ],
     }).compile();
 
     controller = module.get<ActionController>(ActionController);

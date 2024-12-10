@@ -4,8 +4,10 @@ import { ReactionService } from './reaction/reaction.service';
 import { GoogleService } from './google/google.service';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { DiscordService } from './discord/discord.service';
+import { SharedAuthModule } from '../../shared/auth/auth.module';
 
 @Module({
+  imports: [SharedAuthModule],
   controllers: [ReactionController],
   providers: [ReactionService, GoogleService, PrismaService, DiscordService],
 })

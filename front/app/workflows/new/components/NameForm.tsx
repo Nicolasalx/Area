@@ -2,95 +2,78 @@
 
 import Card from "@/components/ui/Card";
 import Text from "@/components/ui/Text";
-import Input from "@/components/ui/Input";
-import { ArrowRight, PlayCircle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { getServiceIcon } from "../../utils";
-
-interface Service {
-  id: number;
-  name: string;
-  description: string;
-}
-
-interface Action {
-  id: number;
-  name: string;
-  description: string;
-  serviceId: number;
-  service?: Service;
-}
-
-interface Reaction {
-  id: number;
-  name: string;
-  description: string;
-  serviceId: number;
-  service?: Service;
-}
+import ValidatedInput from "@/components/ui/ValidatedInput";
 
 interface NameFormProps {
-  name: string;
-  onNameChange: (name: string) => void;
-  selectedAction: Action | null;
-  selectedReaction: Reaction | null;
+  value: string;
+  onChange: (value: string) => void;
+  selectedAction?: {
+    name: string;
+    service?: {
+      name: string;
+    };
+  } | null;
+  selectedReaction?: {
+    name: string;
+    service?: {
+      name: string;
+    };
+  } | null;
 }
 
 export default function NameForm({
-  name,
-  onNameChange,
+  value: name,
+  onChange: onNameChange,
   selectedAction,
   selectedReaction,
 }: NameFormProps) {
   return (
-    <Card className="bg-white">
-      <div className="max-w-xl p-6">
-        <Text variant="h4" className="mb-3 font-medium">
-          Name
+    <Card className="mx-auto w-full max-w-2xl">
+      <Card.Header className="p-6">
+        <Text variant="h3" className="text-xl font-medium">
+          Name Your Area
         </Text>
-        <Input
+      </Card.Header>
+      <Card.Body className="p-6">
+        <ValidatedInput
           type="text"
-          placeholder="Enter a descriptive name for your area"
+          className=""
+          placeholder="Enter a name for your area"
           value={name}
           onChange={(e) => onNameChange(e.target.value)}
         />
         {selectedAction && selectedReaction && (
           <div className="mt-6 space-y-4">
-            <div>
-              <Text variant="h4" className="mb-3 flex items-center gap-2">
-                <PlayCircle className="h-5 w-5 text-gray-500" />
-                Action
-              </Text>
-              <ul className="ml-4 space-y-2 rounded-lg bg-gray-100 p-2">
-                <li className="flex items-center gap-2 text-gray-700">
-                  {selectedAction.service &&
-                    getServiceIcon(selectedAction.service.name)}
-                  <Text>{selectedAction.name}</Text>
-                  <Text variant="caption">
-                    ({selectedAction.service?.name})
-                  </Text>
-                </li>
-              </ul>
+            <div className="flex items-center gap-3 rounded-lg border border-gray-200 p-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
+                {getServiceIcon(selectedAction.service?.name ?? "")}
+              </div>
+              <div className="flex-1">
+                <Text className="font-medium">{selectedAction.name}</Text>
+                <Text variant="caption" className="text-gray-500">
+                  {selectedAction.service?.name}
+                </Text>
+              </div>
             </div>
-
-            <div>
-              <Text variant="h4" className="mb-3 flex items-center gap-2">
-                <ArrowRight className="h-5 w-5 text-gray-500" />
-                Reaction
-              </Text>
-              <ul className="ml-4 space-y-2 rounded-lg bg-gray-100 p-2">
-                <li className="flex items-center gap-2 text-gray-700">
-                  {selectedReaction.service &&
-                    getServiceIcon(selectedReaction.service.name)}
-                  <Text>{selectedReaction.name}</Text>
-                  <Text variant="caption">
-                    ({selectedReaction.service?.name})
-                  </Text>
-                </li>
-              </ul>
+            <div className="flex justify-center">
+              <ArrowRight className="h-6 w-6 text-gray-400" />
+            </div>
+            <div className="flex items-center gap-3 rounded-lg border border-gray-200 p-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
+                {getServiceIcon(selectedReaction.service?.name ?? "")}
+              </div>
+              <div className="flex-1">
+                <Text className="font-medium">{selectedReaction.name}</Text>
+                <Text variant="caption" className="text-gray-500">
+                  {selectedReaction.service?.name}
+                </Text>
+              </div>
             </div>
           </div>
         )}
-      </div>
+      </Card.Body>
     </Card>
   );
 }

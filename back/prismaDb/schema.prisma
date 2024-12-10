@@ -26,21 +26,21 @@ model Users {
   type          ConnectionType
   serviceTokens ServiceTokens[]
 
-  workflows Workflows[]
+  workflow Workflows[]
 }
 
 model Actions {
   id          Int      @id @default(autoincrement())
   name        String
   description String
+  body        Json
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
 
   serviceId Int
   service   Services @relation(fields: [serviceId], references: [id])
 
-  services  Services[]  @relation("ServiceActions")
-  workflows Workflows[] @relation("WorkflowActions")
+  services Services[] @relation("ServiceActions")
 }
 
 model Reactions {
@@ -48,38 +48,65 @@ model Reactions {
   name        String
   description String
   trigger     Json
+  body        Json
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
 
   serviceId Int
   service   Services @relation(fields: [serviceId], references: [id])
 
-  services  Services[]  @relation("ServiceReactions")
-  workflows Workflows[] @relation("WorkflowReactions")
+  services Services[] @relation("ServiceReactions")
+}
+
+model ActiveAction {
+  id          String    @id @default(uuid())
+  name        String
+  description String
+  data        Json
+  isActive    Boolean   @default(true)
+  serviceId   Int
+  service     Services  @relation(fields: [serviceId], references: [id])
+  workflowId  String
+  workflow    Workflows @relation("WorkflowToActions", fields: [workflowId], references: [id])
+}
+
+model ActiveReaction {
+  id          String    @id @default(uuid())
+  name        String
+  description String
+  trigger     Json
+  data        Json
+  isActive    Boolean   @default(true)
+  serviceId   Int
+  service     Services  @relation(fields: [serviceId], references: [id])
+  workflowId  String
+  workflow    Workflows @relation("WorkflowToReactions", fields: [workflowId], references: [id])
 }
 
 model Workflows {
-  id        String      @id @default(uuid()) @db.Uuid
-  name      String
-  isActive  Boolean     @default(true)
-  createdAt DateTime    @default(now())
-  actions   Actions[]   @relation("WorkflowActions")
-  reactions Reactions[] @relation("WorkflowReactions")
-  userId    String      @db.Uuid
-  user      Users       @relation(fields: [userId], references: [id])
+  id              String           @id @default(uuid())
+  name            String
+  userId          String
+  isActive        Boolean          @default(true)
+  activeActions   ActiveAction[]   @relation("WorkflowToActions")
+  activeReactions ActiveReaction[] @relation("WorkflowToReactions")
+  Users           Users?           @relation(fields: [usersId], references: [id])
+  usersId         String?          @db.Uuid
 }
 
 model Services {
-  id            Int             @id @default(autoincrement())
-  name          String          @unique
-  description   String
-  actions       Actions[]       @relation("ServiceActions")
-  reactions     Reactions[]     @relation("ServiceReactions")
-  serviceTokens ServiceTokens[]
-  isActive      Boolean         @default(true)
-  createdAt     DateTime        @default(now())
-  Actions       Actions[]
-  Reactions     Reactions[]
+  id             Int              @id @default(autoincrement())
+  name           String           @unique
+  description    String
+  actions        Actions[]        @relation("ServiceActions")
+  reactions      Reactions[]      @relation("ServiceReactions")
+  serviceTokens  ServiceTokens[]
+  isActive       Boolean          @default(true)
+  createdAt      DateTime         @default(now())
+  Actions        Actions[]
+  Reactions      Reactions[]
+  ActiveAction   ActiveAction[]
+  ActiveReaction ActiveReaction[]
 }
 
 model ServiceTokens {

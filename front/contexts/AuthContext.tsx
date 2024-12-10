@@ -10,6 +10,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useToast } from "./ToastContext";
 import Cookies from "js-cookie";
+import api, { setupInterceptors } from "@/lib/api";
 
 interface User {
   id: string;
@@ -51,31 +52,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(false);
   }, []);
 
+  // Set up axios interceptor
+  useEffect(() => {
+    setupInterceptors(() => Cookies.get("auth-token") || null);
+  }, []);
+
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password }),
-        },
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.message || "Login failed");
-        showToast(data.message || "Login failed", "error");
-        return;
-      }
-
-      const { token, user: userData } = data.data;
+      const response = await api.post("/auth/login", { email, password });
+      const { token, user: userData } = response.data.data;
 
       Cookies.set("auth-token", token, { path: "/" });
-
       localStorage.setItem("user", JSON.stringify(userData));
 
       setUser(userData);
@@ -95,28 +82,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (email: string, password: string, name: string) => {
     try {
       setError(null);
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            password,
-            username: name,
-          }),
-        },
-      );
+      const response = await api.post("/users", {
+        email,
+        password,
+        username: name,
+      });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        const errorMessage = data.message || "Registration failed";
-        setError(errorMessage);
-        showToast(errorMessage, "error");
-        throw new Error(errorMessage);
+      if (!response.data) {
+        throw new Error("Registration failed");
       }
 
       showToast("Registration successful! Logging you in...", "success");
