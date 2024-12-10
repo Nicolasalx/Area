@@ -2,14 +2,14 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ActiveAction, ActiveReaction } from '@prisma/client';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { GithubService } from '../../action-service/github/github.service';
-import { TimerService } from 'src/microservices/action-service/timer/timer.service';
+import { TimerService } from '../../action-service/timer/timer.service';
 import { OnEvent } from '@nestjs/event-emitter';
 import { SchedulerRegistry } from '@nestjs/schedule';
-import { WORKFLOW_EVENTS } from 'src/shared/event/workflow.events';
+import { WORKFLOW_EVENTS } from '../../../shared/event/workflow.events';
 import { TimerUtils } from '@common/utils/timer.utils';
 import { WorkflowEventPayload } from '@common/interfaces/workflow-event.interface';
-import { CronService } from 'src/microservices/action-service/cron/cron.service';
-import { GoogleActionService } from 'src/microservices/action-service/google/google.service';
+import { CronService } from '../../action-service/cron/cron.service';
+import { GoogleActionService } from '../../action-service/google/google.service';
 import { CronUtils } from '@common/utils/cron.utils';
 import { CronJob } from 'cron';
 
