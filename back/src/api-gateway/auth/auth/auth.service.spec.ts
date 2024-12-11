@@ -27,6 +27,7 @@ describe('AuthService', () => {
           provide: PrismaService,
           useValue: {
             users: {
+              findFirst: jest.fn(),
               findUnique: jest.fn(),
               update: jest.fn(),
               delete: jest.fn(),
@@ -113,7 +114,7 @@ describe('AuthService', () => {
     });
 
     it('should successfully login a user', async () => {
-      (prismaService.users.findUnique as jest.Mock).mockResolvedValue(mockUser);
+      (prismaService.users.findFirst as jest.Mock).mockResolvedValue(mockUser);
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
 
       const result = await service.login('test@example.com', 'password123');
@@ -129,7 +130,7 @@ describe('AuthService', () => {
     });
 
     it('should throw UnauthorizedException when user is not found', async () => {
-      (prismaService.users.findUnique as jest.Mock).mockResolvedValue(null);
+      (prismaService.users.findFirst as jest.Mock).mockResolvedValue(null);
 
       await expect(
         service.login('nonexistent@example.com', 'password123'),
@@ -137,7 +138,7 @@ describe('AuthService', () => {
     });
 
     it('should throw UnauthorizedException when password is invalid', async () => {
-      (prismaService.users.findUnique as jest.Mock).mockResolvedValue(mockUser);
+      (prismaService.users.findFirst as jest.Mock).mockResolvedValue(mockUser);
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
       await expect(

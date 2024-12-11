@@ -156,6 +156,7 @@ export class AuthController {
       if (!userId) {
         throw new UnauthorizedException('User ID not found in token');
       }
+      this.logger.debug(`Delete attempt for id: ${userId}`);
 
       const result = await this.authService.deleteUser(userId);
 
@@ -165,14 +166,30 @@ export class AuthController {
         data: result,
       };
 
+      this.logger.debug('Delete successful');
       return response;
     } catch (err) {
       throw err;
     }
   }
 
+  @ApiOperation({
+    summary: 'Login user with Google',
+    description:
+      'Authenticate user with code receive by Google (after redirect_uri) to get a token',
+  })
   @Get('google/callback')
   async getGoogleOAuth(@Query() query: any) {
     return this.authService.getGoogleOAuth(query.code);
+  }
+
+  @ApiOperation({
+    summary: 'Login user with Github',
+    description:
+      'Authenticate user with code receive by Google (after redirect_uri) to get a token',
+  })
+  @Get('github/callback')
+  async getGithubOAuth(@Query() query: any) {
+    return this.authService.getGithubOAuth(query.code);
   }
 }
