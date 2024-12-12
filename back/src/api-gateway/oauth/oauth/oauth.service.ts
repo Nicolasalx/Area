@@ -1,13 +1,5 @@
-import {
-  Injectable,
-  Logger,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
 import { UserService } from '@userService/user/user.service';
-import {
-  UserOAuthResponse,
-} from '../../../common/interfaces/user/user';
 import { JwtService } from '@nestjs/jwt';
 import { ConnectionType } from '@prisma/client';
 import { IServideOauth } from './IServiceOauth';
@@ -22,9 +14,9 @@ export class OAuthService {
   ) {}
 
   async getServiceOAuthTokens(
-      code: string,
-      type: ConnectionType,
-      service: IServideOauth,
+    code: string,
+    type: ConnectionType,
+    service: IServideOauth,
   ) {
     try {
       return await service.requestOAuthToken(code);
@@ -45,10 +37,10 @@ export class OAuthService {
   }
 
   async getServiceUser(
-      access_token: string,
-      type: ConnectionType,
-      service: IServideOauth,
-    ) {
+    access_token: string,
+    type: ConnectionType,
+    service: IServideOauth,
+  ) {
     try {
       const response = await service.requestUserInfo(access_token);
       let user = await this.userService.getUserByServiceId(
@@ -84,12 +76,16 @@ export class OAuthService {
   }
 
   async getServiceOAuth(
-      code: string,
-      type: ConnectionType,
-      service: IServideOauth,
+    code: string,
+    type: ConnectionType,
+    service: IServideOauth,
   ) {
     try {
-      const access_token = await this.getServiceOAuthTokens(code, type, service);
+      const access_token = await this.getServiceOAuthTokens(
+        code,
+        type,
+        service,
+      );
       const user = await this.getServiceUser(access_token, type, service);
 
       console.log('get User ', user);

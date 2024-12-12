@@ -6,10 +6,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { JwtConfigModule } from '../../shared/jwt/jwt-config.module';
 
 @Module({
-  imports: [
-    PrismaServiceModule,
-    JwtConfigModule,
-  ],
+  imports: [PrismaServiceModule, JwtConfigModule],
   providers: [AuthService, JwtAuthGuard],
   controllers: [AuthController],
   exports: [JwtConfigModule],

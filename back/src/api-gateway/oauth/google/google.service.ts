@@ -1,6 +1,4 @@
-import {
-  Injectable,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import {
   UserGoogleResponse,
@@ -8,15 +6,11 @@ import {
 } from '../../../common/interfaces/user/user';
 import { IServideOauth } from '../oauth/IServiceOauth';
 
-
 @Injectable()
 export class GoogleService implements IServideOauth {
+  constructor(private readonly httpService: HttpService) {}
 
-  constructor(
-    private readonly httpService: HttpService,
-  ) {}
-
-  async requestOAuthToken(code: string) : Promise<string> {
+  async requestOAuthToken(code: string): Promise<string> {
     const url = 'https://oauth2.googleapis.com/token';
     const values = {
       code,
@@ -29,7 +23,7 @@ export class GoogleService implements IServideOauth {
     return response.data.access_token;
   }
 
-  async requestUserInfo(access_token: string) : Promise<UserOAuthResponse> {
+  async requestUserInfo(access_token: string): Promise<UserOAuthResponse> {
     const url = 'https://www.googleapis.com/oauth2/v2/userinfo';
     const response =
       await this.httpService.axiosRef.request<UserGoogleResponse>({
@@ -40,6 +34,6 @@ export class GoogleService implements IServideOauth {
       });
     return {
       ...response.data,
-    }
+    };
   }
 }

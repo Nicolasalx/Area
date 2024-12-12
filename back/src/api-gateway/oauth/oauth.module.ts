@@ -8,12 +8,8 @@ import { UserServiceModule } from '@userService/user-service.module';
 import { JwtConfigModule } from 'src/shared/jwt/jwt-config.module';
 
 @Module({
-  imports: [
-    JwtConfigModule,
-    UserServiceModule,
-    HttpModule,
-  ],
+  imports: [JwtConfigModule, UserServiceModule, HttpModule],
   providers: [GithubService, GoogleService, OAuthService],
   controllers: [OAuthController],
 })
-export class OAuthModule { }
+export class OAuthModule {}
