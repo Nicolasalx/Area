@@ -1,8 +1,6 @@
 import {
   Body,
   Controller,
-  Get,
-  Query,
   Post,
   Delete,
   UnauthorizedException,
@@ -171,25 +169,5 @@ export class AuthController {
     } catch (err) {
       throw err;
     }
-  }
-
-  @ApiOperation({
-    summary: 'Login user with Google',
-    description:
-      'Authenticate user with code receive by Google (after redirect_uri) to get a token',
-  })
-  @Get('google/callback')
-  async getGoogleOAuth(@Query() query: any) {
-    return this.authService.getGoogleOAuth(query.code);
-  }
-
-  @ApiOperation({
-    summary: 'Login user with Github',
-    description:
-      'Authenticate user with code receive by Google (after redirect_uri) to get a token',
-  })
-  @Get('github/callback')
-  async getGithubOAuth(@Query() query: any) {
-    return this.authService.getGithubOAuth(query.code);
   }
 }

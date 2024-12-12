@@ -24,10 +24,10 @@ export async function GET(request: Request) {
       });
 
       const user = {
-        id: data.githubUser.id,
-        email: data.githubUser.email,
-        name: data.githubUser.name,
-        image: data.githubUser.picture,
+        id: data.user.id,
+        email: data.user.email,
+        name: data.user.name,
+        image: data.user.picture,
       };
 
       return new NextResponse(
