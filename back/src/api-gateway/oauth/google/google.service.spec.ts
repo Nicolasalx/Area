@@ -13,19 +13,15 @@ describe('GoogleService', () => {
           provide: HttpService,
           useValue: {
             axiosRef: {
-              post: jest.fn().mockResolvedValue(
-                {
-                  data: {
-                    access_token: 'access_token'
-                  }
-                }
-              ),
-              request: jest.fn().mockResolvedValue(
-                {
-                  data: {}
-                }
-              ),
-            }
+              post: jest.fn().mockResolvedValue({
+                data: {
+                  access_token: 'access_token',
+                },
+              }),
+              request: jest.fn().mockResolvedValue({
+                data: {},
+              }),
+            },
           },
         },
       ],

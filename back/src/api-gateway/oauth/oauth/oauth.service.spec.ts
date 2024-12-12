@@ -1,9 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpService } from '@nestjs/axios';
 import { OAuthService } from './oauth.service';
 import { UserService } from '@userService/user/user.service';
 import { JwtService } from '@nestjs/jwt';
-import { UserServiceModule } from '@userService/user-service.module';
 
 describe('OAuthService', () => {
   let service: OAuthService;

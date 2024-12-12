@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaServiceModule } from '@prismaService/prisma-service.module';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 import { OAuthController } from './oauth.controller';
 import { OAuthService } from './oauth.service';
 import { GoogleService } from '../google/google.service';
