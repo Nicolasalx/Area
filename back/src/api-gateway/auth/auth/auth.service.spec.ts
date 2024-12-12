@@ -2,8 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from '@userService/user/user.service';
-import { HttpService } from '@nestjs/axios';
 import { UnauthorizedException, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
@@ -14,10 +12,6 @@ describe('AuthService', () => {
   let prismaService: jest.Mocked<PrismaService>;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let jwtService: jest.Mocked<JwtService>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let httpService: jest.Mocked<HttpService>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let userService: jest.Mocked<UserService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -71,30 +65,12 @@ describe('AuthService', () => {
             sign: jest.fn(() => 'mock-token'),
           },
         },
-        {
-          provide: HttpService,
-          useValue: {
-            axiosRef: {
-              post: jest.fn(),
-              request: jest.fn(),
-            },
-          },
-        },
-        {
-          provide: UserService,
-          useValue: {
-            getUserByServiceId: jest.fn(),
-            createUser: jest.fn(),
-          },
-        },
       ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
     prismaService = module.get(PrismaService);
     jwtService = module.get(JwtService);
-    httpService = module.get(HttpService);
-    userService = module.get(UserService);
   });
 
   it('should be defined', () => {
