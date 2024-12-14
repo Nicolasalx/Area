@@ -9,6 +9,7 @@ import { TimerService } from '../action-service/timer/timer.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { GoogleActionService } from '../action-service/google/google.service';
 import { CronService } from '../action-service/cron/cron.service';
+import { RssService } from '../action-service/rss/rss.service';
 
 @Module({
   imports: [PrismaServiceModule, ScheduleModule.forRoot()],
@@ -20,6 +21,7 @@ import { CronService } from '../action-service/cron/cron.service';
     TimerService,
     CronService,
     GoogleActionService,
+    RssService,
   ],
   controllers: [TriggerController],
 })
