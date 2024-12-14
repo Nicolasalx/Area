@@ -9,6 +9,7 @@ import { DiscordService } from '../reaction-service/discord/discord.service';
 import { SharedAuthModule } from '../../shared/auth/auth.module';
 import { TimerService } from './timer/timer.service';
 import { GoogleActionService } from './google/google.service';
+import { RssService } from './rss/rss.service';
 
 @Module({
   imports: [PrismaServiceModule, SharedAuthModule],
@@ -20,6 +21,7 @@ import { GoogleActionService } from './google/google.service';
     GoogleActionService,
     DiscordService,
     TimerService,
+    RssService,
   ],
   controllers: [ActionController],
 })

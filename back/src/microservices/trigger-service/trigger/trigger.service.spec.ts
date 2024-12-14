@@ -7,6 +7,7 @@ import { TimerService } from '../../action-service/timer/timer.service';
 import { GoogleActionService } from '../../action-service/google/google.service';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronService } from '../../action-service/cron/cron.service';
+import { RssService } from '../../action-service/rss/rss.service';
 
 describe('TriggerService', () => {
   let service: TriggerService;
@@ -21,6 +22,7 @@ describe('TriggerService', () => {
         GoogleActionService,
         SchedulerRegistry,
         CronService,
+        RssService,
       ],
       imports: [PrismaServiceModule],
     }).compile();

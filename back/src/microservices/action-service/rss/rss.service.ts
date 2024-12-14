@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ActiveAction, ActiveReaction } from '@prisma/client';
 import { ActionService } from '../action/action.service';
 import { RssUtils } from '@common/utils/rss.utils';
-import * as RssParser from 'rss-parser'; // Changed import style
+import * as RssParser from 'rss-parser';
 
 @Injectable()
 export class RssService {
