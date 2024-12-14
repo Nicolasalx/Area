@@ -12,6 +12,7 @@ import { CronService } from '../../action-service/cron/cron.service';
 import { GoogleActionService } from '../../action-service/google/google.service';
 import { CronUtils } from '@common/utils/cron.utils';
 import { CronJob } from 'cron';
+import { RssService } from '../../action-service/rss/rss.service';
 
 @Injectable()
 export class TriggerService implements OnModuleInit {
@@ -22,6 +23,7 @@ export class TriggerService implements OnModuleInit {
     private readonly timerService: TimerService,
     private readonly cronService: CronService,
     private readonly googleActionService: GoogleActionService,
+    private readonly rssService: RssService,
   ) {}
 
   onModuleInit() {
@@ -75,6 +77,9 @@ export class TriggerService implements OnModuleInit {
         break;
       case 'new_drive_element':
         await this.googleActionService.newDriveElement(action, reaction);
+        break;
+      case 'rss_feed':
+        await this.rssService.handleRssFeed(action, reaction);
         break;
       default:
         return;

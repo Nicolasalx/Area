@@ -42,6 +42,7 @@
     "googleapis": "^144.0.0",
     "nodemailer": "^6.9.16",
     "reflect-metadata": "^0.2.0",
+    "rss-parser": "^3.13.0",
     "rxjs": "^7.8.1",
     "swagger-ui-express": "^5.0.1"
   },
