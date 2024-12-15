@@ -29,18 +29,38 @@ model Users {
   workflow Workflows[]
 }
 
-model Actions {
-  id          Int      @id @default(autoincrement())
+model Ingredients {
+  id          Int                  @id @default(autoincrement())
   name        String
   description String
-  body        Json
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
+  actions     ActionsIngredients[]
+  Actions     Actions?             @relation(fields: [actionsId], references: [id]) 
+  actionsId   Int?
+}
 
-  serviceId Int
-  service   Services @relation(fields: [serviceId], references: [id])
+model Actions {
+  id                 Int                  @id @default(autoincrement())
+  name               String               @unique
+  description        String
+  body               Json
+  isActive           Boolean              @default(true)
+  createdAt          DateTime             @default(now())
+  serviceId          Int
+  service            Services             @relation(fields: [serviceId], references: [id])
+  services           Services[]           @relation("ServiceActions")
+  Ingredients        Ingredients[]
+  ActionsIngredients ActionsIngredients[]
+}
 
-  services Services[] @relation("ServiceActions")
+model ActionsIngredients {
+  id           Int @id @default(autoincrement())
+  actionId     Int
+  ingredientId Int
+
+  action     Actions     @relation(fields: [actionId], references: [id])
+  ingredient Ingredients @relation(fields: [ingredientId], references: [id])
+
+  @@unique([actionId, ingredientId])
 }
 
 model Reactions {
