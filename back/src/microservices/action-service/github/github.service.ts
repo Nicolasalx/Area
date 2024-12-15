@@ -9,7 +9,7 @@ interface GithubActionData {
 }
 
 @Injectable()
-export class GithubService {
+export class GithubActionService {
   private lastCheckTimestamp: number = Date.now();
   private knownBranches: string[] = [];
   private knownPullRequests: string[] = [];

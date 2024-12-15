@@ -1,18 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CronService } from './cron.service';
+import { CronActionService } from './cron.service';
 import { ActionService } from '../action/action.service';
 import { PrismaServiceModule } from '@prismaService/prisma-service.module';
 
-describe('CronService', () => {
-  let service: CronService;
+describe('CronActionService', () => {
+  let service: CronActionService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [PrismaServiceModule],
-      providers: [CronService, ActionService],
+      providers: [CronActionService, ActionService],
     }).compile();
 
-    service = module.get<CronService>(CronService);
+    service = module.get<CronActionService>(CronActionService);
   });
 
   it('should be defined', () => {

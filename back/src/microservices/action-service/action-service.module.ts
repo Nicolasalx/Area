@@ -2,26 +2,26 @@ import { Module } from '@nestjs/common';
 import { ActionService } from './action/action.service';
 import { ActionController } from './action/action.controller';
 import { PrismaServiceModule } from '@prismaService/prisma-service.module';
-import { GithubService } from './github/github.service';
-import { ReactionService } from '../reaction-service/reaction/reaction.service';
-import { GoogleService } from '../reaction-service/google/google.service';
-import { DiscordService } from '../reaction-service/discord/discord.service';
+import { GithubActionService } from './github/github.service';
+import { ReactionService } from '@reaction-service/reaction/reaction.service';
+import { GoogleReactionService } from '@reaction-service/google/google.service';
+import { DiscordReactionService } from '@reaction-service/discord/discord.service';
 import { SharedAuthModule } from '../../shared/auth/auth.module';
-import { TimerService } from './timer/timer.service';
+import { TimerActionService } from './timer/timer.service';
 import { GoogleActionService } from './google/google.service';
-import { RssService } from './rss/rss.service';
+import { RssActionService } from './rss/rss.service';
 
 @Module({
   imports: [PrismaServiceModule, SharedAuthModule],
   providers: [
     ActionService,
-    GithubService,
+    GithubActionService,
     ReactionService,
-    GoogleService,
+    GoogleReactionService,
     GoogleActionService,
-    DiscordService,
-    TimerService,
-    RssService,
+    DiscordReactionService,
+    TimerActionService,
+    RssActionService,
   ],
   controllers: [ActionController],
 })

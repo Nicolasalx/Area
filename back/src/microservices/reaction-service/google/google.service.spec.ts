@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { GoogleService } from './google.service';
+import { GoogleReactionService } from './google.service';
 
-describe('GoogleService', () => {
-  let service: GoogleService;
+describe('GoogleReactionService', () => {
+  let service: GoogleReactionService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [GoogleService],
+      providers: [GoogleReactionService],
     }).compile();
 
-    service = module.get<GoogleService>(GoogleService);
+    service = module.get<GoogleReactionService>(GoogleReactionService);
   });
 
   it('should be defined', () => {

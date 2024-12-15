@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ReactionService } from './reaction.service';
-import { GoogleService } from '../google/google.service';
-import { DiscordService } from '../discord/discord.service';
+import { GoogleReactionService } from '../google/google.service';
+import { DiscordReactionService } from '../discord/discord.service';
 import { PrismaServiceModule } from '@prismaService/prisma-service.module';
 
 describe('ReactionService', () => {
@@ -12,11 +12,11 @@ describe('ReactionService', () => {
       providers: [
         ReactionService,
         {
-          provide: GoogleService,
+          provide: GoogleReactionService,
           useValue: {},
         },
         {
-          provide: DiscordService,
+          provide: DiscordReactionService,
           useValue: {},
         },
       ],
