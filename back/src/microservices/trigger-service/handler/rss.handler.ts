@@ -13,7 +13,10 @@ export class RssActionHandler implements IActionHandler {
     return ['rss_feed'].includes(action);
   }
 
-  async handle(action: ActiveAction, reactions: ActiveReaction[]): Promise<void> {
+  async handle(
+    action: ActiveAction,
+    reactions: ActiveReaction[],
+  ): Promise<void> {
     try {
       await this.rssService.handleRssFeed(action, reactions);
     } catch (error) {

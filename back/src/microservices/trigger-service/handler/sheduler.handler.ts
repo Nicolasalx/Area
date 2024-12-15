@@ -20,7 +20,10 @@ export class SchedulerActionHandler implements IActionHandler {
     return ['timer_action', 'cron_action'].includes(action);
   }
 
-  async handle(action: ActiveAction, reactions: ActiveReaction[]): Promise<void> {
+  async handle(
+    action: ActiveAction,
+    reactions: ActiveReaction[],
+  ): Promise<void> {
     switch (action.name) {
       case 'timer_action':
         await this.registerTimerAction(action, reactions);

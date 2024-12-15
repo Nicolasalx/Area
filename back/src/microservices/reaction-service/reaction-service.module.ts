@@ -9,6 +9,11 @@ import { SharedAuthModule } from '../../shared/auth/auth.module';
 @Module({
   imports: [SharedAuthModule],
   controllers: [ReactionController],
-  providers: [ReactionService, GoogleReactionService, PrismaService, DiscordReactionService],
+  providers: [
+    ReactionService,
+    GoogleReactionService,
+    PrismaService,
+    DiscordReactionService,
+  ],
 })
 export class ReactionServiceModule {}

@@ -25,7 +25,7 @@ export class TriggerService implements OnModuleInit {
       githubHandler,
       googleHandler,
       schedulerHandler,
-      rssHandler
+      rssHandler,
     ];
   }
 
@@ -56,8 +56,13 @@ export class TriggerService implements OnModuleInit {
     }
   }
 
-  private async selectAction(action: ActiveAction, reactions: ActiveReaction[]) {
-    const actionHandler = this.handlers.find(handler => handler.canHandle(action.name));
+  private async selectAction(
+    action: ActiveAction,
+    reactions: ActiveReaction[],
+  ) {
+    const actionHandler = this.handlers.find((handler) =>
+      handler.canHandle(action.name),
+    );
     if (actionHandler) {
       await actionHandler.handle(action, reactions);
     }

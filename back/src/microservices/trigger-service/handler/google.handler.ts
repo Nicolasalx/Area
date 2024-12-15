@@ -17,7 +17,10 @@ export class GoogleActionHandler implements IActionHandler {
     ].includes(action);
   }
 
-  async handle(action: ActiveAction, reactions: ActiveReaction[]): Promise<void> {
+  async handle(
+    action: ActiveAction,
+    reactions: ActiveReaction[],
+  ): Promise<void> {
     switch (action.name) {
       case 'receive_new_email':
         await this.googleActionService.receiveNewEmail(action, reactions);

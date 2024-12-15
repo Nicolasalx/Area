@@ -17,13 +17,10 @@ import { SchedulerActionHandler } from './handler/sheduler.handler';
 import { RssActionHandler } from './handler/rss.handler';
 
 @Module({
-  imports: [
-    PrismaServiceModule, 
-    ScheduleModule.forRoot()
-  ],
+  imports: [PrismaServiceModule, ScheduleModule.forRoot()],
   providers: [
     TriggerService,
-    
+
     ActionService,
     GithubActionService,
     GoogleActionService,
@@ -34,7 +31,7 @@ import { RssActionHandler } from './handler/rss.handler';
     GithubActionHandler,
     GoogleActionHandler,
     SchedulerActionHandler,
-    RssActionHandler
+    RssActionHandler,
   ],
   controllers: [TriggerController],
 })

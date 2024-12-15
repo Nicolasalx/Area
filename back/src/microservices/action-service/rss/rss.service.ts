@@ -1,6 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ActiveAction, ActiveReaction } from '@prisma/client';
-import { ActionService } from '../action/action.service';
+import { ActionService } from '@action-service/action/action.service';
 import { RssUtils } from '@common/utils/rss.utils';
 import * as RssParser from 'rss-parser';
 
