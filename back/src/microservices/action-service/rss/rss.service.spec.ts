@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RssActionService } from './rss.service';
-import { ActionService } from '../action/action.service';
+import { RssActionService } from '@action-service/rss/rss.service';
+import { ActionService } from '@action-service/action/action.service';
 import { PrismaServiceModule } from '@prismaService/prisma-service.module';
 
 describe('RssActionService', () => {
