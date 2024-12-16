@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ActiveAction, ActiveReaction } from '@prisma/client';
 import { google } from 'googleapis';
 import { ActionService } from '../action/action.service';
+import { IngredientsAction } from '@common/interfaces/ingredientsAction';
 
 @Injectable()
 export class GoogleActionService {

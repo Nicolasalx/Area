@@ -1,4 +1,5 @@
 import { ActionDto } from '@common/dto/action.dto';
+import { IngredientsAction } from '@common/interfaces/ingredientsAction';
 import { Injectable } from '@nestjs/common';
 import { ActiveReaction } from '@prisma/client';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
