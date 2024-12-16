@@ -8,7 +8,7 @@ interface DiscordWebhook {
 }
 
 @Injectable()
-export class DiscordService {
+export class DiscordReactionService {
   private webhook: DiscordWebhook;
 
   constructor() {

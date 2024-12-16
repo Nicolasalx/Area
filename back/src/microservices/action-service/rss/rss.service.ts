@@ -1,12 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ActiveAction, ActiveReaction } from '@prisma/client';
-import { ActionService } from '../action/action.service';
+import { ActionService } from '@action-service/action/action.service';
 import { RssUtils } from '@common/utils/rss.utils';
 import * as RssParser from 'rss-parser';
 
 @Injectable()
-export class RssService {
-  private readonly logger = new Logger(RssService.name);
+export class RssActionService {
   private readonly parser: RssParser;
   private lastCheckTimestamp = Date.now();
 
@@ -24,7 +23,7 @@ export class RssService {
       const feed = await this.parser.parseURL(data.feedUrl);
 
       if (!feed.items?.length) {
-        this.logger.debug('No items found in feed');
+        console.debug('No items found in feed');
         return;
       }
 
@@ -35,7 +34,7 @@ export class RssService {
 
         if (itemDate > this.lastCheckTimestamp) {
           newItemDetected = true;
-          this.logger.log(`New RSS item detected: ${item.title}`);
+          console.log(`New RSS item detected: ${item.title}`);
           await this.actionService.executeReactions(reaction);
           break;
         }
@@ -45,7 +44,7 @@ export class RssService {
         this.lastCheckTimestamp = Date.now();
       }
     } catch (error) {
-      this.logger.error(
+      console.error(
         `Error checking RSS feed for action ${action.id} with feed URL ${data.feedUrl}:`,
         error,
       );

@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { GoogleService } from '../google/google.service';
-import { DiscordService } from '../discord/discord.service';
+import { GoogleReactionService } from '../google/google.service';
+import { DiscordReactionService } from '../discord/discord.service';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { ReactionDto } from '@common/dto/reaction.dto';
 
 @Injectable()
 export class ReactionService {
   constructor(
-    private readonly googleService: GoogleService,
-    private readonly discordService: DiscordService,
+    private readonly googleService: GoogleReactionService,
+    private readonly discordService: DiscordReactionService,
     private readonly prisma: PrismaService,
   ) {}
 

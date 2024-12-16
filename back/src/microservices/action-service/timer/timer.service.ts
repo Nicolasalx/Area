@@ -3,7 +3,7 @@ import { ActionService } from '../action/action.service';
 import { ActiveAction, ActiveReaction } from '@prisma/client';
 
 @Injectable()
-export class TimerService {
+export class TimerActionService {
   constructor(private readonly actionService: ActionService) {}
 
   async handleTimerAction(
