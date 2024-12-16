@@ -92,4 +92,74 @@ export class ActionService {
       }
     }
   }
+
+  async modifyReactionData(
+    ingredientsAction: IngredientsAction[],
+    reaction: ActiveReaction,
+  ): Promise<void> {
+    const ingredientsMap = new Map(
+      ingredientsAction.map(({ field, value }) => [field, value]),
+    );
+
+    Object.entries(reaction.data).forEach(([key, value]) => {
+      const modifiedValue = value.replace(/{{(.*?)}}/g, (match, innerValue) => {
+        if (ingredientsMap.has(innerValue)) {
+          return ingredientsMap.get(innerValue);
+        }
+        return match;
+      });
+
+      reaction.data[key] = modifiedValue;
+    });
+  }
+
+  async executeReactionsBis(
+    ingredientsAction: IngredientsAction[],
+    reactions: ActiveReaction[],
+  ): Promise<void> {
+    this.updateToken();
+
+    for (const reaction of reactions) {
+      // ! When the type PR will be finished, modify only field when it'a string type
+      await this.modifyReactionData(ingredientsAction, reaction);
+      try {
+        const service = await this.prisma.services.findUnique({
+          where: { id: reaction.serviceId },
+        });
+
+        if (!service) {
+          console.log(`Service not found for ID: ${reaction.serviceId}`);
+          continue;
+        }
+
+        try {
+          const response = await axios.post(
+            'http://localhost:8080/reactions',
+            {
+              service: service.name,
+              reaction: reaction.name,
+              data: reaction.data,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${this.jwtToken}`,
+              },
+            },
+          );
+          console.log('SERVICE NAME: ', service.name);
+          console.log('Axios response :', response.data);
+        } catch (error) {
+          console.error(
+            'Erreur lors de la requête Axios :',
+            error.response?.data || error.message,
+          );
+        }
+      } catch (error) {
+        console.error(
+          `Error fetching service for ID: ${reaction.serviceId}`,
+          error,
+        );
+      }
+    }
+  }
 }

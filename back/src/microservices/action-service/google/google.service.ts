@@ -9,6 +9,61 @@ export class GoogleActionService {
 
   constructor(private readonly actionService: ActionService) {}
 
+  async createIngredientsAction(
+    messageDetails: any,
+  ): Promise<IngredientsAction[]> {
+    const subjectHeader = messageDetails.data.payload.headers.find(
+      (header: { name: string }) => header.name === 'Subject',
+    );
+
+    const fromHeader = messageDetails.data.payload.headers.find(
+      (header: { name: string }) => header.name === 'From',
+    );
+
+    const bodyData = messageDetails.data.payload.parts?.find(
+      (part: { mimeType: string }) => part.mimeType === 'text/plain',
+    );
+    const body = bodyData ? bodyData.body.data : '';
+
+    const decodedBody = body
+      ? Buffer.from(body, 'base64').toString('utf8')
+      : '';
+
+    const cleanedBody = decodedBody.replace(/\r?\n$/, '');
+
+    const sender = fromHeader ? fromHeader.value : 'No sender';
+
+    const nowInFrance = new Date().toLocaleString('en-US', {
+      timeZone: 'Europe/Paris',
+    });
+
+    const franceDate = new Date(nowInFrance);
+
+    const triggerDate = new Date(
+      franceDate.getTime() - franceDate.getTimezoneOffset() * 60000,
+    ).toISOString();
+
+    const userFriendlyTriggerDate = new Date(triggerDate).toLocaleString(
+      'fr-FR',
+      {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      },
+    );
+
+    return [
+      { field: 'sender', value: sender },
+      { field: 'subject', value: subjectHeader?.value || 'No Subject' },
+      { field: 'body', value: cleanedBody },
+      { field: 'trigger_date', value: userFriendlyTriggerDate },
+    ];
+  }
+
   async receiveNewEmail(
     action: ActiveAction,
     reaction: ActiveReaction[],
@@ -52,14 +107,12 @@ export class GoogleActionService {
           if (receivedDate > this.lastCheckTimestamp) {
             newEmailDetected = true;
 
-            const subjectHeader = messageDetails.data.payload.headers.find(
-              (header) => header.name === 'Subject',
-            );
-            console.log(
-              `New Email Detected: ${subjectHeader?.value || 'No Subject'}`,
-            );
+            // Generate IngredientsAction using the helper function
+            const ingredients =
+              await this.createIngredientsAction(messageDetails);
 
-            await this.actionService.executeReactions(reaction);
+            // Execute reactions based on the ingredients
+            await this.actionService.executeReactionsBis(ingredients, reaction);
           }
         }
 
