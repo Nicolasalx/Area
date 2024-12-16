@@ -25,15 +25,15 @@ describe('TriggerService', () => {
         TriggerService,
         {
           provide: ActionService,
-          useValue: { executeReactions: jest.fn() }
+          useValue: { executeReactions: jest.fn() },
         },
         {
           provide: GithubActionService,
           useValue: {
             handleGithubPush: jest.fn(),
             handleNewBranch: jest.fn(),
-            handleNewPullRequest: jest.fn()
-          }
+            handleNewPullRequest: jest.fn(),
+          },
         },
         {
           provide: GoogleActionService,
@@ -42,24 +42,24 @@ describe('TriggerService', () => {
             newCalendarEvent: jest.fn(),
             newTask: jest.fn(),
             newPlaylistYoutube: jest.fn(),
-            newDriveElement: jest.fn()
-          }
+            newDriveElement: jest.fn(),
+          },
         },
         {
           provide: TimerActionService,
-          useValue: { handleTimerAction: jest.fn() }
+          useValue: { handleTimerAction: jest.fn() },
         },
         {
           provide: CronActionService,
-          useValue: { handleCronAction: jest.fn() }
+          useValue: { handleCronAction: jest.fn() },
         },
         {
           provide: RssActionService,
-          useValue: { handleRssFeed: jest.fn() }
+          useValue: { handleRssFeed: jest.fn() },
         },
 
         GithubActionHandler,
-        GoogleActionHandler, 
+        GoogleActionHandler,
         SchedulerActionHandler,
         RssActionHandler,
 
@@ -70,10 +70,10 @@ describe('TriggerService', () => {
             deleteCronJob: jest.fn(),
             addTimeout: jest.fn(),
             deleteTimeout: jest.fn(),
-            doesExist: jest.fn()
-          }
-        }
-      ]
+            doesExist: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
     service = module.get<TriggerService>(TriggerService);
