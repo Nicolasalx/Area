@@ -3,7 +3,7 @@ import { ActionService } from '../action/action.service';
 import { ActiveReaction } from '@prisma/client';
 
 @Injectable()
-export class CronService {
+export class CronActionService {
   constructor(private readonly actionService: ActionService) {}
 
   async handleCronAction(reaction: ActiveReaction[]): Promise<void> {

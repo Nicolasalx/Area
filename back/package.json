@@ -42,6 +42,7 @@
     "googleapis": "^144.0.0",
     "nodemailer": "^6.9.16",
     "reflect-metadata": "^0.2.0",
+    "rss-parser": "^3.13.0",
     "rxjs": "^7.8.1",
     "swagger-ui-express": "^5.0.1"
   },
@@ -89,6 +90,11 @@
       "^@prismaService/(.*)$": "<rootDir>/src/microservices/prisma-service/$1",
       "^@userService/(.*)$": "<rootDir>/src/microservices/user-service/$1",
       "^@prismaDb/(.*)$": "<rootDir>/src/prismaDb/$1",
+      "^@action-service/(.*)$": "<rootDir>/src/microservices/action-service/$1",
+      "^@trigger-service/(.*)$": "<rootDir>/src/microservices/trigger-service/$1",
+      "^@reaction-service/(.*)$": "<rootDir>/src/microservices/reaction-service/$1",
+      "^@shared/(.*)$": "<rootDir>/src/shared/$1",
+      "^@handlers/(.*)$": "<rootDir>/src/microservices/trigger-service/handler/$1",
       "^@common/(.*)$": "<rootDir>/src/common/$1"
     }
   },

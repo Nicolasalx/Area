@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TriggerController } from './trigger.controller';
+import { TriggerController } from '@trigger-service/trigger/trigger.controller';
 
 describe('TriggerController', () => {
   let controller: TriggerController;

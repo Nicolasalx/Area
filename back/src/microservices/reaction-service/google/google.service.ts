@@ -3,7 +3,7 @@ import { google } from 'googleapis';
 import * as nodemailer from 'nodemailer';
 
 @Injectable()
-export class GoogleService {
+export class GoogleReactionService {
   async handleAction(action: string, data: any): Promise<string> {
     switch (action.toLowerCase()) {
       case 'send_email':

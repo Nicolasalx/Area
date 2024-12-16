@@ -14,6 +14,10 @@
       "@prismaDb/*": ["prismaDb/*"],
       "@userService/*": ["src/microservices/user-service/*"],
       "@prismaService/*": ["src/microservices/prisma-service/*"],
+      "@action-service/*": ["src/microservices/action-service/*"],
+      "@trigger-service/*": ["src/microservices/trigger-service/*"],
+      "@reaction-service/*": ["src/microservices/reaction-service/*"],
+      "@shared/*": ["src/shared/*"],
       "@common/*": ["src/common/*"]
     },
     "incremental": true,
