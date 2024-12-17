@@ -1,3 +1,4 @@
+import { DiscordWebhook } from '@common/interfaces/discord.interface';
 import { Injectable } from '@nestjs/common';
 import { IReactionHandler } from '@reaction-service/handler/base.handler';
 import axios from 'axios';
