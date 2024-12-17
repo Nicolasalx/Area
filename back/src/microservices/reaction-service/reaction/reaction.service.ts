@@ -3,12 +3,14 @@ import { GoogleReactionService } from '../google/google.service';
 import { DiscordReactionService } from '../discord/discord.service';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { ReactionDto } from '@common/dto/reaction.dto';
+import { SlackReactionService } from '@reaction-service/slack/slack.service';
 
 @Injectable()
 export class ReactionService {
   constructor(
     private readonly googleService: GoogleReactionService,
     private readonly discordService: DiscordReactionService,
+    private readonly slackService: SlackReactionService,
     private readonly prisma: PrismaService,
   ) {}
 
@@ -44,6 +46,8 @@ export class ReactionService {
         return await this.googleService.handleAction(reaction, data);
       case 'discord':
         return await this.discordService.handleAction(reaction, data);
+      case 'slack':
+        return await this.slackService.handleAction(reaction, data);
       default:
         throw new Error('Service not recognized');
     }

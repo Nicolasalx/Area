@@ -15,6 +15,8 @@ import { GithubActionHandler } from './handler/github.handler';
 import { GoogleActionHandler } from './handler/google.handler';
 import { SchedulerActionHandler } from './handler/sheduler.handler';
 import { RssActionHandler } from './handler/rss.handler';
+import { SlackActionService } from '@action-service/slack/slack.service';
+import { SlackActionHandler } from './handler/slack.handler';
 
 @Module({
   imports: [PrismaServiceModule, ScheduleModule.forRoot()],
@@ -27,11 +29,13 @@ import { RssActionHandler } from './handler/rss.handler';
     TimerActionService,
     CronActionService,
     RssActionService,
+    SlackActionService,
 
     GithubActionHandler,
     GoogleActionHandler,
     SchedulerActionHandler,
     RssActionHandler,
+    SlackActionHandler,
   ],
   controllers: [TriggerController],
 })
