@@ -26,10 +26,10 @@ export async function GET(request: Request) {
       });
 
       const user = {
-        id: data.googleUser.id,
-        email: data.googleUser.email,
-        name: data.googleUser.name,
-        image: data.googleUser.picture,
+        id: data.user.id,
+        email: data.user.email,
+        name: data.user.name,
+        image: data.user.picture,
       };
 
       return new NextResponse(
