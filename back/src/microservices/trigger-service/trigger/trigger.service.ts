@@ -9,6 +9,7 @@ import { GithubActionHandler } from '@trigger-service/handler/github.handler';
 import { GoogleActionHandler } from '@trigger-service/handler/google.handler';
 import { SchedulerActionHandler } from '@trigger-service/handler/sheduler.handler';
 import { RssActionHandler } from '@trigger-service/handler/rss.handler';
+import { SlackActionHandler } from '@trigger-service/handler/slack.handler';
 
 @Injectable()
 export class TriggerService implements OnModuleInit {
@@ -20,12 +21,14 @@ export class TriggerService implements OnModuleInit {
     private readonly googleHandler: GoogleActionHandler,
     private readonly schedulerHandler: SchedulerActionHandler,
     private readonly rssHandler: RssActionHandler,
+    private readonly slackHandler: SlackActionHandler,
   ) {
     this.handlers = [
       githubHandler,
       googleHandler,
       schedulerHandler,
       rssHandler,
+      slackHandler,
     ];
   }
 

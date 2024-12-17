@@ -1,14 +1,34 @@
 INSERT INTO "Actions" ("name", "description", "isActive", "createdAt", "serviceId", "body")
 VALUES
+-- github
     ('check_push_github', 'Action triggered when a user push on a repository.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'github' LIMIT 1), '[{"field": "repositoryOwner", "description": "Name of the repository owner "}, {"field": "repositoryName", "description": "Name of the repository"}]'),
     ('check_new_branch', 'Action triggered when a user create a branch a repository.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'github' LIMIT 1), '[{"field": "repositoryOwner", "description": "Name of the repository owner "}, {"field": "repositoryName", "description": "Name of the repository"}]'),
     ('check_new_pr', 'Action triggered when a user create a pr on a repository.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'github' LIMIT 1), '[{"field": "repositoryOwner", "description": "Name of the repository owner "}, {"field": "repositoryName", "description": "Name of the repository"}]'),
 
+-- cron
     ('cron_action', 'Action triggered each X time.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'time' LIMIT 1), '[{"field": "expression", "description": "The cron expression describing the schedule of the action"}]'),
+
+-- timer
     ('timer_action', 'Action triggered when the date is reached.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'time' LIMIT 1), '[{"field": "date", "description": "Date when the timer will be triggered (Ex: date: 2024-12-10)"}, {"field": "hour", "description": "Hour when the timer will be triggered (Ex: hour: 10)"}]'),
+
+-- google
     ('receive_new_email', 'Action triggered when a mail is received on Gmail.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'google' LIMIT 1), '[]'),
     ('new_calendar_event', 'Action triggered when an event is set on Google Calendar.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'google' LIMIT 1), '[]'),
     ('new_task', 'Action triggered when a task is set on Google Task.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'google' LIMIT 1), '[]'),
     ('new_playlist_youtube', 'Action triggered when a playlist is created on Youtube.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'google' LIMIT 1), '[]'),
     ('new_drive_element', 'Action triggered when an element is created on Google Drive.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'google' LIMIT 1), '[]'),
-    ('rss_feed', 'Action triggered when new items appear in RSS feed', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'rss' LIMIT 1), '[{"field": "feedUrl", "description": "URL of the RSS feed to monitor", "required": true}]');
+
+-- rss
+    ('rss_feed', 'Action triggered when new items appear in RSS feed',
+        true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'rss' LIMIT 1),
+        '[{"field": "feedUrl", "description": "URL of the RSS feed to monitor", "required": true}]'),
+
+-- slack
+    ('check_new_message', 'Action triggered when a new message is posted in a specific Slack channel.',
+        true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'slack' LIMIT 1),
+        '[{"field": "channelName", "description": "Name of the Slack channel to monitor", "required": true}]'),
+    ('check_mention', 'Action triggered when a user is mentioned in a specific Slack channel.',
+        true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'slack' LIMIT 1), '[
+        {"field": "channelName", "description": "Name of the Slack channel to monitor", "required": true},
+        {"field": "username", "description": "Username of the Slack user to monitor mentions for", "required": true}
+    ]');

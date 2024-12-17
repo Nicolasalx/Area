@@ -1,0 +1,92 @@
+import { Injectable } from '@nestjs/common';
+import { WebClient } from '@slack/web-api';
+
+@Injectable()
+export class SlackReactionService {
+  private webClient: WebClient;
+
+  constructor() {
+    this.webClient = new WebClient(process.env.SLACK_BOT_TOKEN);
+  }
+
+  async handleAction(reaction: string, data: any): Promise<string> {
+    switch (reaction.toLowerCase()) {
+      case 'send_slack_message':
+        return this.sendMessage(data);
+      case 'add_slack_reaction':
+        return this.addReaction(data);
+      default:
+        return 'Reaction not recognized for Slack';
+    }
+  }
+
+  private async getChannelIdByName(
+    channelName: string,
+  ): Promise<string | null> {
+    try {
+      const result = await this.webClient.conversations.list({
+        types: 'public_channel,private_channel',
+      });
+
+      const channel = result.channels?.find(
+        (channel: any) => channel.name === channelName,
+      );
+      return channel?.id || null;
+    } catch (error) {
+      console.error('Error getting channel ID:', error);
+      return null;
+    }
+  }
+
+  private async sendMessage(data: {
+    channelName: string;
+    message: string;
+  }): Promise<string> {
+    try {
+      const channelId = await this.getChannelIdByName(data.channelName);
+      if (!channelId) {
+        throw new Error(`Channel ${data.channelName} not found`);
+      }
+
+      await this.webClient.chat.postMessage({
+        channel: channelId,
+        text: data.message,
+      });
+
+      return `Message sent successfully to #${data.channelName}`;
+    } catch (error) {
+      throw new Error(`Failed to send Slack message: ${error.message}`);
+    }
+  }
+
+  private async addReaction(data: {
+    channelName: string;
+    reaction: string;
+  }): Promise<string> {
+    try {
+      const channelId = await this.getChannelIdByName(data.channelName);
+      if (!channelId) {
+        throw new Error(`Channel ${data.channelName} not found`);
+      }
+
+      const history = await this.webClient.conversations.history({
+        channel: channelId,
+        limit: 1,
+      });
+
+      if (!history?.messages?.[0]?.ts) {
+        throw new Error('No recent messages found');
+      }
+
+      await this.webClient.reactions.add({
+        channel: channelId,
+        timestamp: history.messages[0].ts,
+        name: data.reaction,
+      });
+
+      return `Reaction ${data.reaction} added successfully in #${data.channelName}`;
+    } catch (error) {
+      throw new Error(`Failed to add reaction: ${error.message}`);
+    }
+  }
+}

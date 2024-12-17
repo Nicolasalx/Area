@@ -3,6 +3,7 @@ import { ReactionService } from './reaction.service';
 import { GoogleReactionService } from '../google/google.service';
 import { DiscordReactionService } from '../discord/discord.service';
 import { PrismaServiceModule } from '@prismaService/prisma-service.module';
+import { SlackReactionService } from '@reaction-service/slack/slack.service';
 
 describe('ReactionService', () => {
   let service: ReactionService;
@@ -17,6 +18,10 @@ describe('ReactionService', () => {
         },
         {
           provide: DiscordReactionService,
+          useValue: {},
+        },
+        {
+          provide: SlackReactionService,
           useValue: {},
         },
       ],

@@ -10,6 +10,8 @@ import { SharedAuthModule } from '../../shared/auth/auth.module';
 import { TimerActionService } from './timer/timer.service';
 import { GoogleActionService } from './google/google.service';
 import { RssActionService } from './rss/rss.service';
+import { SlackActionService } from './slack/slack.service';
+import { SlackReactionService } from '@reaction-service/slack/slack.service';
 
 @Module({
   imports: [PrismaServiceModule, SharedAuthModule],
@@ -22,6 +24,8 @@ import { RssActionService } from './rss/rss.service';
     DiscordReactionService,
     TimerActionService,
     RssActionService,
+    SlackActionService,
+    SlackReactionService,
   ],
   controllers: [ActionController],
 })
