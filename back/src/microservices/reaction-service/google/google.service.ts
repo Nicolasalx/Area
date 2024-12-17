@@ -1,11 +1,16 @@
 import { Injectable } from '@nestjs/common';
+import { IReactionHandler } from '@reaction-service/handler/base.handler';
 import { google } from 'googleapis';
 import * as nodemailer from 'nodemailer';
 
 @Injectable()
-export class GoogleReactionService {
-  async handleAction(action: string, data: any): Promise<string> {
-    switch (action.toLowerCase()) {
+export class GoogleReactionService implements IReactionHandler {
+  canHandle(service: string): boolean {
+    return service === 'google';
+  }
+
+  async handle(reaction: string, data: any): Promise<string> {
+    switch (reaction.toLowerCase()) {
       case 'send_email':
         return this.sendEmail(data);
       case 'set_calendar_event':
