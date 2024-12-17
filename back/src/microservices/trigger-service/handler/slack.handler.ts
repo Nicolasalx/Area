@@ -8,7 +8,12 @@ export class SlackActionHandler implements IActionHandler {
   constructor(private readonly slackService: SlackActionService) {}
 
   canHandle(action: string): boolean {
-    return ['check_new_message', 'check_mention'].includes(action);
+    return [
+      'check_new_message',
+      'check_mention',
+      'check_reaction',
+      'check_file_shared',
+    ].includes(action);
   }
 
   async handle(
@@ -21,6 +26,12 @@ export class SlackActionHandler implements IActionHandler {
         break;
       case 'check_mention':
         await this.slackService.checkMentions(action, reactions);
+        break;
+      case 'check_reaction':
+        await this.slackService.checkReaction(action, reactions);
+        break;
+      case 'check_file_shared':
+        await this.slackService.checkFileShared(action, reactions);
         break;
     }
   }

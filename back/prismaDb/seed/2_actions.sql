@@ -31,4 +31,11 @@ VALUES
         true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'slack' LIMIT 1), '[
         {"field": "channelName", "description": "Name of the Slack channel to monitor", "required": true},
         {"field": "username", "description": "Username of the Slack user to monitor mentions for", "required": true}
-    ]');
+    ]'),
+    ('check_reaction', 'Action triggered when a reaction is added to a message',
+        true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'slack' LIMIT 1),
+        '[{"field": "channelName", "description": "Name of the Slack channel to monitor", "required": true},
+          {"field": "reaction", "description": "Emoji reaction to monitor for (e.g. thumbsup)", "required": true}]'),
+    ('check_file_shared', 'Action triggered when a file is shared in channel',
+        true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'slack' LIMIT 1),
+        '[{"field": "channelName", "description": "Name of the Slack channel to monitor", "required": true}]');

@@ -21,6 +21,7 @@ export class SlackUtils {
     return {
       channelName: payload.channelName as string,
       username: payload.username as string,
+      reaction: payload.reaction as string,
     };
   }
 }

@@ -12,4 +12,14 @@ VALUES
 
 -- slack
     ('send_slack_message', 'Sends a message to a Slack channel when triggered.', '{"reaction": "send_message"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'slack' LIMIT 1), '[{"field": "channelName", "description": "Name of the Slack channel to send the message to (without #)"}, {"field": "message", "description": "The message text to send"}]'),
-    ('add_slack_reaction', 'Adds a reaction to the latest message in Slack channel.', '{"reaction": "add_reaction"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'slack' LIMIT 1), '[{"field": "channelName", "description": "Name of the Slack channel to add reaction to (without #)"}, {"field": "reaction", "description": "The emoji name to react with (e.g. thumbsup, heart, rocket)"}]');
+    ('add_slack_reaction', 'Adds a reaction to the latest message in Slack channel.', '{"reaction": "add_reaction"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'slack' LIMIT 1), '[{"field": "channelName", "description": "Name of the Slack channel to add reaction to (without #)"}, {"field": "reaction", "description": "The emoji name to react with (e.g. thumbsup, heart, rocket)"}]'),
+    ('pin_message', 'Pins the latest message in a channel',
+        '{"reaction": "pin_message"}', true, NOW(),
+        (SELECT id FROM "Services" WHERE "name" = 'slack' LIMIT 1),
+        '[{"field": "channelName", "description": "Name of the Slack channel"}]'),
+    ('upload_file', 'Uploads a file to a channel',
+        '{"reaction": "upload_file"}', true, NOW(), 
+        (SELECT id FROM "Services" WHERE "name" = 'slack' LIMIT 1),
+        '[{"field": "channelName", "description": "Name of the Slack channel"},
+          {"field": "fileContent", "description": "Content to upload as file"},
+          {"field": "filename", "description": "Name of the file"}]');

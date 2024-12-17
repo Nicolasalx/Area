@@ -142,4 +142,71 @@ export class SlackActionService {
       console.error('Error checking Slack mentions:', error);
     }
   }
+
+  async checkReaction(
+    action: ActiveAction,
+    reaction: ActiveReaction[],
+  ): Promise<void> {
+    try {
+      const { channelName, reaction: emojiToCheck } = SlackUtils.parseSlackData(
+        action.data,
+      );
+      if (!channelName || !emojiToCheck) {
+        throw new Error('Channel name and reaction are required');
+      }
+
+      const channelId = await this.joinChannel(channelName);
+      if (!channelId) {
+        throw new Error(`Failed to join channel #${channelName}`);
+      }
+
+      const result = await this.webClient.conversations.history({
+        channel: channelId,
+        oldest: (this.lastCheckTimestamp / 1000).toString(),
+      });
+
+      if (!result?.messages) return;
+
+      for (const message of result.messages) {
+        if (message.reactions?.some((r) => r.name === emojiToCheck)) {
+          console.log(`Detected ${emojiToCheck} reaction in #${channelName}`);
+          await this.actionService.executeReactions(reaction);
+          this.lastCheckTimestamp = Date.now();
+          break;
+        }
+      }
+    } catch (error) {
+      console.error('Error checking reactions:', error);
+    }
+  }
+
+  async checkFileShared(
+    action: ActiveAction,
+    reaction: ActiveReaction[],
+  ): Promise<void> {
+    try {
+      const { channelName } = SlackUtils.parseSlackData(action.data);
+      if (!channelName) {
+        throw new Error('Channel name is required');
+      }
+
+      const channelId = await this.joinChannel(channelName);
+      if (!channelId) {
+        throw new Error(`Failed to join channel #${channelName}`);
+      }
+
+      const result = await this.webClient.conversations.history({
+        channel: channelId,
+        oldest: (this.lastCheckTimestamp / 1000).toString(),
+      });
+
+      if (result?.messages?.some((msg) => msg.files?.length > 0)) {
+        console.log(`New file shared in channel #${channelName}`);
+        await this.actionService.executeReactions(reaction);
+        this.lastCheckTimestamp = Date.now();
+      }
+    } catch (error) {
+      console.error('Error checking file shares:', error);
+    }
+  }
 }
