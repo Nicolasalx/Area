@@ -5,6 +5,7 @@ import { GoogleReactionService } from './google/google.service';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { DiscordReactionService } from './discord/discord.service';
 import { SharedAuthModule } from '../../shared/auth/auth.module';
+import { SlackReactionService } from './slack/slack.service';
 
 @Module({
   imports: [SharedAuthModule],
@@ -14,6 +15,7 @@ import { SharedAuthModule } from '../../shared/auth/auth.module';
     GoogleReactionService,
     PrismaService,
     DiscordReactionService,
+    SlackReactionService,
   ],
 })
 export class ReactionServiceModule {}

@@ -14,6 +14,8 @@ import { GithubActionHandler } from '@trigger-service/handler/github.handler';
 import { GoogleActionHandler } from '@trigger-service/handler/google.handler';
 import { SchedulerActionHandler } from '@trigger-service/handler/sheduler.handler';
 import { RssActionHandler } from '@trigger-service/handler/rss.handler';
+import { SlackActionHandler } from '@trigger-service/handler/slack.handler';
+import { SlackActionService } from '@action-service/slack/slack.service';
 
 describe('TriggerService', () => {
   let service: TriggerService;
@@ -25,53 +27,42 @@ describe('TriggerService', () => {
         TriggerService,
         {
           provide: ActionService,
-          useValue: { executeReactions: jest.fn() },
+          useValue: {},
         },
         {
           provide: GithubActionService,
-          useValue: {
-            handleGithubPush: jest.fn(),
-            handleNewBranch: jest.fn(),
-            handleNewPullRequest: jest.fn(),
-          },
+          useValue: {},
         },
         {
           provide: GoogleActionService,
-          useValue: {
-            receiveNewEmail: jest.fn(),
-            newCalendarEvent: jest.fn(),
-            newTask: jest.fn(),
-            newPlaylistYoutube: jest.fn(),
-            newDriveElement: jest.fn(),
-          },
+          useValue: {},
         },
         {
           provide: TimerActionService,
-          useValue: { handleTimerAction: jest.fn() },
+          useValue: {},
         },
         {
           provide: CronActionService,
-          useValue: { handleCronAction: jest.fn() },
+          useValue: {},
         },
         {
           provide: RssActionService,
-          useValue: { handleRssFeed: jest.fn() },
+          useValue: {},
+        },
+        {
+          provide: SlackActionService,
+          useValue: {},
         },
 
         GithubActionHandler,
         GoogleActionHandler,
         SchedulerActionHandler,
         RssActionHandler,
+        SlackActionHandler,
 
         {
           provide: SchedulerRegistry,
-          useValue: {
-            addCronJob: jest.fn(),
-            deleteCronJob: jest.fn(),
-            addTimeout: jest.fn(),
-            deleteTimeout: jest.fn(),
-            doesExist: jest.fn(),
-          },
+          useValue: {},
         },
       ],
     }).compile();

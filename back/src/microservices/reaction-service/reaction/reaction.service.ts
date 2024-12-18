@@ -3,14 +3,21 @@ import { GoogleReactionService } from '../google/google.service';
 import { DiscordReactionService } from '../discord/discord.service';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { ReactionDto } from '@common/dto/reaction.dto';
+import { SlackReactionService } from '@reaction-service/slack/slack.service';
+import { IReactionHandler } from '@reaction-service/handler/base.handler';
 
 @Injectable()
 export class ReactionService {
+  private handlers: IReactionHandler[];
+
   constructor(
     private readonly googleService: GoogleReactionService,
     private readonly discordService: DiscordReactionService,
+    private readonly slackService: SlackReactionService,
     private readonly prisma: PrismaService,
-  ) {}
+  ) {
+    this.handlers = [googleService, discordService, slackService];
+  }
 
   async getReactions(): Promise<ReactionDto[]> {
     const reactions = await this.prisma.reactions.findMany({
@@ -39,13 +46,13 @@ export class ReactionService {
   ): Promise<string> {
     console.log(`Delegating reaction handling for service: ${service}`);
 
-    switch (service.toLowerCase()) {
-      case 'google':
-        return await this.googleService.handleAction(reaction, data);
-      case 'discord':
-        return await this.discordService.handleAction(reaction, data);
-      default:
-        throw new Error('Service not recognized');
+    const handler = this.handlers.find((h) =>
+      h.canHandle(service.toLowerCase()),
+    );
+    if (!handler) {
+      throw new Error('Service not recognized');
     }
+
+    return handler.handle(reaction, data);
   }
 }
