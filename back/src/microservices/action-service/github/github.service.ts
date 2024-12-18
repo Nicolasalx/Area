@@ -2,6 +2,7 @@ import axios from 'axios';
 import { Injectable } from '@nestjs/common';
 import { ActiveAction, ActiveReaction } from '@prisma/client';
 import { ActionService } from '../action/action.service';
+import { getTriggerDate } from '@trigger-service/handler/get-trigger-date';
 
 interface GithubActionData {
   repositoryOwner: string;
@@ -16,43 +17,7 @@ export class GithubActionService {
 
   constructor(private readonly actionService: ActionService) {}
 
-  async getAllCommits(
-    repositoryOwner: string,
-    repositoryName: string,
-    token: string,
-  ): Promise<any[]> {
-    const url = `https://api.github.com/repos/${repositoryOwner}/${repositoryName}/commits`;
-    const commits: any[] = [];
-    let page = 1;
-    let hasMore = true;
-
-    try {
-      while (hasMore) {
-        const response = await axios.get(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: 'application/vnd.github.v3+json',
-          },
-          params: {
-            per_page: 100,
-            page,
-          },
-        });
-
-        commits.push(...response.data);
-
-        if (response.data.length < 100) {
-          hasMore = false;
-        } else {
-          page += 1;
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching commits from GitHub:', error.message);
-    }
-
-    return commits;
-  }
+  // -------------------------------------------------------------------------------- //
 
   async getAllPullRequests(
     repositoryOwner: string,
@@ -98,7 +63,8 @@ export class GithubActionService {
     reaction: ActiveReaction[],
   ): Promise<void> {
     const data = action.data as unknown as GithubActionData;
-    const { repositoryOwner, repositoryName } = data;
+    const repositoryOwner = (data.repositoryOwner as any).value || 'Unknown';
+    const repositoryName = (data.repositoryName as any).value || 'Unknown';
 
     const token = process.env.GITHUB_TOKEN_API;
     const newPullRequests: string[] = [];
@@ -122,19 +88,27 @@ export class GithubActionService {
       }
 
       if (newPullRequests.length > 0) {
-        await this.actionService.executeReactions(reaction);
+        const ingredients = [
+          { field: 'repository_owner', value: repositoryOwner || 'No owner' },
+          { field: 'repository_name', value: repositoryName || 'No name' },
+          { field: 'trigger_date', value: getTriggerDate() },
+        ];
+        await this.actionService.executeReactionsBis(ingredients, reaction);
       }
     } catch (error) {
       console.error('Error fetching pull requests from GitHub:', error.message);
     }
   }
 
+  // -------------------------------------------------------------------------------- //
+
   async handleNewBranch(
     action: ActiveAction,
     reaction: ActiveReaction[],
   ): Promise<void> {
     const data = action.data as unknown as GithubActionData;
-    const { repositoryOwner, repositoryName } = data;
+    const repositoryOwner = (data.repositoryOwner as any).value || 'Unknown';
+    const repositoryName = (data.repositoryName as any).value || 'Unknown';
 
     const url = `https://api.github.com/repos/${repositoryOwner}/${repositoryName}/branches`;
     let page = 1;
@@ -174,11 +148,57 @@ export class GithubActionService {
 
       if (newBranches.length > 0) {
         this.knownBranches.push(...newBranches);
-        await this.actionService.executeReactions(reaction);
+
+        const ingredients = [
+          { field: 'repository_owner', value: repositoryOwner || 'No owner' },
+          { field: 'repository_name', value: repositoryName || 'No name' },
+          { field: 'trigger_date', value: getTriggerDate() },
+        ];
+        await this.actionService.executeReactionsBis(ingredients, reaction);
       }
     } catch (error) {
       console.error('Error fetching branches from GitHub:', error.message);
     }
+  }
+
+  // -------------------------------------------------------------------------------- //
+
+  async getAllCommits(
+    repositoryOwner: string,
+    repositoryName: string,
+    token: string,
+  ): Promise<any[]> {
+    const url = `https://api.github.com/repos/${repositoryOwner}/${repositoryName}/commits`;
+    const commits: any[] = [];
+    let page = 1;
+    let hasMore = true;
+
+    try {
+      while (hasMore) {
+        const response = await axios.get(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/vnd.github.v3+json',
+          },
+          params: {
+            per_page: 100,
+            page,
+          },
+        });
+
+        commits.push(...response.data);
+
+        if (response.data.length < 100) {
+          hasMore = false;
+        } else {
+          page += 1;
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching commits from GitHub:', error.message);
+    }
+
+    return commits;
   }
 
   async handleGithubPush(
@@ -186,7 +206,8 @@ export class GithubActionService {
     reaction: ActiveReaction[],
   ): Promise<void> {
     const data = action.data as unknown as GithubActionData;
-    const { repositoryOwner, repositoryName } = data;
+    const repositoryOwner = (data.repositoryOwner as any).value || 'Unknown';
+    const repositoryName = (data.repositoryName as any).value || 'Unknown';
 
     const token = process.env.GITHUB_TOKEN_API;
 
@@ -196,7 +217,6 @@ export class GithubActionService {
         repositoryName,
         token,
       );
-
       const newCommits = commits.filter((commit: any) => {
         const commitTimestamp = new Date(commit.commit.author.date).getTime();
         return commitTimestamp > this.lastCheckTimestamp;
@@ -204,7 +224,14 @@ export class GithubActionService {
 
       if (newCommits.length > 0) {
         this.lastCheckTimestamp = Date.now();
-        await this.actionService.executeReactions(reaction);
+
+        const ingredients = [
+          { field: 'repository_owner', value: repositoryOwner || 'No owner' },
+          { field: 'repository_name', value: repositoryName || 'No name' },
+          { field: 'trigger_date', value: getTriggerDate() },
+        ];
+
+        await this.actionService.executeReactionsBis(ingredients, reaction);
       }
     } catch (error) {
       console.error('Error fetching commits from GitHub:', error.message);

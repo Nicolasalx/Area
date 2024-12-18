@@ -3,6 +3,7 @@ import { ActiveAction, ActiveReaction } from '@prisma/client';
 import { ActionService } from '@action-service/action/action.service';
 import { RssUtils } from '@common/utils/rss.utils';
 import * as RssParser from 'rss-parser';
+import { getTriggerDate } from '@trigger-service/handler/get-trigger-date';
 
 @Injectable()
 export class RssActionService {
@@ -35,7 +36,12 @@ export class RssActionService {
         if (itemDate > this.lastCheckTimestamp) {
           newItemDetected = true;
           console.log(`New RSS item detected: ${item.title}`);
-          await this.actionService.executeReactions(reaction);
+
+          const ingredients = [
+            { field: 'trigger_date', value: getTriggerDate() },
+          ];
+          await this.actionService.executeReactionsBis(ingredients, reaction);
+
           break;
         }
       }
