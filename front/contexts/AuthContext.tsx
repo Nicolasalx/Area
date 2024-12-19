@@ -26,6 +26,7 @@ interface AuthContextType {
   register: (email: string, password: string, name: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
   loginWithGithub: () => Promise<void>;
+  loginWithDiscord: () => Promise<void>;
   logout: () => void;
   loading: boolean;
   error: string | null;
@@ -228,6 +229,67 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const loginWithDiscord = async () => {
+    try {
+      setError(null);
+      setLoading(true);
+
+      const popup = window.open(
+        "/api/auth/discord",
+        "Discord Login",
+        "width=500,height=600,left=" +
+          (window.screenX + (window.outerWidth - 500) / 2) +
+          ",top=" +
+          (window.screenY + (window.outerHeight - 600) / 2),
+      );
+
+      if (popup) {
+        const result = await new Promise<{ user: User; token: string }>(
+          (resolve, reject) => {
+            const handleMessage = (event: MessageEvent) => {
+              if (event.data?.type === "DISCORD_LOGIN_SUCCESS") {
+                console.log("Received Discord login success:", event.data);
+                window.removeEventListener("message", handleMessage);
+                resolve({
+                  user: event.data.user,
+                  token: event.data.token,
+                });
+              } else if (event.data?.type === "DISCORD_LOGIN_ERROR") {
+                window.removeEventListener("message", handleMessage);
+                reject(new Error(event.data.error));
+              }
+            };
+
+            window.addEventListener("message", handleMessage);
+
+            // Clean up if the popup is closed
+            const checkClosed = setInterval(() => {
+              if (popup.closed) {
+                clearInterval(checkClosed);
+                window.removeEventListener("message", handleMessage);
+                reject(new Error("Login window closed"));
+              }
+            }, 1000);
+          },
+        );
+
+        console.log("Setting user data in context:", result.user);
+        setUser(result.user);
+        setToken(result.token);
+        localStorage.setItem("user", JSON.stringify(result.user));
+        setError(null);
+        showToast("Login successful", "success");
+        router.push("/workflows");
+      }
+    } catch (err) {
+      console.error("Discord login error:", err);
+      setError(err instanceof Error ? err.message : "Discord login failed");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
     Cookies.remove("auth-token", { path: "/" });
     localStorage.removeItem("token");
@@ -246,6 +308,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     register,
     loginWithGoogle,
     loginWithGithub,
+    loginWithDiscord,
     logout,
     loading,
     error,

@@ -5,6 +5,13 @@ export interface UserGoogleResponse {
   picture: string;
 }
 
+export interface UserDiscordResponse {
+  id: string;
+  username: string
+  email: string;
+  avatar: string;
+}
+
 export interface UserGithubResponse {
   id: string;
   email: string;
