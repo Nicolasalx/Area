@@ -7,7 +7,7 @@ export interface UserGoogleResponse {
 
 export interface UserDiscordResponse {
   id: string;
-  username: string
+  username: string;
   email: string;
   avatar: string;
 }
