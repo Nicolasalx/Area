@@ -10,6 +10,7 @@ import { WorkflowServiceModule } from './microservices/workflow-service/workflow
 import { PrismaController } from './microservices/prisma-service/prisma/prisma.controller';
 import { PrismaServiceModule } from './microservices/prisma-service/prisma-service.module';
 import { ReactionServiceModule } from './microservices/reaction-service/reaction-service.module';
+import { AboutModule } from './microservices/about-service/about.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ReactionServiceModule } from './microservices/reaction-service/reaction
     WorkflowServiceModule,
     PrismaServiceModule,
     ReactionServiceModule,
+    AboutModule,
   ],
   controllers: [AppController, PrismaController],
   providers: [AppService],
