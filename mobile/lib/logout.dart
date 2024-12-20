@@ -37,10 +37,6 @@ class _LogoutPageState extends State<LogoutPage> {
   final name = globals.storage.read(key: 'name');
   @override
   Widget build(BuildContext context) {
-    final formkey = GlobalKey<FormState>();
-    final email = TextEditingController();
-    final passwd = TextEditingController();
-
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(

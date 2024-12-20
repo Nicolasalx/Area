@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:area/logout.dart';
 import 'package:area/main.dart';
 import 'package:area/user.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -29,7 +28,6 @@ class Auth {
             .write(key: 'email', value: jsonResponse.data.user.email);
         await globals.storage
             .write(key: 'name', value: jsonResponse.data.user.name);
-        print(await globals.storage.read(key: 'name'));
         return true;
       }
       return false;
@@ -47,6 +45,14 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _passwordVisible = false;
+
+  void _toggle() {
+    setState(() {
+      _passwordVisible = !_passwordVisible;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final formkey = GlobalKey<FormState>();
@@ -147,20 +153,29 @@ class _LoginPageState extends State<LoginPage> {
                           padding: const EdgeInsets.all(12.0),
                           child: TextFormField(
                             controller: passwd,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               hintText: 'Enter your password',
-                              prefixIcon: Icon(
+                              prefixIcon: const Icon(
                                 Icons.lock,
                                 color: Color.fromARGB(255, 119, 119, 119),
                               ),
-                              errorStyle: TextStyle(fontSize: 18.0),
-                              border: OutlineInputBorder(
+                              suffixIcon: IconButton(
+                                icon: _passwordVisible
+                                    ? const Icon(Icons.visibility_off)
+                                    : const Icon(Icons.visibility),
+                                onPressed: () {
+                                  _toggle();
+                                },
+                              ),
+                              errorStyle: const TextStyle(fontSize: 18.0),
+                              border: const OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.red),
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(9.0),
                                 ),
                               ),
                             ),
+                            obscureText: _passwordVisible,
                           ),
                         ),
                         Center(
