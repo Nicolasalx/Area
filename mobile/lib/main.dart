@@ -1,7 +1,6 @@
 import 'package:area/login.dart';
 import 'package:area/logout.dart';
-import 'package:area/myAreas.dart';
-import 'package:area/navBar.dart';
+import 'package:area/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'globals.dart' as globals;
