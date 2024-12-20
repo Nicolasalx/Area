@@ -1,5 +1,5 @@
-import 'package:area/myAreas.dart';
-import 'package:area/newArea.dart';
+import 'package:area/my_areas.dart';
+import 'package:area/new_area.dart';
 import 'package:area/profile.dart';
 import 'package:flutter/material.dart';
 
