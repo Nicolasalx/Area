@@ -1,5 +1,7 @@
 import 'package:area/login.dart';
 import 'package:area/logout.dart';
+import 'package:area/myAreas.dart';
+import 'package:area/navBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'globals.dart' as globals;
@@ -7,6 +9,7 @@ import 'globals.dart' as globals;
 const routeHome = '/';
 const routeLogin = '/login';
 const routeLogout = '/logout';
+const routeMain = '/main';
 
 Future<void> main() async {
   await dotenv.load(fileName: "lib/.env");
@@ -40,19 +43,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // int _counter = 0;
-
-  // void _incrementCounter() {
-  //   setState(() {
-  //     // This call to setState tells the Flutter framework that something has
-  //     // changed in this State, which causes it to rerun the build method below
-  //     // so that the display can reflect the updated values. If we changed
-  //     // _counter without calling setState(), then the build method would not be
-  //     // called again, and so nothing would appear to happen.
-  //     _counter++;
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,16 +81,17 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Navigator(
         key: globals.navigatorKey,
         onGenerateRoute: _onGenerateRoute,
-      ), /*const LoginPage(),*/
+      ),
     );
   }
 }
 
 Route<Widget> _onGenerateRoute(RouteSettings settings) {
   final page = switch (settings.name) {
-    routeHome => const LoginPage(),
+    routeHome => globals.isLoggedIn ? const NavBarPage() : const LoginPage(),
     routeLogin => const LoginPage(),
     routeLogout => const LogoutPage(),
+    routeMain => const NavBarPage(),
     _ => throw StateError('Unexpected route name: ${settings.name}!')
   };
   return MaterialPageRoute(

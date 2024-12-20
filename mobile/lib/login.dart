@@ -8,7 +8,8 @@ import 'package:http/http.dart' as http;
 import 'globals.dart' as globals;
 
 class Auth {
-  static Future<bool> login(String email, String passwd) async {
+  static Future<bool> login(
+      String email, String passwd, BuildContext context) async {
     try {
       final response = await http.post(
         Uri.parse('${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/auth/login'),
@@ -28,9 +29,11 @@ class Auth {
             .write(key: 'email', value: jsonResponse.data.user.email);
         await globals.storage
             .write(key: 'name', value: jsonResponse.data.user.name);
-        return true;
+        globals.navigatorKey.currentState!
+            .popUntil(ModalRoute.withName(routeHome));
+        globals.navigatorKey.currentState!.pushNamed(routeHome);
       }
-      return false;
+      return true;
     } catch (error) {
       return false;
     }
@@ -45,20 +48,22 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  bool _passwordVisible = false;
+  bool _passwordObscure = true;
+
+  String emailValue = "";
+  String passwordValue = "";
+  final formkey = GlobalKey<FormState>();
+  final email = TextEditingController();
+  final passwd = TextEditingController();
 
   void _toggle() {
     setState(() {
-      _passwordVisible = !_passwordVisible;
+      _passwordObscure = !_passwordObscure;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final formkey = GlobalKey<FormState>();
-    final email = TextEditingController();
-    final passwd = TextEditingController();
-
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -160,10 +165,11 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Color.fromARGB(255, 119, 119, 119),
                               ),
                               suffixIcon: IconButton(
-                                icon: _passwordVisible
+                                icon: _passwordObscure
                                     ? const Icon(Icons.visibility_off)
                                     : const Icon(Icons.visibility),
                                 onPressed: () {
+                                  print(email.text);
                                   _toggle();
                                 },
                               ),
@@ -175,7 +181,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
-                            obscureText: _passwordVisible,
+                            obscureText: _passwordObscure,
                           ),
                         ),
                         Center(
@@ -198,17 +204,8 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 onPressed: () {
                                   if (formkey.currentState!.validate()) {
-                                    Future<bool> future =
-                                        Auth.login(email.text, passwd.text);
-                                    future.then((onValue) {
-                                      if (context.mounted) {
-                                        globals.navigatorKey.currentState!
-                                            .popUntil(
-                                                ModalRoute.withName(routeHome));
-                                        globals.navigatorKey.currentState!
-                                            .pushNamed(routeLogout);
-                                      }
-                                    });
+                                    Auth.login(
+                                        email.text, passwd.text, context);
                                   }
                                 },
                                 child: const Text(
