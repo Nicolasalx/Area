@@ -18,7 +18,12 @@ export class ReactionService {
     private readonly todoistService: TodoistReactionService,
     private readonly prisma: PrismaService,
   ) {
-    this.handlers = [googleService, discordService, slackService, todoistService];
+    this.handlers = [
+      googleService,
+      discordService,
+      slackService,
+      todoistService,
+    ];
   }
 
   async getReactions(): Promise<ReactionDto[]> {
