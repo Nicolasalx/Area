@@ -75,7 +75,7 @@ export async function newDriveElement(
 
           const ingredients = await createIngredientsAction(file, elementType);
 
-          await actionService.executeReactionsBis(ingredients, reaction);
+          await actionService.executeReactions(ingredients, reaction);
         }
       }
 

@@ -76,7 +76,7 @@ export async function receiveNewEmail(
 
           const ingredients = await createIngredientsAction(messageDetails);
 
-          await actionService.executeReactionsBis(ingredients, reaction);
+          await actionService.executeReactions(ingredients, reaction);
         }
       }
 
