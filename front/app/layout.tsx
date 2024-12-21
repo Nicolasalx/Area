@@ -21,11 +21,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" className={`${prompt.className} h-full antialiased`}>
-      <body className={`${prompt.className} h-screen bg-gray-100 antialiased`}>
+    <html lang="en">
+      <body className={`${prompt.className} h-screen bg-gray-50 antialiased`}>
         <Providers>
           <Navbar />
-          <main className="h-[calc(100vh-4rem)] w-full pt-16">{children}</main>
+          <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 w-full h-full">{children}</main>
         </Providers>
       </body>
     </html>

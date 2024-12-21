@@ -9,7 +9,7 @@ import { useToast } from "@/contexts/ToastContext";
 import api from "@/lib/api";
 import { AxiosError } from "axios";
 
-import { getServiceIcon, getRandomGradient } from "../utils";
+import { getServiceIcon, getRandomGradient, formatActionReactionName } from "../utils";
 
 interface Workflow {
   id: string;
@@ -113,7 +113,7 @@ export default function WorkflowsBody({
 
   if (!workflows.length) {
     return (
-      <div className="flex min-h-[300px] items-center justify-center rounded-lg border border-gray-200 bg-gray-50">
+      <div className="flex bg-white min-h-[300px] items-center justify-center rounded-lg border border-gray-200">
         <div className="text-center">
           <Ghost className="mx-auto mb-4 h-12 w-12 text-gray-400" />
           <Text variant="h3" className="mb-2">
@@ -128,13 +128,6 @@ export default function WorkflowsBody({
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {workflows.map((workflow) => {
-        console.log("Workflow data:", {
-          id: workflow.id,
-          name: workflow.name,
-          actions: workflow.activeActions,
-          reactions: workflow.activeReactions,
-        });
-
         return (
           <Card key={workflow.id} shadow="small" hover="all">
             <CardHeader
@@ -187,7 +180,7 @@ export default function WorkflowsBody({
                           className="flex items-center gap-2 text-gray-700"
                         >
                           {getServiceIcon(action.service.name)}
-                          <Text>{action.name}</Text>
+                          <Text>{formatActionReactionName(action.name)}</Text>
                           <Text variant="caption">({action.service.name})</Text>
                         </li>
                       ))
@@ -219,7 +212,7 @@ export default function WorkflowsBody({
                           className="flex items-center gap-2 text-gray-700"
                         >
                           {getServiceIcon(reaction.service.name)}
-                          <Text>{reaction.name}</Text>
+                          <Text>{formatActionReactionName(reaction.name)}</Text>
                           <Text variant="caption">
                             ({reaction.service.name})
                           </Text>

@@ -3,6 +3,7 @@
 import Card from "@/components/ui/Card";
 import Text from "@/components/ui/Text";
 import { Check } from "lucide-react";
+import { formatActionReactionName } from "../../utils";
 
 interface Service {
   id: number;
@@ -42,10 +43,10 @@ export default function TriggerList({
           }`}
           onClick={() => onSelect(trigger)}
         >
-          <Card.Header className="p-6">
-            <div className="mb-4 flex items-center justify-between">
+          <Card.Header className="p-6 flex flex-col gap-1">
+            <div className="flex items-center justify-between">
               <Text variant="h4" className="text-lg font-medium">
-                {trigger.name}
+                {formatActionReactionName(trigger.name)}
               </Text>
               <div
                 className={`flex h-6 w-6 items-center justify-center rounded-full transition-colors ${

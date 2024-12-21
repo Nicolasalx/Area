@@ -2,6 +2,7 @@
 
 import Card from "@/components/ui/Card";
 import Text from "@/components/ui/Text";
+import { formatActionReactionName } from "../../utils";
 import { Check } from "lucide-react";
 
 interface Service {
@@ -44,7 +45,7 @@ export default function ReactionList({
           <Card.Header className="p-6">
             <div className="mb-4 flex items-center justify-between">
               <Text variant="h4" className="text-lg font-medium">
-                {reaction.name}
+                {formatActionReactionName(reaction.name)}
               </Text>
               <div
                 className={`flex h-6 w-6 items-center justify-center rounded-full transition-colors ${

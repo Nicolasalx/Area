@@ -44,9 +44,8 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="flex h-full items-center justify-center">
-      <div className="w-full max-w-md px-4">
-        {isLogin ? <LoginForm /> : <RegisterForm />}
+    <div className="flex flex-col h-full w-full items-center justify-center pb-16">
+      {isLogin ? <LoginForm /> : <RegisterForm />}
         <div className="mt-6 flex items-center justify-center gap-4 text-center">
           <Text variant="small" color="gray">
             {isLogin ? "Don't have an account?" : "Already have an account?"}
@@ -59,7 +58,6 @@ export default function AuthPage() {
             {isLogin ? "Create an account" : "Sign in"}
           </button>
         </div>
-      </div>
     </div>
   );
 }
