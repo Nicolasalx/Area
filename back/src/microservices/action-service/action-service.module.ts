@@ -12,6 +12,7 @@ import { GoogleActionService } from './google/google.service';
 import { RssActionService } from './rss/rss.service';
 import { SlackActionService } from './slack/slack.service';
 import { SlackReactionService } from '@reaction-service/slack/slack.service';
+import { TodoistReactionService } from '@reaction-service/todoist/todoist.service';
 
 @Module({
   imports: [PrismaServiceModule, SharedAuthModule],
@@ -26,6 +27,7 @@ import { SlackReactionService } from '@reaction-service/slack/slack.service';
     RssActionService,
     SlackActionService,
     SlackReactionService,
+    TodoistReactionService,
   ],
   controllers: [ActionController],
 })

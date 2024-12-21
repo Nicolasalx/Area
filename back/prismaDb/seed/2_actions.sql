@@ -38,4 +38,8 @@ VALUES
           {"field": "reaction", "description": "Emoji reaction to monitor for (e.g. thumbsup)", "required": true}]'),
     ('check_file_shared', 'Action triggered when a file is shared in channel',
         true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'slack' LIMIT 1),
-        '[{"field": "channelName", "description": "Name of the Slack channel to monitor", "required": true}]');
+        '[{"field": "channelName", "description": "Name of the Slack channel to monitor", "required": true}]'),
+
+-- Todoist
+    ('check_new_task', 'Triggered when a new task is created',
+        true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'todoist' LIMIT 1), '[]');

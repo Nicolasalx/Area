@@ -18,8 +18,18 @@ VALUES
         (SELECT id FROM "Services" WHERE "name" = 'slack' LIMIT 1),
         '[{"field": "channelName", "description": "Name of the Slack channel"}]'),
     ('upload_file', 'Uploads a file to a channel',
-        '{"reaction": "upload_file"}', true, NOW(), 
+        '{"reaction": "upload_file"}', true, NOW(),
         (SELECT id FROM "Services" WHERE "name" = 'slack' LIMIT 1),
         '[{"field": "channelName", "description": "Name of the Slack channel"},
           {"field": "fileContent", "description": "Content to upload as file"},
-          {"field": "filename", "description": "Name of the file"}]');
+          {"field": "filename", "description": "Name of the file"}]'),
+
+-- todoist
+    ('create_task', 'Creates a new task in Todoist', '{"reaction": "create_task"}',
+        true, NOW(), (SELECT id FROM "Services" WHERE name = 'todoist'),
+        '[{"field": "content", "description": "The title of the task"},
+            {"field": "description", "description": "The description of the task"}]'),
+    ('create_project', 'Creates a new project in Todoist', '{"reaction": "create_project"}',
+        true, NOW(), (SELECT id FROM "Services" WHERE name = 'todoist'),
+        '[{"field": "name", "description": "Name of the project"},
+        {"field": "color", "description": "Color of the project (optional)"}]');
