@@ -51,7 +51,7 @@ export async function newTask(
           console.log(`New Task Detected: ${task.title || 'No Title'}`);
           const ingredients = await createIngredientsAction(task);
 
-          await actionService.executeReactionsBis(ingredients, reaction);
+          await actionService.executeReactions(ingredients, reaction);
         }
       }
 

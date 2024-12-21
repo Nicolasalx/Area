@@ -93,7 +93,7 @@ export class GithubActionService {
           { field: 'repository_name', value: repositoryName || 'No name' },
           { field: 'trigger_date', value: getTriggerDate() },
         ];
-        await this.actionService.executeReactionsBis(ingredients, reaction);
+        await this.actionService.executeReactions(ingredients, reaction);
       }
     } catch (error) {
       console.error('Error fetching pull requests from GitHub:', error.message);
@@ -154,7 +154,7 @@ export class GithubActionService {
           { field: 'repository_name', value: repositoryName || 'No name' },
           { field: 'trigger_date', value: getTriggerDate() },
         ];
-        await this.actionService.executeReactionsBis(ingredients, reaction);
+        await this.actionService.executeReactions(ingredients, reaction);
       }
     } catch (error) {
       console.error('Error fetching branches from GitHub:', error.message);
@@ -231,7 +231,7 @@ export class GithubActionService {
           { field: 'trigger_date', value: getTriggerDate() },
         ];
 
-        await this.actionService.executeReactionsBis(ingredients, reaction);
+        await this.actionService.executeReactions(ingredients, reaction);
       }
     } catch (error) {
       console.error('Error fetching commits from GitHub:', error.message);

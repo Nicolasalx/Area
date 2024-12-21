@@ -50,7 +50,7 @@ export async function newPlaylistYoutube(
 
           const ingredients = await createIngredientsAction(playlist);
 
-          await actionService.executeReactionsBis(ingredients, reaction);
+          await actionService.executeReactions(ingredients, reaction);
         }
       }
 

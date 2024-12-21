@@ -67,7 +67,7 @@ export async function newCalendarEvent(
           );
 
           const ingredients = await createIngredientsAction(event);
-          await actionService.executeReactionsBis(ingredients, reaction);
+          await actionService.executeReactions(ingredients, reaction);
         }
       }
 
