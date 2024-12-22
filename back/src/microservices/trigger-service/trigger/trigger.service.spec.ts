@@ -16,6 +16,8 @@ import { SchedulerActionHandler } from '@trigger-service/handler/sheduler.handle
 import { RssActionHandler } from '@trigger-service/handler/rss.handler';
 import { SlackActionHandler } from '@trigger-service/handler/slack.handler';
 import { SlackActionService } from '@action-service/slack/slack.service';
+import { TrelloActionService } from '@action-service/trello/trello.service';
+import { TrelloActionHandler } from '@trigger-service/handler/trello.handler';
 
 describe('TriggerService', () => {
   let service: TriggerService;
@@ -53,12 +55,17 @@ describe('TriggerService', () => {
           provide: SlackActionService,
           useValue: {},
         },
+        {
+          provide: TrelloActionService,
+          useValue: {},
+        },
 
         GithubActionHandler,
         GoogleActionHandler,
         SchedulerActionHandler,
         RssActionHandler,
         SlackActionHandler,
+        TrelloActionHandler,
 
         {
           provide: SchedulerRegistry,
