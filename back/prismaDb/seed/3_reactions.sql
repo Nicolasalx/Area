@@ -22,4 +22,9 @@ VALUES
         (SELECT id FROM "Services" WHERE "name" = 'slack' LIMIT 1),
         '[{"field": "channelName", "description": "Name of the Slack channel"},
           {"field": "fileContent", "description": "Content to upload as file"},
-          {"field": "filename", "description": "Name of the file"}]');
+          {"field": "filename", "description": "Name of the file"}]'),
+
+-- trello
+    ('create_new_card', 'Create a new card on trello.', '{"reaction": "create_new_card"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'trello' LIMIT 1), '[{"field": "board_short_link", "description": "Short link of the board on trello"}, {"field": "card_name", "description": "Name of the card created on trello"}]'),
+    ('create_new_list', 'Create a new list on trello.', '{"reaction": "create_new_list"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'trello' LIMIT 1), '[{"field": "board_short_link", "description": "Short link of the board on trello"}, {"field": "list_name", "description": "Name of the list on trello"}]'),
+    ('remove_card', 'Remove a card from a board on trello.', '{"reaction": "remove_card"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'trello' LIMIT 1), '[{"field": "board_short_link", "description": "Short link of the board on trello"}, {"field": "card_name", "description": "Name of the card removed on trello"}]');

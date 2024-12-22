@@ -5,4 +5,5 @@ VALUES
     ('discord', 'Discord webhook.', true, NOW()),
     ('time', 'Time with cron and timer.', true, NOW()),
     ('rss', 'RSS feed monitoring.', true, NOW()),
-    ('slack', 'Slack bot.', true, NOW());
+    ('slack', 'Slack bot.', true, NOW()),
+    ('trello', 'Managing board and card in Trello.', true, NOW());

@@ -5,6 +5,7 @@ import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { ReactionDto } from '@common/dto/reaction.dto';
 import { SlackReactionService } from '@reaction-service/slack/slack.service';
 import { IReactionHandler } from '@reaction-service/handler/base.handler';
+import { TrelloReactionService } from '@reaction-service/trello/trello.service';
 
 @Injectable()
 export class ReactionService {
@@ -15,8 +16,14 @@ export class ReactionService {
     private readonly discordService: DiscordReactionService,
     private readonly slackService: SlackReactionService,
     private readonly prisma: PrismaService,
+    private readonly trelloService: TrelloReactionService,
   ) {
-    this.handlers = [googleService, discordService, slackService];
+    this.handlers = [
+      googleService,
+      discordService,
+      slackService,
+      trelloService,
+    ];
   }
 
   async getReactions(): Promise<ReactionDto[]> {

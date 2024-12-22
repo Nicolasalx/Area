@@ -38,4 +38,11 @@ VALUES
           {"field": "reaction", "description": "Emoji reaction to monitor for (e.g. thumbsup)", "required": true}]'),
     ('check_file_shared', 'Action triggered when a file is shared in channel',
         true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'slack' LIMIT 1),
-        '[{"field": "channelName", "description": "Name of the Slack channel to monitor", "required": true}]');
+        '[{"field": "channelName", "description": "Name of the Slack channel to monitor", "required": true}]'),
+
+-- trello
+    ('new_card_created', 'Action triggered when a card is created on a trello board.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'trello' LIMIT 1), '[{"field": "board_short_link", "description": "Short link of the board", "required": true}]'),
+    ('new_card_deleted', 'Action triggered when a card is deleted on a trello board.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'trello' LIMIT 1), '[{"field": "board_short_link", "description": "Short link of the board", "required": true}]'),
+    ('new_card_modified', 'Action triggered when a card is modified on a trello board.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'trello' LIMIT 1), '[{"field": "board_short_link", "description": "Short link of the board", "required": true}]'),
+    ('new_card_moved', 'Action triggered when a card is moved on a trello board.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'trello' LIMIT 1), '[{"field": "board_short_link", "description": "Short link of the board", "required": true}]'),
+    ('new_card_label', 'Action triggered when a label is added on a card on a trello board.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'trello' LIMIT 1), '[{"field": "board_short_link", "description": "Short link of the board", "required": true}]');
