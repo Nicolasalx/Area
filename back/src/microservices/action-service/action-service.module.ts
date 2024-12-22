@@ -12,6 +12,8 @@ import { GoogleActionService } from './google/google.service';
 import { RssActionService } from './rss/rss.service';
 import { SlackActionService } from './slack/slack.service';
 import { SlackReactionService } from '@reaction-service/slack/slack.service';
+import { TrelloActionService } from './trello/trello.service';
+import { TrelloReactionService } from '@reaction-service/trello/trello.service';
 import { TodoistReactionService } from '@reaction-service/todoist/todoist.service';
 
 @Module({
@@ -27,6 +29,8 @@ import { TodoistReactionService } from '@reaction-service/todoist/todoist.servic
     RssActionService,
     SlackActionService,
     SlackReactionService,
+    TrelloActionService,
+    TrelloReactionService,
     TodoistReactionService,
   ],
   controllers: [ActionController],

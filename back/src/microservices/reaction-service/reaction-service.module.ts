@@ -6,6 +6,7 @@ import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { DiscordReactionService } from './discord/discord.service';
 import { SharedAuthModule } from '../../shared/auth/auth.module';
 import { SlackReactionService } from './slack/slack.service';
+import { TrelloReactionService } from './trello/trello.service';
 import { TodoistReactionService } from './todoist/todoist.service';
 
 @Module({
@@ -17,6 +18,7 @@ import { TodoistReactionService } from './todoist/todoist.service';
     PrismaService,
     DiscordReactionService,
     SlackReactionService,
+    TrelloReactionService,
     TodoistReactionService,
   ],
 })

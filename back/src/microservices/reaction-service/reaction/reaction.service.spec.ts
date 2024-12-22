@@ -4,6 +4,7 @@ import { GoogleReactionService } from '../google/google.service';
 import { DiscordReactionService } from '../discord/discord.service';
 import { PrismaServiceModule } from '@prismaService/prisma-service.module';
 import { SlackReactionService } from '@reaction-service/slack/slack.service';
+import { TrelloReactionService } from '@reaction-service/trello/trello.service';
 import { TodoistReactionService } from '@reaction-service/todoist/todoist.service';
 
 describe('ReactionService', () => {
@@ -27,6 +28,10 @@ describe('ReactionService', () => {
         },
         {
           provide: TodoistReactionService,
+          useValue: {},
+        },
+        {
+          provide: TrelloReactionService,
           useValue: {},
         },
       ],

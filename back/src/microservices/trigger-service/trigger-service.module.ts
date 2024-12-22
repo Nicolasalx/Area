@@ -18,6 +18,8 @@ import { SchedulerActionHandler } from './handler/sheduler.handler';
 import { RssActionHandler } from './handler/rss.handler';
 import { SlackActionService } from '@action-service/slack/slack.service';
 import { SlackActionHandler } from './handler/slack.handler';
+import { TrelloActionService } from '@action-service/trello/trello.service';
+import { TrelloActionHandler } from './handler/trello.handler';
 import { TodoistActionHandler } from './handler/todoist.handler';
 
 @Module({
@@ -32,6 +34,7 @@ import { TodoistActionHandler } from './handler/todoist.handler';
     CronActionService,
     RssActionService,
     SlackActionService,
+    TrelloActionService,
     TodoistActionService,
 
     GithubActionHandler,
@@ -39,6 +42,7 @@ import { TodoistActionHandler } from './handler/todoist.handler';
     SchedulerActionHandler,
     RssActionHandler,
     SlackActionHandler,
+    TrelloActionHandler,
     TodoistActionHandler,
   ],
   controllers: [TriggerController],
