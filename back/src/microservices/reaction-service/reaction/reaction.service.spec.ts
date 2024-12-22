@@ -5,6 +5,7 @@ import { DiscordReactionService } from '../discord/discord.service';
 import { PrismaServiceModule } from '@prismaService/prisma-service.module';
 import { SlackReactionService } from '@reaction-service/slack/slack.service';
 import { TrelloReactionService } from '@reaction-service/trello/trello.service';
+import { TodoistReactionService } from '@reaction-service/todoist/todoist.service';
 
 describe('ReactionService', () => {
   let service: ReactionService;
@@ -23,6 +24,10 @@ describe('ReactionService', () => {
         },
         {
           provide: SlackReactionService,
+          useValue: {},
+        },
+        {
+          provide: TodoistReactionService,
           useValue: {},
         },
         {

@@ -4,6 +4,7 @@ import { DiscordReactionService } from '../discord/discord.service';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { ReactionDto } from '@common/dto/reaction.dto';
 import { SlackReactionService } from '@reaction-service/slack/slack.service';
+import { TodoistReactionService } from '@reaction-service/todoist/todoist.service';
 import { IReactionHandler } from '@reaction-service/handler/base.handler';
 import { TrelloReactionService } from '@reaction-service/trello/trello.service';
 
@@ -15,6 +16,7 @@ export class ReactionService {
     private readonly googleService: GoogleReactionService,
     private readonly discordService: DiscordReactionService,
     private readonly slackService: SlackReactionService,
+    private readonly todoistService: TodoistReactionService,
     private readonly prisma: PrismaService,
     private readonly trelloService: TrelloReactionService,
   ) {
@@ -23,6 +25,7 @@ export class ReactionService {
       discordService,
       slackService,
       trelloService,
+      todoistService,
     ];
   }
 

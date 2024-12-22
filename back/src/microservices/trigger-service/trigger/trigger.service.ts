@@ -11,6 +11,7 @@ import { SchedulerActionHandler } from '@trigger-service/handler/sheduler.handle
 import { RssActionHandler } from '@trigger-service/handler/rss.handler';
 import { SlackActionHandler } from '@trigger-service/handler/slack.handler';
 import { TrelloActionHandler } from '@trigger-service/handler/trello.handler';
+import { TodoistActionHandler } from '@trigger-service/handler/todoist.handler';
 
 @Injectable()
 export class TriggerService implements OnModuleInit {
@@ -24,6 +25,7 @@ export class TriggerService implements OnModuleInit {
     private readonly rssHandler: RssActionHandler,
     private readonly slackHandler: SlackActionHandler,
     private readonly trelloHandler: TrelloActionHandler,
+    private readonly todoistHandler: TodoistActionHandler,
   ) {
     this.handlers = [
       githubHandler,
@@ -32,6 +34,7 @@ export class TriggerService implements OnModuleInit {
       rssHandler,
       slackHandler,
       trelloHandler,
+      todoistHandler,
     ];
   }
 

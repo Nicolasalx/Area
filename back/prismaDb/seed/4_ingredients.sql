@@ -13,6 +13,7 @@ VALUES
     ('element_name', 'Name of the item on Google Drive'),
     ('element_type', 'Type of the item on Google Drive'),
     ('trigger_date', 'Date and time the trigger was activated'),
+<<<<<<< HEAD
 
 -- trello
     ('card_name', 'Name of the trello card'),
@@ -22,6 +23,11 @@ VALUES
     ('to_list_id', 'ID of the list after moved'),
     ('new_labels', 'ID of the list after moved')
 
+=======
+-- todoist
+    ('task_description', 'Description of the Todoist task'),
+    ('task_priority', 'Priority level of the Todoist task')
+>>>>>>> 6a24186cd4b11de75b139a469055d4c21ce46bce
 RETURNING "id";
 
 INSERT INTO "ActionsIngredients" ("actionId", "ingredientId")
@@ -74,4 +80,13 @@ VALUES
     ((SELECT id FROM "Actions" WHERE "name" = 'new_card_label' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'card_name' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'new_card_label' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'card_url' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'new_card_label' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'new_labels' LIMIT 1)),
-    ((SELECT id FROM "Actions" WHERE "name" = 'new_card_label' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1));
+    ((SELECT id FROM "Actions" WHERE "name" = 'new_card_label' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1)),
+-- todoist
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_new_task' LIMIT 1),
+        (SELECT id FROM "Ingredients" WHERE "name" = 'task_title' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_new_task' LIMIT 1),
+        (SELECT id FROM "Ingredients" WHERE "name" = 'task_description' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_new_task' LIMIT 1),
+        (SELECT id FROM "Ingredients" WHERE "name" = 'task_priority' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_new_task' LIMIT 1),
+        (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1));

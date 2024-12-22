@@ -7,6 +7,7 @@ import { DiscordReactionService } from './discord/discord.service';
 import { SharedAuthModule } from '../../shared/auth/auth.module';
 import { SlackReactionService } from './slack/slack.service';
 import { TrelloReactionService } from './trello/trello.service';
+import { TodoistReactionService } from './todoist/todoist.service';
 
 @Module({
   imports: [SharedAuthModule],
@@ -18,6 +19,7 @@ import { TrelloReactionService } from './trello/trello.service';
     DiscordReactionService,
     SlackReactionService,
     TrelloReactionService,
+    TodoistReactionService,
   ],
 })
 export class ReactionServiceModule {}

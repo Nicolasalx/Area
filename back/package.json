@@ -27,6 +27,7 @@
     "get:env": "doppler secrets download --project area-all --config dev_back --format env --no-file > .env"
   },
   "dependencies": {
+    "@doist/todoist-api-typescript": "^3.0.3",
     "@nestjs/axios": "^3.1.2",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.3.0",

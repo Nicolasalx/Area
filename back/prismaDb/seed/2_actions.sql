@@ -45,4 +45,7 @@ VALUES
     ('new_card_deleted', 'Action triggered when a card is deleted on a trello board.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'trello' LIMIT 1), '[{"field": "board_short_link", "description": "Short link of the board", "required": true}]'),
     ('new_card_modified', 'Action triggered when a card is modified on a trello board.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'trello' LIMIT 1), '[{"field": "board_short_link", "description": "Short link of the board", "required": true}]'),
     ('new_card_moved', 'Action triggered when a card is moved on a trello board.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'trello' LIMIT 1), '[{"field": "board_short_link", "description": "Short link of the board", "required": true}]'),
-    ('new_card_label', 'Action triggered when a label is added on a card on a trello board.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'trello' LIMIT 1), '[{"field": "board_short_link", "description": "Short link of the board", "required": true}]');
+    ('new_card_label', 'Action triggered when a label is added on a card on a trello board.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'trello' LIMIT 1), '[{"field": "board_short_link", "description": "Short link of the board", "required": true}]'),
+-- Todoist
+    ('check_new_task', 'Triggered when a new task is created',
+        true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'todoist' LIMIT 1), '[]');
