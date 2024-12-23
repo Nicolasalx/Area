@@ -36,4 +36,7 @@ VALUES
     ('create_project', 'Creates a new project in Todoist', '{"reaction": "create_project"}',
         true, NOW(), (SELECT id FROM "Services" WHERE name = 'todoist'),
         '[{"field": "name", "description": "Name of the project"},
-        {"field": "color", "description": "Color of the project (optional)"}]');
+        {"field": "color", "description": "Color of the project (optional)"}]'),
+
+-- twilio
+    ('send_sms', 'Send message to a phone number.', '{"reaction": "send_message"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'twilio' LIMIT 1), '[{"field": "phone_number", "description": "Phone number wich will receive the message | Set the prefix (+33) else the request will not be good | A good phone number is (+33783119455)"}, {"field": "message", "description": "Message to send at the phone number"}]');

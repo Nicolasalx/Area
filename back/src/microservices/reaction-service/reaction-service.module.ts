@@ -8,6 +8,7 @@ import { SharedAuthModule } from '../../shared/auth/auth.module';
 import { SlackReactionService } from './slack/slack.service';
 import { TrelloReactionService } from './trello/trello.service';
 import { TodoistReactionService } from './todoist/todoist.service';
+import { TwilioReactionService } from './twilio/twilio.service';
 
 @Module({
   imports: [SharedAuthModule],
@@ -20,6 +21,7 @@ import { TodoistReactionService } from './todoist/todoist.service';
     SlackReactionService,
     TrelloReactionService,
     TodoistReactionService,
+    TwilioReactionService,
   ],
 })
 export class ReactionServiceModule {}
