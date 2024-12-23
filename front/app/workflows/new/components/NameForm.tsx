@@ -42,13 +42,17 @@ export default function NameForm({
           className=""
           placeholder="Enter a name for your area"
           value={name}
+          label="Name"
           onChange={(e) => onNameChange(e.target.value)}
         />
         {selectedAction && selectedReaction && (
           <div className="mt-6 space-y-4">
+            <Text variant="h6" className="mt-12 text-gray-500">
+              Workflow Configuration Summary:
+            </Text>
             <div className="flex items-center gap-3 rounded-lg border border-gray-200 p-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
-                {getServiceIcon(selectedAction.service?.name ?? "")}
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100">
+                {getServiceIcon(selectedAction.service?.name ?? "", "h-8 w-8")}
               </div>
               <div className="flex-1">
                 <Text className="font-medium">
@@ -63,8 +67,11 @@ export default function NameForm({
               <ArrowRight className="h-6 w-6 text-gray-400" />
             </div>
             <div className="flex items-center gap-3 rounded-lg border border-gray-200 p-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
-                {getServiceIcon(selectedReaction.service?.name ?? "")}
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100">
+                {getServiceIcon(
+                  selectedReaction.service?.name ?? "",
+                  "h-8 w-8",
+                )}
               </div>
               <div className="flex-1">
                 <Text className="font-medium">

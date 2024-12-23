@@ -12,7 +12,9 @@ export async function GET(request: Request) {
 
   // Get user info and token
   return axios
-    .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/github/callback/?code=${code}`)
+    .get(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/github/callback/?code=${code}`,
+    )
     .then((res) => res.data)
     .then(async (data) => {
       const sessionToken = data.token;

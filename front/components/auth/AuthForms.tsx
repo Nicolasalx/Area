@@ -13,7 +13,8 @@ type ValidationFields = {
 };
 
 export const LoginForm = () => {
-  const { login, loginWithGoogle, loginWithGithub, loginWithDiscord, error } = useAuth();
+  const { login, loginWithGoogle, loginWithGithub, loginWithDiscord, error } =
+    useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [formValidation, setFormValidation] = useState<ValidationFields>({
     email: false,
@@ -167,7 +168,6 @@ export const LoginForm = () => {
               </svg>
             }
           >
-
             <Text color="white">Sign in with Github</Text>
           </Button>
 
@@ -190,7 +190,6 @@ export const LoginForm = () => {
               </svg>
             }
           >
-
             <Text color="white">Sign in with Discord</Text>
           </Button>
         </div>
