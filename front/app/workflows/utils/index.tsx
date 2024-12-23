@@ -1,5 +1,38 @@
 import { Clock, Rss, Settings } from "lucide-react";
 
+export const getServiceColor = (
+  service: string,
+  intensity: 100 | 500 = 500,
+): string => {
+  switch (service) {
+    case "google":
+      return `blue-${intensity}`;
+    case "github":
+      return `gray-${intensity === 100 ? 100 : 600}`;
+    case "time":
+      return `gray-${intensity === 100 ? 100 : 600}`;
+    case "discord":
+      return `indigo-${intensity}`;
+    case "slack":
+      return `emerald-${intensity}`;
+    case "rss":
+      return `orange-${intensity}`;
+    default:
+      return intensity === 100 ? "white" : `gray-${intensity}`;
+  }
+};
+
+export const getServiceTextColor = (service: string): string => {
+  return `text-${getServiceColor(service)}`;
+};
+
+export const getServiceGradient = (
+  service: string,
+  position: "from" | "to",
+): string => {
+  return `${position}-${getServiceColor(service, 100)}`;
+};
+
 export const getServiceIcon = (
   serviceName: string,
   size: string = "h-4 w-4",
@@ -10,7 +43,7 @@ export const getServiceIcon = (
         <svg
           viewBox="0 0 512 512"
           xmlns="http://www.w3.org/2000/svg"
-          className={size + " text-gray-500"}
+          className={size + " " + getServiceTextColor("google")}
           fill="currentColor"
         >
           <path d="M32.582 370.734C15.127 336.291 5.12 297.425 5.12 256c0-41.426 10.007-80.291 27.462-114.735C74.705 57.484 161.047 0 261.12 0c69.12 0 126.836 25.367 171.287 66.793l-73.31 73.309c-26.763-25.135-60.276-38.168-97.977-38.168-66.56 0-123.113 44.917-143.36 105.426-5.12 15.36-8.146 31.65-8.146 48.64 0 16.989 3.026 33.28 8.146 48.64l-.303.232h.303c20.247 60.51 76.8 105.426 143.36 105.426 34.443 0 63.534-9.31 86.341-24.67 27.23-18.152 45.382-45.148 51.433-77.032H261.12v-99.142h241.105c3.025 16.757 4.654 34.211 4.654 52.364 0 77.963-27.927 143.592-76.334 188.276-42.356 39.098-100.305 61.905-169.425 61.905-100.073 0-186.415-57.483-228.538-141.032v-.233z" />
@@ -21,7 +54,7 @@ export const getServiceIcon = (
         <svg
           viewBox="0 0 98 96"
           xmlns="http://www.w3.org/2000/svg"
-          className={size + " text-gray-500"}
+          className={size + " " + getServiceTextColor("github")}
           fill="currentColor"
         >
           <path
@@ -32,13 +65,13 @@ export const getServiceIcon = (
         </svg>
       );
     case "time":
-      return <Clock className={size + " text-gray-500"} />;
+      return <Clock className={size + " " + getServiceTextColor("time")} />;
     case "discord":
       return (
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 127.14 96.36"
-          className={size + " text-gray-500"}
+          className={size + " " + getServiceTextColor("discord")}
           fill="currentColor"
         >
           <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z" />
@@ -50,7 +83,7 @@ export const getServiceIcon = (
           width="24"
           height="24"
           viewBox="0 0 24 24"
-          className={size + " text-gray-500"}
+          className={size + " " + getServiceTextColor("slack")}
           fill="currentColor"
         >
           <path
@@ -61,28 +94,15 @@ export const getServiceIcon = (
         </svg>
       );
     case "rss":
-      return <Rss className={size + " text-gray-500"} />;
+      return <Rss className={size + " " + getServiceTextColor("rss")} />;
     default:
-      return <Settings className={size + " text-gray-500"} />;
+      return (
+        <Settings className={size + " " + getServiceTextColor("settings")} />
+      );
   }
 };
 
-export const getRandomGradient = () => {
-  const colors = [
-    "from-blue-50",
-    "from-green-50",
-    "from-purple-50",
-    "from-pink-50",
-    "from-yellow-50",
-    "from-indigo-50",
-    "from-red-50",
-    "from-teal-50",
-  ];
-  return colors[Math.floor(Math.random() * colors.length)];
-};
-
 export function formatActionReactionName(name: string | undefined) {
-  if (name === undefined)
-    return ""
+  if (name === undefined) return "";
   return name.replaceAll("_", " ").replace(/^\w/, (c) => c.toUpperCase());
 }

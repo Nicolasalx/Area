@@ -42,7 +42,7 @@ export const LoginForm = () => {
   };
 
   return (
-    <Card className="w-full max-w-md p-8 overflow-y-auto">
+    <Card className="w-full max-w-md overflow-y-auto p-8">
       <form onSubmit={handleSubmit}>
         <div className="text-center">
           <Text variant="h2">Welcome</Text>
@@ -50,7 +50,7 @@ export const LoginForm = () => {
             Sign in to your account
           </Text>
         </div>
-        <div className="space-y-2 my-4">
+        <div className="my-4 space-y-2">
           {error && (
             <div className="rounded-lg bg-red-50 p-4">
               <div className="flex items-center gap-2">
@@ -225,7 +225,7 @@ export const RegisterForm = () => {
             </div>
           </div>
         )}
-        <div className="space-y-2 mb-4">
+        <div className="mb-4 space-y-2">
           <ValidatedInput
             name="name"
             label="Full Name"

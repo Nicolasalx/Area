@@ -43,7 +43,7 @@ export default function TriggerList({
           }`}
           onClick={() => onSelect(trigger)}
         >
-          <Card.Header className="p-6 flex flex-col gap-1">
+          <Card.Header className="flex flex-col gap-1 p-6">
             <div className="flex items-center justify-between">
               <Text variant="h4" className="text-lg font-medium">
                 {formatActionReactionName(trigger.name)}

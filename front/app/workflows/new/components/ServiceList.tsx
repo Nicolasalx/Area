@@ -109,7 +109,9 @@ export default function ServiceList({
                     </Text>
                   </div>
                 </div>
-                <Text variant="small" color="gray">{service.description}</Text>
+                <Text variant="small" color="gray">
+                  {service.description}
+                </Text>
               </div>
             </Card.Body>
           </Card>

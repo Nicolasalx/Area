@@ -134,7 +134,7 @@ export default function WorkflowsPage() {
   };
 
   return (
-    <div className=" mx-4 py-8">
+    <div className="mx-4 py-8">
       <div className="mb-8 flex items-center justify-between">
         <Text variant="h2">My Areas</Text>
         <Button
