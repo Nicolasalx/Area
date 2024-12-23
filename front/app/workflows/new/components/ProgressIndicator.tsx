@@ -41,7 +41,7 @@ export default function ProgressIndicator({
               {step.label}
             </Text>
             <div
-              className={`h-1 w-16 rounded-full transition-colors duration-300 ${
+              className={`h-1 w-16 rounded-full transition-colors ${
                 isStepComplete(step.key)
                   ? `bg-${activeColor}`
                   : `bg-${inactiveColor}`

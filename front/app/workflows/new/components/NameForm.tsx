@@ -3,7 +3,7 @@
 import Card from "@/components/ui/Card";
 import Text from "@/components/ui/Text";
 import { ArrowRight } from "lucide-react";
-import { getServiceIcon } from "../../utils";
+import { formatActionReactionName, getServiceIcon } from "../../utils";
 import ValidatedInput from "@/components/ui/ValidatedInput";
 
 interface NameFormProps {
@@ -51,7 +51,9 @@ export default function NameForm({
                 {getServiceIcon(selectedAction.service?.name ?? "")}
               </div>
               <div className="flex-1">
-                <Text className="font-medium">{selectedAction.name}</Text>
+                <Text className="font-medium">
+                  {formatActionReactionName(selectedAction.name)}
+                </Text>
                 <Text variant="caption" className="text-gray-500">
                   {selectedAction.service?.name}
                 </Text>
@@ -65,7 +67,9 @@ export default function NameForm({
                 {getServiceIcon(selectedReaction.service?.name ?? "")}
               </div>
               <div className="flex-1">
-                <Text className="font-medium">{selectedReaction.name}</Text>
+                <Text className="font-medium">
+                  {formatActionReactionName(selectedReaction.name)}
+                </Text>
                 <Text variant="caption" className="text-gray-500">
                   {selectedReaction.service?.name}
                 </Text>
