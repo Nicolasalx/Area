@@ -13,7 +13,7 @@ export async function getToken(
       where: {
         userId_serviceId: {
           userId: userId,
-          serviceId: await getServiceId(service),
+          serviceId: serviceId,
         },
       },
     });

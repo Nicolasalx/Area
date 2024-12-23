@@ -10,7 +10,6 @@ import {
 import { ReactionDto } from '@common/dto/reaction.dto';
 import { JwtAuthGuard } from '../../../shared/auth/jwt-auth.guard';
 import { GoogleReactionService } from '@reaction-service/google/google.service';
-import { google } from 'googleapis';
 
 class HandleReactionDto {
   refreshToken: string;
