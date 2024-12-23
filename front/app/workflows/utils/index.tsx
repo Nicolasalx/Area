@@ -2,15 +2,15 @@ import { Clock, Rss, Settings } from "lucide-react";
 
 export const getServiceColor = (
   service: string,
-  intensity: 100 | 500 = 500,
+  intensity: 50 | 500 = 500,
 ): string => {
   switch (service) {
     case "google":
       return `blue-${intensity}`;
     case "github":
-      return `gray-${intensity === 100 ? 100 : 600}`;
+      return `gray-${intensity === 50 ? 100 : 600}`;
     case "time":
-      return `gray-${intensity === 100 ? 100 : 600}`;
+      return `gray-${intensity === 50 ? 100 : 600}`;
     case "discord":
       return `indigo-${intensity}`;
     case "slack":
@@ -18,7 +18,7 @@ export const getServiceColor = (
     case "rss":
       return `orange-${intensity}`;
     default:
-      return intensity === 100 ? "white" : `gray-${intensity}`;
+      return intensity === 50 ? "white" : `gray-${intensity}`;
   }
 };
 
@@ -30,13 +30,14 @@ export const getServiceGradient = (
   service: string,
   position: "from" | "to",
 ): string => {
-  return `${position}-${getServiceColor(service, 100)}`;
+  return `${position}-${getServiceColor(service, 50)}`;
 };
 
 export const getServiceIcon = (
-  serviceName: string,
+  serviceName: string | undefined,
   size: string = "h-4 w-4",
 ) => {
+  if (!serviceName) return null;
   switch (serviceName.toLowerCase()) {
     case "google":
       return (
