@@ -3,7 +3,7 @@ import { HttpService } from '@nestjs/axios';
 import {
   UserDiscordResponse,
   UserOAuthResponse,
-} from '../../../common/interfaces/user/user';
+} from '@common/interfaces/user/user';
 import { IServideOauth } from '../oauth/IServiceOauth';
 
 @Injectable()

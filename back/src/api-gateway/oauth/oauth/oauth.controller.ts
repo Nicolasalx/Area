@@ -37,7 +37,6 @@ export class OAuthController {
   })
   @Get('github/callback')
   async getGithubOAuth(@Query() query: any) {
-    console.log('INSIDE: getGithubOAuth');
     return await this.oauthService.getServiceOAuth(
       query.code,
       ConnectionType.GITHUB,
@@ -51,7 +50,6 @@ export class OAuthController {
   })
   @Get('discord/callback')
   async getDiscordOAuth(@Query() query: any) {
-    console.log('INSIDE: getDiscordOAuth');
     return await this.oauthService.getServiceOAuth(
       query.code,
       ConnectionType.DISCORD,
