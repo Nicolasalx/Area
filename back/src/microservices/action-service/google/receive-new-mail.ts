@@ -1,4 +1,5 @@
 import { IngredientsAction } from '@common/interfaces/ingredientsAction';
+import { getToken, getUserId } from '@common/utils/token.utils';
 import { getTriggerDate } from '@trigger-service/handler/get-trigger-date';
 import { google } from 'googleapis';
 
@@ -40,7 +41,8 @@ export async function receiveNewEmail(
   const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
   const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
   const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;
-  const REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN;
+  const { workflowId } = action;
+  const REFRESH_TOKEN = await getToken(await getUserId(workflowId), 'google');
 
   try {
     const oAuth2Client = new google.auth.OAuth2(
