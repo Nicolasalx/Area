@@ -4,7 +4,7 @@ import {
   EmailGithubResponse,
   UserGithubResponse,
   UserOAuthResponse,
-} from '../../../common/interfaces/user/user';
+} from '@common/interfaces/user/user';
 import { IServideOauth } from '../oauth/IServiceOauth';
 
 @Injectable()

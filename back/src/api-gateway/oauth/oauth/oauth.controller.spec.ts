@@ -6,6 +6,7 @@ import { GoogleService } from '../google/google.service';
 import { GithubService } from '../github/github.service';
 import { HttpService } from '@nestjs/axios';
 import { UserService } from '@userService/user/user.service';
+import { DiscordService } from '../discord/discord.service';
 
 describe('OAuthController', () => {
   let controller: OAuthController;
@@ -18,6 +19,7 @@ describe('OAuthController', () => {
         OAuthService,
         GoogleService,
         GithubService,
+        DiscordService,
         {
           provide: JwtService,
           useValue: {
@@ -38,6 +40,27 @@ describe('OAuthController', () => {
           useValue: {
             getUserByServiceId: jest.fn(),
             createUser: jest.fn(),
+          },
+        },
+        {
+          provide: GoogleService,
+          useValue: {
+            requestOAuthToken: jest.fn(),
+            requestUserInfo: jest.fn(),
+          },
+        },
+        {
+          provide: GithubService,
+          useValue: {
+            requestOAuthToken: jest.fn(),
+            requestUserInfo: jest.fn(),
+          },
+        },
+        {
+          provide: DiscordService,
+          useValue: {
+            requestOAuthToken: jest.fn(),
+            requestUserInfo: jest.fn(),
           },
         },
       ],

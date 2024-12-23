@@ -6,10 +6,11 @@ import { OAuthService } from './oauth/oauth.service';
 import { OAuthController } from './oauth/oauth.controller';
 import { UserServiceModule } from '@userService/user-service.module';
 import { JwtConfigModule } from 'src/shared/jwt/jwt-config.module';
+import { DiscordService } from './discord/discord.service';
 
 @Module({
   imports: [JwtConfigModule, UserServiceModule, HttpModule],
-  providers: [GithubService, GoogleService, OAuthService],
+  providers: [GithubService, GoogleService, DiscordService, OAuthService],
   controllers: [OAuthController],
 })
 export class OAuthModule {}
