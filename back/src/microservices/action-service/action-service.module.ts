@@ -16,7 +16,6 @@ import { TrelloActionService } from './trello/trello.service';
 import { TrelloReactionService } from '@reaction-service/trello/trello.service';
 import { TodoistReactionService } from '@reaction-service/todoist/todoist.service';
 import { TwilioReactionService } from '@reaction-service/twilio/twilio.service';
-import { TwilioActionService } from './twilio/twilio.service';
 
 @Module({
   imports: [PrismaServiceModule, SharedAuthModule],
@@ -35,7 +34,6 @@ import { TwilioActionService } from './twilio/twilio.service';
     TrelloReactionService,
     TodoistReactionService,
     TwilioReactionService,
-    TwilioActionService,
   ],
   controllers: [ActionController],
 })

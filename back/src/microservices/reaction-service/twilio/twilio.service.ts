@@ -22,21 +22,20 @@ export class TwilioReactionService implements IReactionHandler {
     switch (reaction.toLowerCase()) {
       case 'send_sms':
         return this.sendSms(data);
+      case 'send_mms':
+        return this.sendMms(data);
       default:
         return 'Reaction not recognized for Twilio';
     }
   }
 
-  private async sendSms(data: {
-    phone_number: string;
-    message: string;
-  }): Promise<string> {
+  private async sendSms(data: { message: string }): Promise<string> {
     try {
       const response = await axios.post(
         `https://api.twilio.com/2010-04-01/Accounts/${this.accountSid}/Messages.json`,
         new URLSearchParams({
           From: this.twilioPhoneNumber,
-          To: data.phone_number,
+          To: '+33783119455',
           Body: data.message,
         }),
         {
@@ -55,6 +54,38 @@ export class TwilioReactionService implements IReactionHandler {
     } catch (error) {
       console.error('Error sending SMS:', error);
       return 'Failed to send SMS';
+    }
+  }
+
+  private async sendMms(data: {
+    message: string;
+    img_url: string;
+  }): Promise<string> {
+    try {
+      const response = await axios.post(
+        `https://api.twilio.com/2010-04-01/Accounts/${this.accountSid}/Messages.json`,
+        new URLSearchParams({
+          From: this.twilioPhoneNumber,
+          To: '+33783119455',
+          Body: data.message,
+          MediaUrl: data.img_url,
+        }),
+        {
+          auth: {
+            username: this.accountSid,
+            password: this.authToken,
+          },
+        },
+      );
+
+      if (response.status === 201) {
+        return 'MMS sent successfully';
+      } else {
+        return `Error: ${response.statusText}`;
+      }
+    } catch (error) {
+      console.error('Error sending MMS:', error);
+      return 'Failed to send MMS';
     }
   }
 }

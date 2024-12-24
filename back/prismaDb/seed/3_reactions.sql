@@ -39,4 +39,5 @@ VALUES
         {"field": "color", "description": "Color of the project (optional)"}]'),
 
 -- twilio
-    ('send_sms', 'Send message to a phone number.', '{"reaction": "send_message"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'twilio' LIMIT 1), '[{"field": "phone_number", "description": "Phone number wich will receive the message | Set the prefix (+33) else the request will not be good | A good phone number is (+33783119455)"}, {"field": "message", "description": "Message to send at the phone number"}]');
+    ('send_sms', 'Send message to a +33783119455.', '{"reaction": "send_sms"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'twilio' LIMIT 1), '[{"field": "message", "description": "Message to send at the phone number"}]'),
+    ('send_mms', 'Send message with image to +33783119455.', '{"reaction": "send_mms"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'twilio' LIMIT 1), '[{"field": "message", "description": "Message to send at the phone number"}, {"field": "img_url", "description": "Url of the image you want to insert in the message"}]');
