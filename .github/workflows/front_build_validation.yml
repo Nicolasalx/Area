@@ -24,7 +24,9 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
+        working-directory: front
         run: npm install
 
       - name: Build the application
+        working-directory: front
         run: npm run build
