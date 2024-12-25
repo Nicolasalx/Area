@@ -17,15 +17,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Build the application in Node.js container
+        uses: addnab/docker-run-action@v3
         with:
-          node-version: 20
-
-      - name: Install dependencies
-        working-directory: front
-        run: npm install
-
-      - name: Build the application
-        working-directory: front
-        run: npm run build
+          image: node:20
+          options: -v ${{ github.workspace }}/front:/app
+          run: |
+            cd /app
+            npm install
+            npm run build
