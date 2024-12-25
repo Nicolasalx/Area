@@ -3,10 +3,10 @@ name: "Front: Build Validation"
 on:
   push:
     paths:
-      - 'front/**'
+      - "front/**"
   pull_request:
     paths:
-      - 'front/**'
+      - "front/**"
     branches: ["main"]
 
 jobs:
@@ -15,12 +15,13 @@ jobs:
     timeout-minutes: 5
     container:
       image: node:20
-      options: -v ${{ github.workspace }}/front
+      options: -v ${{ github.workspace }}/front:/app
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Install dependencies and build the application
         run: |
+          cd /app
           npm install
           npm run build
