@@ -17,15 +17,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-
-      - name: Install dependencies
-        working-directory: front
-        run: npm install
-
-      - name: Run linter
-        working-directory: front
-        run: npm run lint
+      - name: Set up Node.js using Docker image
+        run: |
+          docker run --rm -v ${{ github.workspace }}/front:/app -w /app node:20-alpine sh -c "
+            npm install &&
+            npm run lint
+          "
