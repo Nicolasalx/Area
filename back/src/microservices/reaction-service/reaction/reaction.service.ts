@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { GoogleReactionService } from '../google/google.service';
 import { DiscordReactionService } from '../discord/discord.service';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { ReactionDto } from '@common/dto/reaction.dto';
@@ -14,7 +13,6 @@ export class ReactionService {
   private handlers: IReactionHandler[];
 
   constructor(
-    private readonly googleService: GoogleReactionService,
     private readonly discordService: DiscordReactionService,
     private readonly slackService: SlackReactionService,
     private readonly todoistService: TodoistReactionService,
@@ -23,7 +21,6 @@ export class ReactionService {
     private readonly twilioService: TwilioReactionService,
   ) {
     this.handlers = [
-      googleService,
       discordService,
       slackService,
       trelloService,

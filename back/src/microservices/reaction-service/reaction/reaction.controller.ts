@@ -9,8 +9,10 @@ import {
 } from '@nestjs/swagger';
 import { ReactionDto } from '@common/dto/reaction.dto';
 import { JwtAuthGuard } from '../../../shared/auth/jwt-auth.guard';
+import { GoogleReactionService } from '@reaction-service/google/google.service';
 
 class HandleReactionDto {
+  refreshToken: string;
   service: string;
   reaction: string;
   data: any;
@@ -21,7 +23,10 @@ class HandleReactionDto {
 @UseGuards(JwtAuthGuard)
 @Controller('reactions')
 export class ReactionController {
-  constructor(private readonly reactionService: ReactionService) {}
+  constructor(
+    private readonly reactionService: ReactionService,
+    private readonly googleService: GoogleReactionService,
+  ) {}
 
   @ApiOperation({
     summary: 'Retrieve all reactions',
@@ -77,10 +82,15 @@ export class ReactionController {
   })
   @Post()
   async handleReaction(@Body() body: HandleReactionDto): Promise<string> {
-    const { service, reaction, data } = body;
-
-    console.log(`Received request to handle reaction for service: ${service}`);
+    const { refreshToken, service, reaction, data } = body;
     try {
+      if (service == 'google') {
+        return await this.googleService.manageReactionGoogle(
+          refreshToken,
+          reaction,
+          data,
+        );
+      }
       return await this.reactionService.handleReaction(service, reaction, data);
     } catch (error) {
       console.error(error.message);
