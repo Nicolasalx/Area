@@ -44,21 +44,19 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="flex h-full items-center justify-center">
-      <div className="w-full max-w-md px-4">
-        {isLogin ? <LoginForm /> : <RegisterForm />}
-        <div className="mt-6 flex items-center justify-center gap-4 text-center">
-          <Text variant="small" color="gray">
-            {isLogin ? "Don't have an account?" : "Already have an account?"}
-          </Text>
-          <button
-            type="button"
-            onClick={() => setIsLogin(!isLogin)}
-            className="rounded-sm text-sm text-black underline decoration-1 underline-offset-2 duration-200 hover:text-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
-          >
-            {isLogin ? "Create an account" : "Sign in"}
-          </button>
-        </div>
+    <div className="flex h-full w-full flex-col items-center justify-center pb-16">
+      {isLogin ? <LoginForm /> : <RegisterForm />}
+      <div className="mt-6 flex items-center justify-center gap-4 text-center">
+        <Text variant="small" color="gray">
+          {isLogin ? "Don't have an account?" : "Already have an account?"}
+        </Text>
+        <button
+          type="button"
+          onClick={() => setIsLogin(!isLogin)}
+          className="rounded-sm text-sm text-black underline decoration-1 underline-offset-2 duration-200 hover:text-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+        >
+          {isLogin ? "Create an account" : "Sign in"}
+        </button>
       </div>
     </div>
   );

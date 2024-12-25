@@ -3,7 +3,7 @@ import { HttpService } from '@nestjs/axios';
 import {
   UserGoogleResponse,
   UserOAuthResponse,
-} from '../../../common/interfaces/user/user';
+} from '@common/interfaces/user/user';
 import { IServideOauth } from '../oauth/IServiceOauth';
 
 @Injectable()
@@ -14,8 +14,8 @@ export class GoogleService implements IServideOauth {
     const url = 'https://oauth2.googleapis.com/token';
     const values = {
       code,
-      client_id: process.env.GOOGLE_CLIENT_ID_AUTH!,
-      client_secret: process.env.GOOGLE_CLIENT_SECRET_AUTH!,
+      client_id: process.env.GOOGLE_CLIENT_ID!,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET!,
       redirect_uri: process.env.GOOGLE_REDIRECT_URI_AUTH!,
       grant_type: 'authorization_code',
     };

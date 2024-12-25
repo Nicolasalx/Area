@@ -6,6 +6,8 @@ export async function GET(request: Request) {
   const searchParams = new URL(request.url).searchParams;
   const code = searchParams.get("code");
 
+  console.log("INSIDE : ", code);
+
   if (!code) {
     throw new Error("No code provided");
   }
@@ -13,7 +15,7 @@ export async function GET(request: Request) {
   // Get user info and token
   return axios
     .get(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/github/callback/?code=${code}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/discord/callback/?code=${code}`,
     )
     .then((res) => res.data)
     .then(async (data) => {
@@ -42,7 +44,7 @@ export async function GET(request: Request) {
               localStorage.setItem('user', JSON.stringify(userData));
               window.opener.postMessage(
                 {
-                  type: 'GITHUB_LOGIN_SUCCESS',
+                  type: 'DISCORD_LOGIN_SUCCESS',
                   user: userData,
                   token: '${sessionToken}'
                 },
@@ -64,7 +66,7 @@ export async function GET(request: Request) {
       );
     })
     .catch((error) => {
-      console.error("Github callback error:", error);
+      console.error("Discord callback error:", error);
       return new NextResponse(
         `
         <html>
@@ -72,7 +74,7 @@ export async function GET(request: Request) {
             <script>
               window.opener.postMessage(
                 {
-                  type: 'GITHUB_LOGIN_ERROR',
+                  type: 'DISCORD_LOGIN_ERROR',
                   error: 'Authentication failed'
                 },
                 '*'

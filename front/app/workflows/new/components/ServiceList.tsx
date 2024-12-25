@@ -92,11 +92,11 @@ export default function ServiceList({
                   </div>
                 )}
                 <div className="mb-4 flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
-                    {getServiceIcon(service.name)}
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100">
+                    {getServiceIcon(service.name, "h-8 w-8")}
                   </div>
-                  <div>
-                    <Text className="font-medium">
+                  <div className="flex flex-col">
+                    <Text variant="h5">
                       {service.name.charAt(0).toUpperCase() +
                         service.name.slice(1)}
                     </Text>
@@ -109,7 +109,9 @@ export default function ServiceList({
                     </Text>
                   </div>
                 </div>
-                <Text color="gray">{service.description}</Text>
+                <Text variant="small" color="gray">
+                  {service.description}
+                </Text>
               </div>
             </Card.Body>
           </Card>

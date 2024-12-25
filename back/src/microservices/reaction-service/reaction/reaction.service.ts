@@ -6,6 +6,7 @@ import { SlackReactionService } from '@reaction-service/slack/slack.service';
 import { TodoistReactionService } from '@reaction-service/todoist/todoist.service';
 import { IReactionHandler } from '@reaction-service/handler/base.handler';
 import { TrelloReactionService } from '@reaction-service/trello/trello.service';
+import { TwilioReactionService } from '@reaction-service/twilio/twilio.service';
 
 @Injectable()
 export class ReactionService {
@@ -17,12 +18,14 @@ export class ReactionService {
     private readonly todoistService: TodoistReactionService,
     private readonly prisma: PrismaService,
     private readonly trelloService: TrelloReactionService,
+    private readonly twilioService: TwilioReactionService,
   ) {
     this.handlers = [
       discordService,
       slackService,
       trelloService,
       todoistService,
+      twilioService,
     ];
   }
 

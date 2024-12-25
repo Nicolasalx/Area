@@ -4,6 +4,7 @@ import { GithubService } from '../github/github.service';
 import { GoogleService } from '../google/google.service';
 import { OAuthService } from './oauth.service';
 import { ConnectionType } from '@prisma/client';
+import { DiscordService } from '../discord/discord.service';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -14,6 +15,7 @@ export class OAuthController {
     private readonly oauthService: OAuthService,
     private readonly googleService: GoogleService,
     private readonly githubService: GithubService,
+    private readonly discordSercice: DiscordService,
   ) {}
 
   @ApiOperation({
@@ -37,8 +39,21 @@ export class OAuthController {
   async getGithubOAuth(@Query() query: any) {
     return await this.oauthService.getServiceOAuth(
       query.code,
-      ConnectionType.GOOGLE,
+      ConnectionType.GITHUB,
       this.githubService,
+    );
+  }
+
+  @ApiOperation({
+    summary: 'Login user with Discord',
+    description: 'Authenticate user with Discord OAuth',
+  })
+  @Get('discord/callback')
+  async getDiscordOAuth(@Query() query: any) {
+    return await this.oauthService.getServiceOAuth(
+      query.code,
+      ConnectionType.DISCORD,
+      this.discordSercice,
     );
   }
 }
