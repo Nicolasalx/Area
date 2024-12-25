@@ -85,7 +85,11 @@ export class ReactionController {
     const { refreshToken, service, reaction, data } = body;
     try {
       if (service == 'google') {
-        this.googleService.manageReactionGoogle(refreshToken, reaction, data);
+        return await this.googleService.manageReactionGoogle(
+          refreshToken,
+          reaction,
+          data,
+        );
       }
       return await this.reactionService.handleReaction(service, reaction, data);
     } catch (error) {
