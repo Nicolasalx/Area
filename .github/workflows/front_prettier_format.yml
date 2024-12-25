@@ -1,0 +1,26 @@
+name: "Front: Prettier and Format Validation"
+
+on:
+  push:
+    paths:
+      - 'front/**'
+  pull_request:
+    paths:
+      - 'front/**'
+    branches: ["main"]
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    container:
+      image: node:20-alpine
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies and check formatting
+        working-directory: front
+        run: |
+          npm install
+          npm run format
