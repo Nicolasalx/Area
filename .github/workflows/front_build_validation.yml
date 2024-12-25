@@ -22,6 +22,6 @@ jobs:
 
       - name: Install dependencies and build the application
         run: |
-          cd /app
+          cd /front
           npm install
           npm run build

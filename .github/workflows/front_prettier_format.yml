@@ -22,6 +22,6 @@ jobs:
 
       - name: Install dependencies and check formatting
         run: |
-          cd /app
+          cd /front
           npm install
           npm run format
