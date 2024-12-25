@@ -15,7 +15,6 @@ jobs:
     timeout-minutes: 5
     container:
       image: node:20-alpine
-      options: -v ${{ github.workspace }}/front
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
