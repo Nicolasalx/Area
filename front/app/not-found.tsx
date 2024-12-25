@@ -4,9 +4,11 @@ import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 import Text from "@/components/ui/Text";
 import { Home } from "lucide-react";
+import { useTranslation } from "next-i18next";
 
 export default function NotFound() {
   const router = useRouter();
+  const { t } = useTranslation("notFound");
 
   return (
     <div className="flex h-full flex-col items-center justify-center px-4">
@@ -15,16 +17,16 @@ export default function NotFound() {
           404
         </Text>
         <Text variant="h2" className="mb-4">
-          Page Not Found
+          {t("page_not_found")}
         </Text>
         <Text color="gray" className="mb-8">
-          We couldn&apos;t find the page you&apos;re looking for.
+          {t("page_not_found_description")}
         </Text>
         <Button
           onClick={() => router.push("/")}
           leftIcon={<Home className="h-5 w-5" />}
         >
-          Return Home
+          {t("return_home")}
         </Button>
       </div>
     </div>

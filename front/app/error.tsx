@@ -5,6 +5,7 @@ import Button from "@/components/ui/Button";
 import Text from "@/components/ui/Text";
 import { useToast } from "@/contexts/ToastContext";
 import { RefreshCcw } from "lucide-react";
+import { useTranslation } from "next-i18next";
 
 export default function Error({
   error,
@@ -14,27 +15,28 @@ export default function Error({
   reset: () => void;
 }) {
   const { showToast } = useToast();
+  const { t } = useTranslation("error");
 
   useEffect(() => {
     console.error(error);
 
-    showToast("An unexpected error occurred. Please try again.", "error");
-  }, [error, showToast]);
+    showToast(t("unexpected_error"), "error");
+  }, [error, showToast, t]);
 
   return (
     <div className="flex h-full flex-col items-center justify-center px-4">
       <div className="text-center">
         <Text variant="h1" className="mb-2 text-6xl font-bold">
-          Oops!
+          {t("oops")}
         </Text>
         <Text variant="h2" className="mb-4">
-          Something went wrong
+          {t("something_wrong")}
         </Text>
         <Text color="gray" className="mb-8">
-          Don&apos;t worry, we&apos;re on it. Please try again.
+          {t("dont_worry")}
         </Text>
         <Button onClick={reset} leftIcon={<RefreshCcw className="h-5 w-5" />}>
-          Try Again
+          {t("try_again")}
         </Button>
       </div>
     </div>

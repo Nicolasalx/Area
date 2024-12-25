@@ -1,0 +1,180 @@
+{
+  "myAreas": "Mes Areas",
+  "newArea": "Nouvelle Area",
+  "auth": {
+    "pleaseSignIn": "Veuillez vous connecter pour accéder à cette page",
+    "dontHaveAccount": "Vous n'avez pas de compte ?",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "createAccount": "Créer un compte",
+    "signIn": "Se connecter"
+  },
+  "profile": {
+    "profile": "Profil",
+    "manageAccount": "Gérez les paramètres de votre compte",
+    "name": "Nom",
+    "email": "E-mail",
+    "dangerZone": "Zone de danger",
+    "deleteAccountWarning": "Une fois que vous supprimez votre compte, il n'y a pas de retour en arrière. Soyez certain.",
+    "deleteAccount": "Supprimer le compte",
+    "deleteAccountConfirmation": "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action ne peut pas être annulée.",
+    "accountDeleted": "Votre compte a été supprimé avec succès",
+    "deleteAccountFailed": "Échec de la suppression du compte. Veuillez réessayer."
+  },
+  "settings": {
+    "wip": "Travail en cours"
+  },
+  "workflow": {
+    "actions": "Actions",
+    "reactions": "Réactions",
+
+    "noAreasFound": "Aucune area trouvée",
+    "createFirstArea": "Créez votre première area pour commencer",
+    "deletedSuccess": "Area supprimée avec succès",
+    "deleteFailed": "Échec de la suppression de l'area",
+    "toggle": {
+      "activated": "activée",
+      "deactivated": "désactivée",
+      "toggleFailed": "Échec de la mise à jour de l'état de l'area"
+    },
+    "untitledArea": "Area sans titre",
+    "deactivateArea": "Désactiver l'area",
+    "activateArea": "Activer l'area",
+    "deleteArea": "Supprimer l'area",
+    "noActions": "Aucune action ajoutée",
+    "noReactions": "Aucune réaction ajoutée"
+  },
+  "dataForm": {
+    "back": "Retour",
+    "next": "Suivant",
+    "isRequired": "est requis",
+    "enterField": "Entrez le champ {{field}}"
+  },
+  "nameForm": {
+    "nameYourArea": "Nommez votre area",
+    "enterAreaName": "Entrez un nom pour votre area",
+    "name": "Nom",
+    "workflowConfigSummary": "Résumé de la configuration du flux de travail"
+  },
+  "reactionList": {
+    "noReactionsAvailable": "Aucune réaction disponible",
+    "noReactionsDescription": "Aucune réaction n'est actuellement disponible"
+  },
+  "serviceList": {
+    "noServicesAvailable": "Aucun service disponible",
+    "noServicesWithActions": "Aucun service avec des actions n'est actuellement disponible",
+    "noServicesWithReactions": "Aucun service avec des réactions n'est actuellement disponible",
+    "action": "action{{count}}",
+    "reaction": "réaction{{count}}"
+  },
+  "triggerList": {
+    "noTriggersAvailable": "Aucun déclencheur disponible",
+    "noTriggersCurrentlyAvailable": "Aucun déclencheur n'est actuellement disponible"
+  },
+  "loading": {
+    "back": "Retour",
+    "next": "Suivant",
+    "load": "Chargement..."
+  },
+  "error": {
+    "oops": "Oups !",
+    "something_wrong": "Quelque chose a mal tourné",
+    "dont_worry": "Ne vous inquiétez pas, nous nous en occupons. Veuillez réessayer.",
+    "try_again": "Réessayer",
+    "unexpected_error": "Une erreur inattendue est survenue. Veuillez réessayer."
+  },
+  "login": {
+    "loading": "Chargement...",
+    "authentication_status": "Statut de l'authentification",
+    "welcome": "Bienvenue !",
+    "logged_in_as": "Vous êtes connecté en tant que :",
+    "email": "Email",
+    "name": "Nom",
+    "sign_out": "Se déconnecter",
+    "not_logged_in": "Vous n'êtes pas connecté.",
+    "sign_in": "Se connecter"
+  },
+  "notFound": {
+    "page_not_found": "Page introuvable",
+    "page_not_found_description": "Nous n'avons pas pu trouver la page que vous cherchez.",
+    "return_home": "Retour à l'accueil"
+  },
+  "authForm": {
+    "welcome": "Bienvenue !",
+    "sign_in_to_your_account": "Connectez-vous à votre compte",
+    "email": "E-mail",
+    "enter_email": "Entrez votre e-mail",
+    "password": "Mot de passe",
+    "enter_password": "Entrez votre mot de passe",
+    "sign_in": "Se connecter",
+    "or_continue_with": "Ou continuez avec",
+    "continue_with_google": "Continuer avec Google",
+    "continue_with_github": "Continuer avec Github",
+    "continue_with_discord": "Continuer avec Discord",
+    "validation": {
+      "required_email": "L'e-mail est requis",
+      "invalid_email": "Adresse e-mail invalide",
+      "required_password": "Le mot de passe est requis"
+    }
+  },
+  "register": {
+    "create_account": "Créer un compte",
+    "sign_up_for_new_account": "Inscrivez-vous pour un nouveau compte",
+    "full_name": "Nom complet",
+    "enter_your_name": "Entrez votre nom",
+    "email": "E-mail",
+    "enter_your_email": "Entrez votre e-mail",
+    "password": "Mot de passe",
+    "create_password": "Créez un mot de passe",
+    "confirm_password": "Confirmer le mot de passe",
+    "confirm_password_placeholder": "Confirmez votre mot de passe"
+  },
+  "validation": {
+    "required_name": "Le nom est requis",
+    "name_min_length": "Le nom doit comporter au moins 2 caractères",
+    "required_email": "L'e-mail est requis",
+    "invalid_email": "Adresse e-mail invalide",
+    "required_password": "Le mot de passe est requis",
+    "password_min_length": "Le mot de passe doit comporter au moins 8 caractères",
+    "password_uppercase": "Le mot de passe doit contenir au moins une lettre majuscule",
+    "password_number": "Le mot de passe doit contenir au moins un chiffre",
+    "password_special_char": "Le mot de passe doit contenir au moins un caractère spécial (!@#$%^&*)",
+    "required_confirm_password": "Veuillez confirmer votre mot de passe",
+    "password_mismatch": "Les mots de passe ne correspondent pas"
+  },
+  "navbar": {
+    "new_area": "Nouvelle area",
+    "my_areas": "Mes zones",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "sign_out": "Se déconnecter"
+  },
+  "newWorkflow": {
+    "createNewArea": "Créer une nouvelle area",
+    "back": "Retour",
+    "next": "Suivant",
+    "creating": "Création en cours...",
+    "createArea": "Créer l'area",
+    "selectServiceForAction": "Sélectionner un Service pour l'Action",
+    "selectAction": "Sélectionner une Action depuis {{service}}",
+    "configureAction": "Configurer",
+    "selectServiceForReaction": "Sélectionner un Service pour la Réaction",
+    "selectReaction": "Sélectionner une Réaction depuis {{service}}",
+    "configureReaction": "Configurer la Réaction {{reaction}}",
+    "nameYourArea": "Nommer votre area",
+    "action": "Action",
+    "reaction": "Réaction",
+    "name": "Nom",
+    "failedLoadService": "Échec du chargement des services disponibles",
+    "enterName": "Veuillez entrer un nom pour votre workflow",
+    "pleaseSelectAction": "Veuillez sélectionner une action",
+    "pleaseSelectReaction": "Veuillez sélectionner une réaction",
+    "invalidService": "Sélection de service invalide",
+    "workflowCreatedSuccessfully": "Workflow créé avec succès",
+    "workflowFailedCreation": "Échec de la création du workflow"
+  },
+  "logMessage": {
+    "loginSuccessful": "Connexion réussie",
+    "registrationSuccessful": "Inscription réussie ! Vous êtes en train de vous connecter...",
+    "logoutSuccessful": "Déconnexion réussie"
+  }
+}

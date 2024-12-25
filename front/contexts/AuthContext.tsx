@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useToast } from "./ToastContext";
 import Cookies from "js-cookie";
 import api, { setupInterceptors } from "@/lib/api";
+import { useTranslation } from "react-i18next";
 
 interface User {
   id: string;
@@ -41,6 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { showToast } = useToast();
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Check if user is logged in on mount
@@ -69,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(userData);
       setToken(token);
       setError(null);
-      showToast("Login successful", "success");
+      showToast(t("logMessage.loginSuccessful"), "success");
       router.push("/workflows");
     } catch (err) {
       console.error("Login error:", err);
@@ -93,7 +95,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error("Registration failed");
       }
 
-      showToast("Registration successful! Logging you in...", "success");
+      showToast(t("logMessage.registrationSuccessful"), "success");
       await login(email, password);
     } catch (err) {
       console.error("Registration error:", err);
@@ -156,7 +158,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setToken(result.token);
         localStorage.setItem("user", JSON.stringify(result.user));
         setError(null);
-        showToast("Login successful", "success");
+        showToast(t("logMessage.loginSuccessful"), "success");
         router.push("/workflows");
       }
     } catch (err) {
@@ -217,7 +219,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setToken(result.token);
         localStorage.setItem("user", JSON.stringify(result.user));
         setError(null);
-        showToast("Login successful", "success");
+        showToast(t("logMessage.loginSuccessful"), "success");
         router.push("/workflows");
       }
     } catch (err) {
@@ -278,7 +280,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setToken(result.token);
         localStorage.setItem("user", JSON.stringify(result.user));
         setError(null);
-        showToast("Login successful", "success");
+        showToast(t("logMessage.loginSuccessful"), "success");
         router.push("/workflows");
       }
     } catch (err) {
@@ -297,7 +299,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(null);
     setUser(null);
     setError(null);
-    showToast("Successfully logged out", "info");
+    showToast(t("logMessage.logoutSuccessful"), "info");
     router.push("/auth");
   };
 

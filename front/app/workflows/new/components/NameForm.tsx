@@ -5,6 +5,7 @@ import Text from "@/components/ui/Text";
 import { ArrowRight } from "lucide-react";
 import { formatActionReactionName, getServiceIcon } from "../../utils";
 import ValidatedInput from "@/components/ui/ValidatedInput";
+import { useTranslation } from "next-i18next";
 
 interface NameFormProps {
   value: string;
@@ -29,26 +30,28 @@ export default function NameForm({
   selectedAction,
   selectedReaction,
 }: NameFormProps) {
+  const { t } = useTranslation();
+
   return (
     <Card className="mx-auto w-full max-w-2xl">
       <Card.Header className="p-6">
         <Text variant="h3" className="text-xl font-medium">
-          Name Your Area
+          {t("nameForm.nameYourArea")}
         </Text>
       </Card.Header>
       <Card.Body className="p-6">
         <ValidatedInput
           type="text"
           className=""
-          placeholder="Enter a name for your area"
+          placeholder={t("nameForm.enterAreaName")}
           value={name}
-          label="Name"
+          label={t("nameForm.name")}
           onChange={(e) => onNameChange(e.target.value)}
         />
         {selectedAction && selectedReaction && (
           <div className="mt-6 space-y-4">
             <Text variant="h6" className="mt-12 text-gray-500">
-              Workflow Configuration Summary:
+              {t("nameForm.workflowConfigSummary")}
             </Text>
             <div className="flex items-center gap-3 rounded-lg border border-gray-200 p-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100">

@@ -1,0 +1,178 @@
+{
+  "myAreas": "Meine Bereiche",
+  "newArea": "Neuer Bereich",
+  "auth": {
+    "pleaseSignIn": "Bitte melden Sie sich an, um auf diese Seite zuzugreifen",
+    "dontHaveAccount": "Haben Sie noch kein Konto?",
+    "alreadyHaveAccount": "Haben Sie bereits ein Konto?",
+    "createAccount": "Ein Konto erstellen",
+    "signIn": "Anmelden"
+  },
+  "profile": {
+    "profile": "Profil",
+    "manageAccount": "Verwalten Sie Ihre Kontoeinstellungen",
+    "name": "Name",
+    "email": "E-Mail",
+    "dangerZone": "Gefahrenzone",
+    "deleteAccountWarning": "Sobald Sie Ihr Konto löschen, gibt es kein Zurück mehr. Bitte seien Sie sicher.",
+    "deleteAccount": "Konto löschen",
+    "deleteAccountConfirmation": "Sind Sie sicher, dass Sie Ihr Konto löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "accountDeleted": "Ihr Konto wurde erfolgreich gelöscht",
+    "deleteAccountFailed": "Konto konnte nicht gelöscht werden. Bitte versuchen Sie es erneut."
+  },
+  "settings": {
+    "wip": "In Arbeit"
+  },
+  "workflow": {
+    "actions": "Aktionen",
+    "reactions": "Reaktionen",
+    "noAreasFound": "Keine Bereiche gefunden",
+    "createFirstArea": "Erstellen Sie Ihren ersten Bereich, um loszulegen",
+    "deletedSuccess": "Bereich erfolgreich gelöscht",
+    "deleteFailed": "Bereich konnte nicht gelöscht werden",
+    "toggle": {
+      "activated": "aktiviert",
+      "deactivated": "deaktiviert",
+      "toggleFailed": "Status des Workflows konnte nicht aktualisiert werden"
+    },
+    "untitledArea": "Unbenannter Bereich",
+    "deactivateArea": "Bereich deaktivieren",
+    "activateArea": "Bereich aktivieren",
+    "deleteArea": "Bereich löschen",
+    "noActions": "Es wurden noch keine Aktionen hinzugefügt",
+    "noReactions": "Es wurden noch keine Reaktionen hinzugefügt"
+  },
+  "dataForm": {
+    "back": "Zurück",
+    "next": "Weiter",
+    "isRequired": "ist erforderlich",
+    "enterField": "Feld {{field}} eingeben"
+  },
+  "nameForm": {
+    "nameYourArea": "Benennen Sie Ihren Bereich",
+    "enterAreaName": "Geben Sie einen Namen für Ihren Bereich ein",
+    "name": "Name",
+    "workflowConfigSummary": "Zusammenfassung der Workflow-Konfiguration"
+  },
+  "reactionList": {
+    "noReactionsAvailable": "Keine Reaktionen verfügbar",
+    "noReactionsDescription": "Derzeit sind keine Reaktionen verfügbar"
+  },
+  "serviceList": {
+    "noServicesAvailable": "Keine Dienste verfügbar",
+    "noServicesWithActions": "Derzeit sind keine Dienste mit Aktionen verfügbar",
+    "noServicesWithReactions": "Derzeit sind keine Dienste mit Reaktionen verfügbar",
+    "action": "Aktion{{count}}",
+    "reaction": "Reaktion{{count}}"
+  },
+  "triggerList": {
+    "noTriggersAvailable": "Keine Trigger verfügbar",
+    "noTriggersCurrentlyAvailable": "Derzeit sind keine Trigger verfügbar"
+  },
+  "loading": {
+    "back": "Zurück",
+    "next": "Weiter"
+  },
+  "error": {
+    "oops": "Ups!",
+    "something_wrong": "Etwas ist schiefgelaufen",
+    "dont_worry": "Keine Sorge, wir arbeiten daran. Bitte versuchen Sie es erneut.",
+    "try_again": "Erneut versuchen",
+    "unexpected_error": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
+  },
+  "login": {
+    "loading": "Laden...",
+    "authentication_status": "Authentifizierungsstatus",
+    "welcome": "Willkommen!",
+    "logged_in_as": "Sie sind angemeldet als:",
+    "email": "E-Mail",
+    "name": "Name",
+    "sign_out": "Abmelden",
+    "not_logged_in": "Sie sind nicht angemeldet.",
+    "sign_in": "Anmelden"
+  },
+  "notFound": {
+    "page_not_found": "Seite nicht gefunden",
+    "page_not_found_description": "Wir konnten die von Ihnen gesuchte Seite nicht finden.",
+    "return_home": "Zurück zur Startseite"
+  },
+  "authForm": {
+    "welcome": "Willkommen!",
+    "sign_in_to_your_account": "Melden Sie sich bei Ihrem Konto an",
+    "email": "E-Mail",
+    "enter_email": "Geben Sie Ihre E-Mail ein",
+    "password": "Passwort",
+    "enter_password": "Geben Sie Ihr Passwort ein",
+    "sign_in": "Anmelden",
+    "or_continue_with": "Oder fortfahren mit",
+    "continue_with_google": "Mit Google fortfahren",
+    "continue_with_github": "Mit GitHub fortfahren",
+    "continue_with_discord": "Mit Discord fortfahren",
+    "validation": {
+      "required_email": "E-Mail ist erforderlich",
+      "invalid_email": "Ungültige E-Mail-Adresse",
+      "required_password": "Passwort ist erforderlich"
+    }
+  },
+  "register": {
+    "create_account": "Konto erstellen",
+    "sign_up_for_new_account": "Registrieren Sie sich für ein neues Konto",
+    "full_name": "Vollständiger Name",
+    "enter_your_name": "Geben Sie Ihren Namen ein",
+    "email": "E-Mail",
+    "enter_your_email": "Geben Sie Ihre E-Mail ein",
+    "password": "Passwort",
+    "create_password": "Erstellen Sie ein Passwort",
+    "confirm_password": "Passwort bestätigen",
+    "confirm_password_placeholder": "Bestätigen Sie Ihr Passwort"
+  },
+  "validation": {
+    "required_name": "Name ist erforderlich",
+    "name_min_length": "Name muss mindestens 2 Zeichen lang sein",
+    "required_email": "E-Mail ist erforderlich",
+    "invalid_email": "Ungültige E-Mail-Adresse",
+    "required_password": "Passwort ist erforderlich",
+    "password_min_length": "Passwort muss mindestens 8 Zeichen lang sein",
+    "password_uppercase": "Muss mindestens einen Großbuchstaben enthalten",
+    "password_number": "Muss mindestens eine Zahl enthalten",
+    "password_special_char": "Muss mindestens ein Sonderzeichen enthalten (!@#$%^&*)",
+    "required_confirm_password": "Bitte bestätigen Sie Ihr Passwort",
+    "password_mismatch": "Passwörter stimmen nicht überein"
+  },
+  "navbar": {
+    "new_area": "Neuer Bereich",
+    "my_areas": "Meine Bereiche",
+    "profile": "Profil",
+    "settings": "Einstellungen",
+    "sign_out": "Abmelden"
+  },
+  "newWorkflow": {
+    "createNewArea": "Neuen Bereich erstellen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "creating": "Erstellen...",
+    "createArea": "Bereich erstellen",
+    "selectServiceForAction": "Wählen Sie einen Dienst für die Aktion aus",
+    "selectAction": "Wählen Sie eine Aktion aus {{service}}",
+    "configureAction": "Konfigurieren ",
+    "selectServiceForReaction": "Wählen Sie einen Dienst für die Reaktion aus",
+    "selectReaction": "Wählen Sie eine Reaktion aus {{service}}",
+    "configureReaction": "Konfigurieren",
+    "nameYourArea": "Benennen Sie Ihren Bereich",
+    "action": "Aktion",
+    "reaction": "Reaktion",
+    "name": "Name",
+    "failedLoadService": "Laden der verfügbaren Dienste fehlgeschlagen",
+    "enterName": "Bitte geben Sie einen Namen für Ihren Workflow ein",
+    "pleaseSelectAction": "Bitte wählen Sie eine Aktion aus",
+    "pleaseSelectReaction": "Bitte wählen Sie eine Reaktion aus",
+    "invalidService": "Ungültige Dienstauswahl",
+    "workflowCreatedSuccessfully": "Workflow erfolgreich erstellt",
+    "workflowFailedCreation": "Workflow konnte nicht erstellt werden"
+  },
+  "logMessage": {
+    "loginSuccessful": "Anmeldung erfolgreich",
+    "registrationSuccessful": "Registrierung erfolgreich! Sie werden angemeldet...",
+    "logoutSuccessful": "Erfolgreich abgemeldet"
+  }
+}

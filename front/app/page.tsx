@@ -6,15 +6,17 @@ import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { useRouter } from "next/navigation";
 import { LogOut, LogIn } from "lucide-react";
+import { useTranslation } from "next-i18next";
 
 export default function Page() {
   const { user, logout, loading } = useAuth();
   const router = useRouter();
+  const { t } = useTranslation();
 
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <Text>Loading...</Text>
+        <Text>{t("login.loading")}</Text>
       </div>
     );
   }
@@ -24,7 +26,7 @@ export default function Page() {
       <Card className="w-full max-w-md">
         <Card.Header>
           <Text variant="h2" className="text-center">
-            Authentication Status
+            {t("login.authentication_status")}
           </Text>
         </Card.Header>
 
@@ -32,16 +34,18 @@ export default function Page() {
           {user ? (
             <>
               <div className="space-y-2">
-                <Text weight="medium">Welcome!</Text>
-                <Text>You are logged in as:</Text>
+                <Text weight="medium">{t("login.welcome")}</Text>
+                <Text>{t("login.logged_in_as")}</Text>
                 <div className="rounded-lg bg-gray-50 p-4">
                   <div className="space-y-1">
                     <Text>
-                      <span className="font-medium">Email:</span> {user.email}
+                      <span className="font-medium">{t("login.email")}:</span>{" "}
+                      {user.email}
                     </Text>
                     {user.name && (
                       <Text>
-                        <span className="font-medium">Name:</span> {user.name}
+                        <span className="font-medium">{t("login.name")}:</span>{" "}
+                        {user.name}
                       </Text>
                     )}
                   </div>
@@ -53,18 +57,18 @@ export default function Page() {
                 className="w-full"
                 leftIcon={<LogOut className="h-5 w-5" />}
               >
-                Sign Out
+                {t("login.sign_out")}
               </Button>
             </>
           ) : (
             <>
-              <Text>You are not logged in.</Text>
+              <Text>{t("login.not_logged_in")}</Text>
               <Button
                 onClick={() => router.push("/auth")}
                 className="w-full"
                 leftIcon={<LogIn className="h-5 w-5" />}
               >
-                Sign In
+                {t("login.sign_in")}
               </Button>
             </>
           )}

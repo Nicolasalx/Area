@@ -1,0 +1,178 @@
+{
+  "myAreas": "My Areas",
+  "newArea": "New Area",
+  "auth": {
+    "pleaseSignIn": "Please sign in to access this page",
+    "dontHaveAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "createAccount": "Create an account",
+    "signIn": "Sign in"
+  },
+  "profile": {
+    "profile": "Profile",
+    "manageAccount": "Manage your account settings",
+    "name": "Name",
+    "email": "Email",
+    "dangerZone": "Danger Zone",
+    "deleteAccountWarning": "Once you delete your account, there is no going back. Please be certain.",
+    "deleteAccount": "Delete Account",
+    "deleteAccountConfirmation": "Are you sure you want to delete your account? This action cannot be undone.",
+    "accountDeleted": "Your account has been successfully deleted",
+    "deleteAccountFailed": "Failed to delete account. Please try again."
+  },
+  "settings": {
+    "wip": "Work in Progress"
+  },
+  "workflow": {
+    "actions": "Actions",
+    "reactions": "Reactions",
+    "noAreasFound": "No areas found",
+    "createFirstArea": "Create your first area to get started",
+    "deletedSuccess": "Area deleted successfully",
+    "deleteFailed": "Failed to delete area",
+    "toggle": {
+      "activated": "activated",
+      "deactivated": "deactivated",
+      "toggleFailed": "Failed to update workflow status"
+    },
+    "untitledArea": "Untitled Area",
+    "deactivateArea": "Deactivate area",
+    "activateArea": "Activate area",
+    "deleteArea": "Delete area",
+    "noActions": "No actions have been added yet",
+    "noReactions": "No reactions have been added yet"
+  },
+  "dataForm": {
+    "back": "Back",
+    "next": "Next",
+    "isRequired": "is required",
+    "enterField": "Enter the field {{field}}"
+  },
+  "nameForm": {
+    "nameYourArea": "Name Your Area",
+    "enterAreaName": "Enter a name for your area",
+    "name": "Name",
+    "workflowConfigSummary": "Workflow Configuration Summary"
+  },
+  "reactionList": {
+    "noReactionsAvailable": "No Reactions Available",
+    "noReactionsDescription": "No reactions are currently available"
+  },
+  "serviceList": {
+    "noServicesAvailable": "No Services Available",
+    "noServicesWithActions": "No services with actions are currently available",
+    "noServicesWithReactions": "No services with reactions are currently available",
+    "action": "action{{count}}",
+    "reaction": "reaction{{count}}"
+  },
+  "triggerList": {
+    "noTriggersAvailable": "No Triggers Available",
+    "noTriggersCurrentlyAvailable": "No triggers are currently available"
+  },
+  "loading": {
+    "back": "Back",
+    "next": "Next"
+  },
+  "error": {
+    "oops": "Oops!",
+    "something_wrong": "Something went wrong",
+    "dont_worry": "Don't worry, we're on it. Please try again.",
+    "try_again": "Try Again",
+    "unexpected_error": "An unexpected error occurred. Please try again."
+  },
+  "login": {
+    "loading": "Loading...",
+    "authentication_status": "Authentication Status",
+    "welcome": "Welcome!",
+    "logged_in_as": "You are logged in as:",
+    "email": "Email",
+    "name": "Name",
+    "sign_out": "Sign Out",
+    "not_logged_in": "You are not logged in.",
+    "sign_in": "Sign In"
+  },
+  "notFound": {
+    "page_not_found": "Page Not Found",
+    "page_not_found_description": "We couldn't find the page you're looking for.",
+    "return_home": "Return Home"
+  },
+  "authForm": {
+    "welcome": "Welcome!",
+    "sign_in_to_your_account": "Sign in to your account",
+    "email": "Email",
+    "enter_email": "Enter your email",
+    "password": "Password",
+    "enter_password": "Enter your password",
+    "sign_in": "Sign In",
+    "or_continue_with": "Or continue with",
+    "continue_with_google": "Continue with Google",
+    "continue_with_github": "Continue with GitHub",
+    "continue_with_discord": "Continue with Discord",
+    "validation": {
+      "required_email": "Email is required",
+      "invalid_email": "Invalid email address",
+      "required_password": "Password is required"
+    }
+  },
+  "register": {
+    "create_account": "Create Account",
+    "sign_up_for_new_account": "Sign up for a new account",
+    "full_name": "Full Name",
+    "enter_your_name": "Enter your name",
+    "email": "Email",
+    "enter_your_email": "Enter your email",
+    "password": "Password",
+    "create_password": "Create a password",
+    "confirm_password": "Confirm Password",
+    "confirm_password_placeholder": "Confirm your password"
+  },
+  "validation": {
+    "required_name": "Name is required",
+    "name_min_length": "Name must be at least 2 characters",
+    "required_email": "Email is required",
+    "invalid_email": "Invalid email address",
+    "required_password": "Password is required",
+    "password_min_length": "Password must be at least 8 characters",
+    "password_uppercase": "Must contain at least one uppercase letter",
+    "password_number": "Must contain at least one number",
+    "password_special_char": "Must contain at least one special character (!@#$%^&*)",
+    "required_confirm_password": "Please confirm your password",
+    "password_mismatch": "Passwords do not match"
+  },
+  "navbar": {
+    "new_area": "New area",
+    "my_areas": "My Areas",
+    "profile": "Profile",
+    "settings": "Settings",
+    "sign_out": "Sign out"
+  },
+  "newWorkflow": {
+    "createNewArea": "Create New Area",
+    "back": "Back",
+    "next": "Next",
+    "creating": "Creating...",
+    "createArea": "Create Area",
+    "selectServiceForAction": "Select a Service for the Action",
+    "selectAction": "Select an Action from {{service}}",
+    "configureAction": "Configure ",
+    "selectServiceForReaction": "Select a Service for the Reaction",
+    "selectReaction": "Select a Reaction from {{service}}",
+    "configureReaction": "Configure",
+    "nameYourArea": "Name Your Area",
+    "action": "Action",
+    "reaction": "Reaction",
+    "name": "Name",
+    "failedLoadService": "Failed to load available services",
+    "enterName": "Please enter a name for your workflow",
+    "pleaseSelectAction": "Please select a action",
+    "pleaseSelectReaction": "Please select a reaction",
+    "invalidService": "Invalid service selection",
+    "workflowCreatedSuccessfully": "Workflow created successfully",
+    "workflowFailedCreation": "Failed to create workflow"
+  },
+  "logMessage": {
+    "loginSuccessful": "Login successful",
+    "registrationSuccessful": "Registration successful! Logging you in...",
+    "logoutSuccessful": "Successfully logged out"
+  }
+}

@@ -23,6 +23,11 @@ const config: NextConfig = {
       },
     ],
   },
+  i18n: {
+    locales: ["en", "fr", "es", "de", "jp"],
+    defaultLocale: "en",
+    localeDetection: false,
+  },
 };
 
 export default config;

@@ -9,10 +9,13 @@ import DropdownItem from "@/components/ui/DropdownItem";
 import Avatar from "@/components/ui/Avatar";
 import MobileMenu from "@/components/ui/MobileMenu";
 import Text from "@/components/ui/Text";
+import { useTranslation } from "react-i18next";
 
 const Navbar = () => {
+  const { i18n } = useTranslation();
   const { user, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
 
   const handleLogout = async () => {
     try {
@@ -23,11 +26,19 @@ const Navbar = () => {
     }
   };
 
+  const handleLanguageChange = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    const language = event.target.value;
+    setSelectedLanguage(language);
+    i18n.changeLanguage(language);
+  };
+
   const navigationLinks = [
     // { href: "/test", label: "Tests" },
     // { href: "/test/form", label: "Forms tests" },
-    { href: "/workflows/new", label: "New area" },
-    { href: "/workflows", label: "My Areas" },
+    { href: "/workflows/new", label: i18n.t("newArea") },
+    { href: "/workflows", label: i18n.t("myAreas") },
   ];
 
   return (
@@ -61,6 +72,21 @@ const Navbar = () => {
               ))}
             </div>
 
+            {/* Language Select Dropdown */}
+            <div className="flex items-center">
+              <select
+                value={selectedLanguage}
+                onChange={handleLanguageChange}
+                className="h-10 rounded-md border border-gray-300 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-black"
+              >
+                <option value="fr">🇫🇷 Français</option>
+                <option value="en">🇬🇧 English</option>
+                <option value="es">🇪🇸 Español</option>
+                <option value="de">🇩🇪 Deutsch</option>
+                <option value="jp">🇯🇵 日本語</option>
+              </select>
+            </div>
+
             {/* Mobile Menu Button */}
             <div className="flex items-center gap-4 md:hidden">
               <button
@@ -90,19 +116,19 @@ const Navbar = () => {
                       href="/profile"
                       icon={<User className="h-4 w-4" />}
                     >
-                      Profile
+                      {i18n.t("navbar.profile")}
                     </DropdownItem>
                     <DropdownItem
                       href="/settings"
                       icon={<Settings className="h-4 w-4" />}
                     >
-                      Settings
+                      {i18n.t("navbar.settings")}
                     </DropdownItem>
                     <DropdownItem
                       icon={<LogOut className="h-4 w-4" />}
                       onClick={handleLogout}
                     >
-                      Sign out
+                      {i18n.t("navbar.sign_out")}
                     </DropdownItem>
                   </div>
                 </Dropdown>
@@ -118,7 +144,6 @@ const Navbar = () => {
         onClose={() => setIsMobileMenuOpen(false)}
       >
         <div className="flex flex-col space-y-4">
-          {/* Navigation Links */}
           {navigationLinks.map((link) => (
             <Link
               key={link.href}
@@ -126,11 +151,9 @@ const Navbar = () => {
               className="text-sm text-gray-900 duration-200 hover:text-black focus:outline-none focus-visible:rounded-md focus-visible:text-black focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {link.label}
+              {i18n.t(link.label)}
             </Link>
           ))}
-
-          {/* Profile Section */}
           {user && (
             <div className="h-full w-full border-t border-gray-200 pt-4">
               <div className="flex h-full w-full items-center gap-3 pb-4">
@@ -146,21 +169,21 @@ const Navbar = () => {
                   className="flex items-center gap-2 text-sm text-gray-700 duration-200 focus:outline-none focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
                 >
                   <User className="h-4 w-4" />
-                  Profile
+                  {i18n.t("navbar.profile")}
                 </Link>
                 <Link
                   href="/settings"
                   className="flex items-center gap-2 text-sm text-gray-700 duration-200 focus:outline-none focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
                 >
                   <Settings className="h-4 w-4" />
-                  Settings
+                  {i18n.t("navbar.settings")}
                 </Link>
                 <button
                   onClick={handleLogout}
                   className="flex items-center gap-2 text-sm text-gray-700 duration-200 focus:outline-none focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
                 >
                   <LogOut className="h-4 w-4" />
-                  Sign out
+                  {i18n.t("navbar.sign_out")}
                 </button>
               </div>
             </div>

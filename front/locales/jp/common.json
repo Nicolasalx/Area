@@ -1,0 +1,178 @@
+{
+  "myAreas": "私のエリア",
+  "newArea": "新しいエリア",
+  "auth": {
+    "pleaseSignIn": "このページにアクセスするにはサインインしてください",
+    "dontHaveAccount": "アカウントをお持ちではありませんか？",
+    "alreadyHaveAccount": "すでにアカウントをお持ちですか？",
+    "createAccount": "アカウントを作成",
+    "signIn": "サインイン"
+  },
+  "profile": {
+    "profile": "プロフィール",
+    "manageAccount": "アカウント設定を管理",
+    "name": "名前",
+    "email": "メールアドレス",
+    "dangerZone": "危険ゾーン",
+    "deleteAccountWarning": "アカウントを削除すると元に戻せません。慎重にご判断ください。",
+    "deleteAccount": "アカウントを削除",
+    "deleteAccountConfirmation": "アカウントを削除してもよろしいですか？この操作は取り消せません。",
+    "accountDeleted": "アカウントが正常に削除されました",
+    "deleteAccountFailed": "アカウントの削除に失敗しました。再試行してください。"
+  },
+  "settings": {
+    "wip": "進行中"
+  },
+  "workflow": {
+    "actions": "アクション",
+    "reactions": "リアクション",
+    "noAreasFound": "エリアが見つかりません",
+    "createFirstArea": "最初のエリアを作成して開始してください",
+    "deletedSuccess": "エリアが正常に削除されました",
+    "deleteFailed": "エリアの削除に失敗しました",
+    "toggle": {
+      "activated": "有効化済み",
+      "deactivated": "無効化済み",
+      "toggleFailed": "ワークフローのステータス更新に失敗しました"
+    },
+    "untitledArea": "無題のエリア",
+    "deactivateArea": "エリアを無効化",
+    "activateArea": "エリアを有効化",
+    "deleteArea": "エリアを削除",
+    "noActions": "アクションがまだ追加されていません",
+    "noReactions": "リアクションがまだ追加されていません"
+  },
+  "dataForm": {
+    "back": "戻る",
+    "next": "次へ",
+    "isRequired": "は必須です",
+    "enterField": "{{field}}を入力してください"
+  },
+  "nameForm": {
+    "nameYourArea": "エリアに名前を付ける",
+    "enterAreaName": "エリアの名前を入力してください",
+    "name": "名前",
+    "workflowConfigSummary": "ワークフロー設定の概要"
+  },
+  "reactionList": {
+    "noReactionsAvailable": "利用可能なリアクションはありません",
+    "noReactionsDescription": "現在利用可能なリアクションはありません"
+  },
+  "serviceList": {
+    "noServicesAvailable": "利用可能なサービスはありません",
+    "noServicesWithActions": "現在利用可能なアクションを持つサービスはありません",
+    "noServicesWithReactions": "現在利用可能なリアクションを持つサービスはありません",
+    "action": "アクション{{count}}",
+    "reaction": "リアクション{{count}}"
+  },
+  "triggerList": {
+    "noTriggersAvailable": "利用可能なトリガーはありません",
+    "noTriggersCurrentlyAvailable": "現在利用可能なトリガーはありません"
+  },
+  "loading": {
+    "back": "戻る",
+    "next": "次へ"
+  },
+  "error": {
+    "oops": "おっと！",
+    "something_wrong": "問題が発生しました",
+    "dont_worry": "心配しないでください、対処中です。再試行してください。",
+    "try_again": "再試行",
+    "unexpected_error": "予期しないエラーが発生しました。再試行してください。"
+  },
+  "login": {
+    "loading": "読み込み中...",
+    "authentication_status": "認証ステータス",
+    "welcome": "ようこそ！",
+    "logged_in_as": "ログイン中のアカウント：",
+    "email": "メールアドレス",
+    "name": "名前",
+    "sign_out": "サインアウト",
+    "not_logged_in": "ログインしていません。",
+    "sign_in": "サインイン"
+  },
+  "notFound": {
+    "page_not_found": "ページが見つかりません",
+    "page_not_found_description": "お探しのページが見つかりませんでした。",
+    "return_home": "ホームに戻る"
+  },
+  "authForm": {
+    "welcome": "ようこそ！",
+    "sign_in_to_your_account": "アカウントにサインイン",
+    "email": "メールアドレス",
+    "enter_email": "メールアドレスを入力してください",
+    "password": "パスワード",
+    "enter_password": "パスワードを入力してください",
+    "sign_in": "サインイン",
+    "or_continue_with": "または以下で続行",
+    "continue_with_google": "Googleで続行",
+    "continue_with_github": "GitHubで続行",
+    "continue_with_discord": "Discordで続行",
+    "validation": {
+      "required_email": "メールアドレスは必須です",
+      "invalid_email": "無効なメールアドレスです",
+      "required_password": "パスワードは必須です"
+    }
+  },
+  "register": {
+    "create_account": "アカウントを作成",
+    "sign_up_for_new_account": "新しいアカウントを登録",
+    "full_name": "フルネーム",
+    "enter_your_name": "名前を入力してください",
+    "email": "メールアドレス",
+    "enter_your_email": "メールアドレスを入力してください",
+    "password": "パスワード",
+    "create_password": "パスワードを作成",
+    "confirm_password": "パスワードを確認",
+    "confirm_password_placeholder": "パスワードを確認してください"
+  },
+  "validation": {
+    "required_name": "名前は必須です",
+    "name_min_length": "名前は少なくとも2文字必要です",
+    "required_email": "メールアドレスは必須です",
+    "invalid_email": "無効なメールアドレスです",
+    "required_password": "パスワードは必須です",
+    "password_min_length": "パスワードは少なくとも8文字必要です",
+    "password_uppercase": "少なくとも1つの大文字を含む必要があります",
+    "password_number": "少なくとも1つの数字を含む必要があります",
+    "password_special_char": "少なくとも1つの特殊文字（!@#$%^&*）を含む必要があります",
+    "required_confirm_password": "パスワードを確認してください",
+    "password_mismatch": "パスワードが一致しません"
+  },
+  "navbar": {
+    "new_area": "新しいエリア",
+    "my_areas": "私のエリア",
+    "profile": "プロフィール",
+    "settings": "設定",
+    "sign_out": "サインアウト"
+  },
+  "newWorkflow": {
+    "createNewArea": "新しいエリアを作成",
+    "back": "戻る",
+    "next": "次へ",
+    "creating": "作成中...",
+    "createArea": "エリアを作成",
+    "selectServiceForAction": "アクションのサービスを選択",
+    "selectAction": "{{service}}のアクションを選択",
+    "configureAction": "設定",
+    "selectServiceForReaction": "リアクションのサービスを選択",
+    "selectReaction": "{{service}}のリアクションを選択",
+    "configureReaction": "設定",
+    "nameYourArea": "エリアに名前を付ける",
+    "action": "アクション",
+    "reaction": "リアクション",
+    "name": "名前",
+    "failedLoadService": "利用可能なサービスの読み込みに失敗しました",
+    "enterName": "ワークフローの名前を入力してください",
+    "pleaseSelectAction": "アクションを選択してください",
+    "pleaseSelectReaction": "リアクションを選択してください",
+    "invalidService": "無効なサービス選択",
+    "workflowCreatedSuccessfully": "ワークフローが正常に作成されました",
+    "workflowFailedCreation": "ワークフローの作成に失敗しました"
+  },
+  "logMessage": {
+    "loginSuccessful": "ログイン成功",
+    "registrationSuccessful": "登録成功！ログイン中...",
+    "logoutSuccessful": "正常にサインアウトしました"
+  }
+}

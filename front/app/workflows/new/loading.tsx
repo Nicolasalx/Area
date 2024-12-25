@@ -3,8 +3,11 @@
 import Card from "@/components/ui/Card";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Button from "@/components/ui/Button";
+import { useTranslation } from "next-i18next";
 
 export default function Loading() {
+  const { t } = useTranslation("loading");
+
   return (
     <div className="flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-gray-50">
       {/* Fixed Header */}
@@ -53,13 +56,13 @@ export default function Loading() {
                   className="bg-gray-100 text-gray-700 hover:bg-gray-200"
                 >
                   <ArrowLeft className="mr-2 h-4 w-4" />
-                  Back
+                  {t("back")}
                 </Button>
                 <Button
                   disabled
                   className="bg-black text-white hover:bg-gray-800 disabled:bg-gray-200"
                 >
-                  Next
+                  {t("next")}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
@@ -76,13 +79,13 @@ export default function Loading() {
             className="bg-gray-100 text-gray-700 hover:bg-gray-200"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
+            {t("back")}
           </Button>
           <Button
             disabled
             className="bg-black text-white hover:bg-gray-800 disabled:bg-gray-200"
           >
-            Next
+            {t("next")}
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>

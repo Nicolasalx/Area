@@ -7,12 +7,14 @@ import Button from "@/components/ui/Button";
 import Text from "@/components/ui/Text";
 import Card from "@/components/ui/Card";
 import { AtSign, Lock, User, AlertCircle } from "lucide-react";
+import { useTranslation } from "next-i18next";
 
 type ValidationFields = {
   [key: string]: boolean;
 };
 
 export const LoginForm = () => {
+  const { t } = useTranslation();
   const { login, loginWithGoogle, loginWithGithub, loginWithDiscord, error } =
     useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -46,9 +48,9 @@ export const LoginForm = () => {
     <Card className="w-full max-w-md overflow-y-auto p-8">
       <form onSubmit={handleSubmit}>
         <div className="text-center">
-          <Text variant="h2">Welcome</Text>
+          <Text variant="h2">{t("authForm.welcome")}</Text>
           <Text variant="small" color="gray">
-            Sign in to your account
+            {t("authForm.sign_in_to_your_account")}
           </Text>
         </div>
         <div className="my-4 space-y-2">
@@ -63,15 +65,15 @@ export const LoginForm = () => {
 
           <ValidatedInput
             name="email"
-            label="Email"
+            label={t("authForm.email")}
             type="email"
-            placeholder="Enter your email"
+            placeholder={t("authForm.enter_email")}
             startIcon={<AtSign className="h-5 w-5" />}
             validation={{
-              required: "Email is required",
+              required: t("validation.required_email"),
               pattern: [
                 /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                "Invalid email address",
+                t("validation.invalid_email"),
               ],
             }}
             onValidChange={(isValid) =>
@@ -81,12 +83,12 @@ export const LoginForm = () => {
 
           <ValidatedInput
             name="password"
-            label="Password"
+            label={t("authForm.password")}
             type="password"
-            placeholder="Enter your password"
+            placeholder={t("authForm.enter_password")}
             startIcon={<Lock className="h-5 w-5" />}
             validation={{
-              required: "Password is required",
+              required: t("validation.required_password"),
             }}
             onValidChange={(isValid) =>
               setFormValidation((prev) => ({ ...prev, password: isValid }))
@@ -100,7 +102,7 @@ export const LoginForm = () => {
             isLoading={isLoading}
             className="mt-2 w-full"
           >
-            <Text color="white">Sign In</Text>
+            <Text color="white">{t("authForm.sign_in")}</Text>
           </Button>
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
@@ -108,7 +110,7 @@ export const LoginForm = () => {
             </div>
             <div className="relative flex justify-center text-sm">
               <span className="bg-white px-2 text-gray-500">
-                Or continue with
+                {t("authForm.or_continue_with")}
               </span>
             </div>
           </div>
@@ -143,7 +145,7 @@ export const LoginForm = () => {
               </svg>
             }
           >
-            <Text>Sign in with Google</Text>
+            <Text>{t("authForm.continue_with_google")}</Text>
           </Button>
 
           <Button
@@ -168,7 +170,7 @@ export const LoginForm = () => {
               </svg>
             }
           >
-            <Text color="white">Sign in with Github</Text>
+            <Text color="white">{t("authForm.continue_with_github")}</Text>
           </Button>
 
           <Button
@@ -190,7 +192,7 @@ export const LoginForm = () => {
               </svg>
             }
           >
-            <Text color="white">Sign in with Discord</Text>
+            <Text color="white">{t("authForm.continue_with_discord")}</Text>
           </Button>
         </div>
       </form>
@@ -199,6 +201,7 @@ export const LoginForm = () => {
 };
 
 export const RegisterForm = () => {
+  const { t } = useTranslation();
   const { register, error } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [password, setPassword] = useState("");
@@ -234,9 +237,9 @@ export const RegisterForm = () => {
   return (
     <Card className="w-full max-w-md p-8">
       <div className="text-center">
-        <Text variant="h2">Create Account</Text>
+        <Text variant="h2">{t("register.create_account")}</Text>
         <Text variant="small" color="gray">
-          Sign up for a new account
+          {t("register.sign_up_for_new_account")}
         </Text>
       </div>
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -251,12 +254,12 @@ export const RegisterForm = () => {
         <div className="mb-4 space-y-2">
           <ValidatedInput
             name="name"
-            label="Full Name"
-            placeholder="Enter your name"
+            label={t("register.full_name")}
+            placeholder={t("register.enter_your_name")}
             startIcon={<User className="h-5 w-5" />}
             validation={{
-              required: "Name is required",
-              minLength: [2, "Name must be at least 2 characters"],
+              required: t("validation.required_name"),
+              minLength: [2, t("validation.name_min_length")],
             }}
             onValidChange={(isValid) =>
               setFormValidation((prev) => ({ ...prev, name: isValid }))
@@ -265,15 +268,15 @@ export const RegisterForm = () => {
 
           <ValidatedInput
             name="email"
-            label="Email"
+            label={t("register.email")}
             type="email"
-            placeholder="Enter your email"
+            placeholder={t("register.enter_your_email")}
             startIcon={<AtSign className="h-5 w-5" />}
             validation={{
-              required: "Email is required",
+              required: t("validation.required_email"),
               pattern: [
                 /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                "Invalid email address",
+                t("validation.invalid_email"),
               ],
             }}
             onValidChange={(isValid) =>
@@ -283,26 +286,25 @@ export const RegisterForm = () => {
 
           <ValidatedInput
             name="password"
-            label="Password"
+            label={t("register.password")}
             type="password"
-            placeholder="Create a password"
+            placeholder={t("register.create_password")}
             startIcon={<Lock className="h-5 w-5" />}
             validation={{
-              required: "Password is required",
-              minLength: [8, "Password must be at least 8 characters"],
+              required: t("validation.required_password"),
+              minLength: [8, t("validation.password_min_length")],
               custom: [
                 {
                   validate: (value: string) => /[A-Z]/.test(value),
-                  message: "Must contain at least one uppercase letter",
+                  message: t("validation.password_uppercase"),
                 },
                 {
                   validate: (value: string) => /[0-9]/.test(value),
-                  message: "Must contain at least one number",
+                  message: t("validation.password_number"),
                 },
                 {
                   validate: (value: string) => /[!@#$%^&*]/.test(value),
-                  message:
-                    "Must contain at least one special character (!@#$%^&*)",
+                  message: t("validation.password_special_char"),
                 },
               ],
             }}
@@ -316,16 +318,16 @@ export const RegisterForm = () => {
 
           <ValidatedInput
             name="confirmPassword"
-            label="Confirm Password"
+            label={t("register.confirm_password")}
             type="password"
-            placeholder="Confirm your password"
+            placeholder={t("register.confirm_password_placeholder")}
             startIcon={<Lock className="h-5 w-5" />}
             validation={{
-              required: "Please confirm your password",
+              required: t("validation.required_confirm_password"),
               custom: [
                 {
                   validate: (value: string) => value === password,
-                  message: "Passwords do not match",
+                  message: t("validation.password_mismatch"),
                 },
               ],
             }}
@@ -344,7 +346,7 @@ export const RegisterForm = () => {
           isLoading={isLoading}
           className="w-full"
         >
-          <Text color="white">Create Account</Text>
+          <Text color="white">{t("register.create_account")}</Text>
         </Button>
       </form>
     </Card>

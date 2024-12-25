@@ -16,6 +16,7 @@ import DataForm from "./components/DataForm";
 import api from "@/lib/api";
 import Loading from "./loading";
 import { formatActionReactionName } from "../utils";
+import { useTranslation } from "react-i18next";
 
 interface Service {
   id: number;
@@ -61,6 +62,7 @@ type Step =
   | "name";
 
 export default function NewWorkflowPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { user } = useAuth();
   const { showToast } = useToast();
@@ -116,7 +118,7 @@ export default function NewWorkflowPage() {
         setAvailableReactions(reactionsResponse.data);
       } catch (error) {
         console.error("Error fetching services:", error);
-        showToast("Failed to load available services", "error");
+        showToast(t("newWorkflow.failedLoadService"), "error");
       } finally {
         setLoading(false);
       }
@@ -181,19 +183,27 @@ export default function NewWorkflowPage() {
   const getStepTitle = () => {
     switch (currentStep) {
       case "trigger-service":
-        return "Select a Service for the Action";
+        return t("newWorkflow.selectServiceForAction");
       case "trigger":
-        return `Select an Action from ${selectedService?.name}`;
+        return t("newWorkflow.selectAction", {
+          service: selectedService?.name,
+        });
       case "trigger-data":
-        return `Configure ${formatActionReactionName(selectedAction?.name)} Action`;
+        return t("newWorkflow.configureAction", {
+          action: formatActionReactionName(selectedAction?.name),
+        });
       case "reaction-service":
-        return "Select a Service for the Reaction";
+        return t("newWorkflow.selectServiceForReaction");
       case "reaction":
-        return `Select a Reaction from ${selectedService?.name}`;
+        return t("newWorkflow.selectReaction", {
+          service: selectedService?.name,
+        });
       case "reaction-data":
-        return `Configure ${formatActionReactionName(selectedReaction?.name)} Reaction`;
+        return t("newWorkflow.configureReaction", {
+          reaction: formatActionReactionName(selectedReaction?.name),
+        });
       case "name":
-        return "Name Your Area";
+        return t("newWorkflow.nameYourArea");
     }
   };
 
@@ -216,22 +226,22 @@ export default function NewWorkflowPage() {
     if (!user?.id) return;
 
     if (!name.trim()) {
-      showToast("Please enter a name for your workflow", "error");
+      showToast(t("newWorkflow.enterName"), "error");
       return;
     }
 
     if (!selectedAction) {
-      showToast("Please select a action", "error");
+      showToast(t("newWorkflow.pleaseSelectAction"), "error");
       return;
     }
 
     if (!selectedReaction) {
-      showToast("Please select a reaction", "error");
+      showToast(t("newWorkflow.pleaseSelectReaction"), "error");
       return;
     }
 
     if (!selectedAction.service?.id || !selectedReaction.service?.id) {
-      showToast("Invalid service selection", "error");
+      showToast(t("newWorkflow.invalidService"), "error");
       return;
     }
 
@@ -265,12 +275,14 @@ export default function NewWorkflowPage() {
       const response = await api.post("/workflow", payload);
       console.log("Workflow created successfully:", response.data);
 
-      showToast("Workflow created successfully", "success");
+      showToast(t("newWorkflow.workflowCreatedSuccessfully"), "success");
       router.push("/workflows");
     } catch (error) {
       console.error("Create error:", error);
       showToast(
-        error instanceof Error ? error.message : "Failed to create workflow",
+        error instanceof Error
+          ? error.message
+          : t("newWorkflow.workflowFailedCreation"),
         "error",
       );
     } finally {
@@ -279,9 +291,9 @@ export default function NewWorkflowPage() {
   };
 
   const progressSteps = [
-    { key: "trigger", label: "Action" },
-    { key: "reaction", label: "Reaction" },
-    { key: "name", label: "Name" },
+    { key: "trigger", label: t("newWorkflow.action") },
+    { key: "reaction", label: t("newWorkflow.reaction") },
+    { key: "name", label: t("newWorkflow.name") },
   ];
 
   const renderStep = () => {
@@ -307,7 +319,7 @@ export default function NewWorkflowPage() {
       case "trigger-data":
         return (
           <DataForm
-            title={`Configure ${formatActionReactionName(selectedAction?.name)}`}
+            title={`${t("newWorkflow.configureAction")} ${formatActionReactionName(selectedAction?.name)}`}
             fields={selectedAction?.body ?? []}
             prefix="action_"
             onSubmit={(data) => {
@@ -338,7 +350,7 @@ export default function NewWorkflowPage() {
       case "reaction-data":
         return (
           <DataForm
-            title={`Configure ${formatActionReactionName(selectedReaction?.name)}`}
+            title={`${t("newWorkflow.configureAction")} ${formatActionReactionName(selectedReaction?.name)}`}
             fields={selectedReaction?.body ?? []}
             prefix="reaction_"
             onSubmit={(data) => {
@@ -370,7 +382,7 @@ export default function NewWorkflowPage() {
       <div className="mx-auto flex w-full p-2 py-6">
         <div className="flex w-full items-center justify-between">
           <div className="flex flex-col gap-4">
-            <Text variant="h2">Create New Area</Text>
+            <Text variant="h2">{t("newWorkflow.createNewArea")}</Text>
             <Text variant="h3">{getStepTitle()}</Text>
           </div>
 
@@ -399,7 +411,7 @@ export default function NewWorkflowPage() {
               className="bg-gray-100 text-gray-700 hover:bg-gray-200"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back
+              {t("newWorkflow.back")}
             </Button>
           ) : (
             <Button
@@ -409,7 +421,7 @@ export default function NewWorkflowPage() {
               className="bg-gray-100 text-gray-700 hover:bg-gray-200"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back
+              {t("newWorkflow.back")}
             </Button>
           )}
 
@@ -430,7 +442,7 @@ export default function NewWorkflowPage() {
               }
               className="bg-black text-white hover:bg-gray-800 disabled:bg-gray-200"
             >
-              Next
+              {t("newWorkflow.next")}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           ) : currentStep === "name" ? (
@@ -442,11 +454,11 @@ export default function NewWorkflowPage() {
               {submitting ? (
                 <>
                   <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  Creating...
+                  {t("newWorkflow.creating")}
                 </>
               ) : (
                 <>
-                  Create Area
+                  {t("newWorkflow.createArea")}
                   <Check className="ml-2 h-4 w-4" />
                 </>
               )}

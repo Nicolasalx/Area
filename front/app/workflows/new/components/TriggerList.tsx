@@ -4,6 +4,7 @@ import Card from "@/components/ui/Card";
 import Text from "@/components/ui/Text";
 import { Check } from "lucide-react";
 import { formatActionReactionName, getServiceIcon } from "../../utils";
+import { useTranslation } from "next-i18next";
 
 interface Service {
   id: number;
@@ -30,14 +31,16 @@ export default function TriggerList({
   selectedTrigger,
   onSelect,
 }: TriggerListProps) {
+  const { t } = useTranslation("triggerList");
+
   if (!triggers.length) {
     return (
       <div className="flex min-h-[300px]">
         <div className="text-center">
           <Text variant="h3" className="mb-2">
-            No Triggers Available
+            {t("noTriggersAvailable")}
           </Text>
-          <Text color="gray">No triggers are currently available</Text>
+          <Text color="gray">{t("noTriggersCurrentlyAvailable")}</Text>
         </div>
       </div>
     );

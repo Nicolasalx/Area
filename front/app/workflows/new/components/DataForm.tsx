@@ -6,6 +6,7 @@ import Text from "@/components/ui/Text";
 import Button from "@/components/ui/Button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import ValidatedInput from "@/components/ui/ValidatedInput";
+import { useTranslation } from "next-i18next";
 
 interface DataField {
   name: string;
@@ -32,6 +33,8 @@ export default function DataForm({
   onBack,
   prefix = "",
 }: DataFormProps) {
+  const { t } = useTranslation();
+
   const [formData, setFormData] = useState<DataFormData>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -54,7 +57,8 @@ export default function DataForm({
     fields.forEach((field) => {
       const key = getFieldKey(field);
       if (field.required && !formData[key]?.trim()) {
-        newErrors[key] = `${field.field || field.name} is required`;
+        newErrors[key] =
+          `${field.field || field.name} ${t("dataForm.isRequired")}`;
         isValid = false;
       }
     });
@@ -116,7 +120,8 @@ export default function DataForm({
                   required={field.required}
                   type={field.type || "text"}
                   placeholder={
-                    field.description || `Enter ${displayName.toLowerCase()}`
+                    field.description ||
+                    t("dataForm.enterField", { field: displayName })
                   }
                   value={formData[key] || ""}
                   onChange={(e) => handleInputChange(field, e.target.value)}
@@ -131,13 +136,13 @@ export default function DataForm({
               className="bg-gray-100 text-gray-700 hover:bg-gray-200"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back
+              {t("dataForm.back")}
             </Button>
             <Button
               type="submit"
               className="bg-black text-white hover:bg-gray-800 disabled:bg-gray-200"
             >
-              Next
+              {t("dataForm.next")}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>

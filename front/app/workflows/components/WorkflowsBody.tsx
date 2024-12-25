@@ -8,6 +8,7 @@ import { PlayCircle, ArrowRight, Ghost, Trash2, Power } from "lucide-react";
 import { useToast } from "@/contexts/ToastContext";
 import api from "@/lib/api";
 import { AxiosError } from "axios";
+import { useTranslation } from "react-i18next";
 
 import {
   getServiceIcon,
@@ -66,6 +67,7 @@ export default function WorkflowsBody({
   onToggle,
 }: WorkflowsBodyProps) {
   const { showToast } = useToast();
+  const { t } = useTranslation();
 
   console.log("Workflows in WorkflowsBody:", workflows);
 
@@ -75,17 +77,17 @@ export default function WorkflowsBody({
       const response = await api.delete(`/workflow/${id}`);
       console.log("Delete response:", response);
 
-      showToast("Area deleted successfully", "success");
+      showToast(t("workflow.deletedSuccess"), "success");
       onDelete?.(id);
     } catch (err) {
       console.error("Delete error:", err);
       if (err instanceof AxiosError) {
         showToast(
-          err.response?.data?.message || "Failed to delete area",
+          err.response?.data?.message || t("workflow.deleteFailed"),
           "error",
         );
       } else {
-        showToast("Failed to delete area", "error");
+        showToast(t("workflow.deleteFailed"), "error");
       }
     }
   };
@@ -98,7 +100,7 @@ export default function WorkflowsBody({
       console.log("Toggle response:", response);
 
       showToast(
-        `Area ${!currentStatus ? "activated" : "deactivated"} successfully`,
+        t(`workflow.toggle.${!currentStatus ? "activated" : "deactivated"}`),
         "success",
       );
       onToggle?.(id, !currentStatus);
@@ -106,11 +108,11 @@ export default function WorkflowsBody({
       console.error("Toggle error:", err);
       if (err instanceof AxiosError) {
         showToast(
-          err.response?.data?.message || "Failed to update workflow status",
+          err.response?.data?.message || t("workflow.toggleFailed"),
           "error",
         );
       } else {
-        showToast("Failed to update workflow status", "error");
+        showToast(t("workflow.toggleFailed"), "error");
       }
     }
   };
@@ -121,9 +123,9 @@ export default function WorkflowsBody({
         <div className="text-center">
           <Ghost className="mx-auto mb-4 h-12 w-12 text-gray-400" />
           <Text variant="h3" className="mb-2">
-            No Areas Found
+            {t("workflow.noAreasFound")}
           </Text>
-          <Text color="gray">Create your first area to get started</Text>
+          <Text color="gray">{t("workflow.createFirstArea")}</Text>
         </div>
       </div>
     );
@@ -145,7 +147,7 @@ export default function WorkflowsBody({
                   {workflow.name.length > 0
                     ? workflow.name.charAt(0).toUpperCase() +
                       workflow.name.slice(1)
-                    : "Untitled Area"}
+                    : t("workflow.untitledArea")}
                 </Text>
                 <div className="flex items-center gap-1">
                   <button
@@ -156,7 +158,9 @@ export default function WorkflowsBody({
                         : "text-gray-400 hover:text-gray-500 focus-visible:text-gray-500"
                     }`}
                     title={
-                      workflow.isActive ? "Deactivate area" : "Activate area"
+                      workflow.isActive
+                        ? t("workflow.deactivateArea")
+                        : t("workflow.activateArea")
                     }
                   >
                     <Power className="h-5 w-5" />
@@ -164,7 +168,7 @@ export default function WorkflowsBody({
                   <button
                     onClick={() => handleDelete(workflow.id)}
                     className="rounded-full border-b-0 border-black p-2 text-gray-500 duration-200 hover:text-red-500 focus-visible:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
-                    title="Delete area"
+                    title={t("workflow.deleteArea")}
                   >
                     <Trash2 className="h-5 w-5" />
                   </button>
@@ -176,7 +180,7 @@ export default function WorkflowsBody({
                 <div>
                   <Text variant="h4" className="mb-3 flex items-center gap-2">
                     <PlayCircle className="h-5 w-5 text-gray-500" />
-                    Actions
+                    {t("workflow.actions")}
                   </Text>
                   <ul className="ml-4 space-y-2 rounded-lg bg-gray-100 p-2">
                     {workflow.activeActions &&
@@ -199,7 +203,7 @@ export default function WorkflowsBody({
                           color="red"
                           className="opacity-75"
                         >
-                          No actions have been added yet
+                          {t("workflow.noActions")}
                         </Text>
                       </li>
                     )}
@@ -208,7 +212,7 @@ export default function WorkflowsBody({
                 <div>
                   <Text variant="h4" className="mb-3 flex items-center gap-2">
                     <ArrowRight className="h-5 w-5 text-gray-500" />
-                    Reactions
+                    {t("workflow.reactions")}
                   </Text>
                   <ul className="ml-4 space-y-2 rounded-lg bg-gray-100 p-2">
                     {workflow.activeReactions &&
@@ -233,7 +237,7 @@ export default function WorkflowsBody({
                           color="red"
                           className="opacity-75"
                         >
-                          No reactions have been added yet
+                          {t("workflow.noReactions")}
                         </Text>
                       </li>
                     )}

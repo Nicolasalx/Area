@@ -10,6 +10,7 @@ import WorkflowsBody from "./components/WorkflowsBody";
 import WorkflowsLoading from "./loading";
 import api from "@/lib/api";
 import { AxiosError } from "axios";
+import { useTranslation } from "react-i18next";
 
 interface Workflow {
   id: string;
@@ -56,6 +57,7 @@ interface WorkflowResponse {
 }
 
 export default function WorkflowsPage() {
+  const { t } = useTranslation("common");
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
@@ -136,12 +138,12 @@ export default function WorkflowsPage() {
   return (
     <div className="mx-4 py-8">
       <div className="mb-8 flex items-center justify-between">
-        <Text variant="h2">My Areas</Text>
+        <Text variant="h2">{t("myAreas")}</Text>
         <Button
           onClick={() => router.push("/workflows/new")}
           leftIcon={<Plus className="h-4 w-4" />}
         >
-          New Area
+          {t("newArea")}
         </Button>
       </div>
 

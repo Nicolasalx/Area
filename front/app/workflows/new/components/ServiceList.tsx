@@ -4,6 +4,7 @@ import Card from "@/components/ui/Card";
 import Text from "@/components/ui/Text";
 import { getServiceIcon } from "../../utils";
 import { Check } from "lucide-react";
+import { useTranslation } from "next-i18next";
 
 interface Service {
   id: number;
@@ -42,6 +43,8 @@ export default function ServiceList({
   actionsByService,
   reactionsByService,
 }: ServiceListProps) {
+  const { t } = useTranslation("serviceList");
+
   const filteredServices = services.filter((service) => {
     if (forTrigger) {
       return actionsByService?.get(service.id)?.length ?? 0 > 0;
@@ -55,12 +58,12 @@ export default function ServiceList({
       <div className="flex min-h-[300px]">
         <div className="text-center">
           <Text variant="h3" className="mb-2">
-            No Services Available
+            {t("noServicesAvailable")}
           </Text>
           <Text color="gray">
             {forTrigger
-              ? "No services with actions are currently available"
-              : "No services with reactions are currently available"}
+              ? t("noServicesWithActions")
+              : t("noServicesWithReactions")}
           </Text>
         </div>
       </div>
@@ -103,9 +106,8 @@ export default function ServiceList({
                     <Text variant="caption" color="gray">
                       {availableCount}{" "}
                       {forTrigger
-                        ? `action${availableCount !== 1 ? "s" : ""}`
-                        : `reaction${availableCount !== 1 ? "s" : ""}`}{" "}
-                      available
+                        ? t("action", { count: availableCount })
+                        : t("reaction", { count: availableCount })}
                     </Text>
                   </div>
                 </div>
