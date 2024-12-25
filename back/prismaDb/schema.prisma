@@ -34,7 +34,7 @@ model Ingredients {
   name        String
   description String
   actions     ActionsIngredients[]
-  Actions     Actions?             @relation(fields: [actionsId], references: [id]) 
+  Actions     Actions?             @relation(fields: [actionsId], references: [id])
   actionsId   Int?
 }
 
@@ -139,4 +139,6 @@ model ServiceTokens {
   serviceId Int
   services  Services @relation(fields: [serviceId], references: [id])
   users     Users    @relation(fields: [userId], references: [id])
+
+  @@unique([userId, serviceId])
 }

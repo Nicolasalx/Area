@@ -1,41 +1,42 @@
 import { Injectable } from '@nestjs/common';
-import { IReactionHandler } from '@reaction-service/handler/base.handler';
 import { google } from 'googleapis';
 import * as nodemailer from 'nodemailer';
 
 @Injectable()
-export class GoogleReactionService implements IReactionHandler {
-  canHandle(service: string): boolean {
-    return service === 'google';
-  }
-
-  async handle(reaction: string, data: any): Promise<string> {
+export class GoogleReactionService {
+  async manageReactionGoogle(
+    refreshToken: string,
+    reaction: string,
+    data: any,
+  ): Promise<string> {
     switch (reaction.toLowerCase()) {
       case 'send_email':
-        return this.sendEmail(data);
+        return this.sendEmail(refreshToken, data);
       case 'set_calendar_event':
-        return this.setCalendarEvent(data);
+        return this.setCalendarEvent(refreshToken, data);
       case 'create_task':
-        return this.createTask(data);
+        return this.createTask(refreshToken, data);
       case 'create_drive_element':
-        return this.createElementInDrive(data);
+        return this.createElementInDrive(refreshToken, data);
       case 'create_youtube_playlist':
-        return this.createYoutubePlaylist(data);
+        return this.createYoutubePlaylist(refreshToken, data);
       default:
         return 'Action not recognized for Google';
     }
   }
 
-  private async createYoutubePlaylist(data: {
-    title: string;
-    description?: string;
-    privacyStatus: string;
-  }): Promise<string> {
+  private async createYoutubePlaylist(
+    refreshToken: string,
+    data: {
+      title: string;
+      description?: string;
+      privacyStatus: string;
+    },
+  ): Promise<string> {
     const { title, description, privacyStatus } = data;
     const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
     const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
     const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;
-    const REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN;
 
     try {
       const oAuth2Client = new google.auth.OAuth2(
@@ -43,7 +44,7 @@ export class GoogleReactionService implements IReactionHandler {
         CLIENT_SECRET,
         REDIRECT_URI,
       );
-      oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+      oAuth2Client.setCredentials({ refresh_token: refreshToken });
 
       const youtube = google.youtube({ version: 'v3', auth: oAuth2Client });
 
@@ -71,15 +72,17 @@ export class GoogleReactionService implements IReactionHandler {
     }
   }
 
-  private async createElementInDrive(data: {
-    title: string;
-    elementType: string;
-  }): Promise<string> {
+  private async createElementInDrive(
+    refreshToken: string,
+    data: {
+      title: string;
+      elementType: string;
+    },
+  ): Promise<string> {
     const { title, elementType } = data;
     const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
     const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
     const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;
-    const REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN;
 
     const elementTypeMapping: { [key: string]: string } = {
       docs: 'application/vnd.google-apps.document',
@@ -100,7 +103,7 @@ export class GoogleReactionService implements IReactionHandler {
         CLIENT_SECRET,
         REDIRECT_URI,
       );
-      oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+      oAuth2Client.setCredentials({ refresh_token: refreshToken });
 
       const drive = google.drive({ version: 'v3', auth: oAuth2Client });
 
@@ -120,17 +123,19 @@ export class GoogleReactionService implements IReactionHandler {
     }
   }
 
-  private async createTask(data: {
-    tasklist?: string;
-    title: string;
-    notes?: string;
-    due?: string;
-  }): Promise<string> {
+  private async createTask(
+    refreshToken: string,
+    data: {
+      tasklist?: string;
+      title: string;
+      notes?: string;
+      due?: string;
+    },
+  ): Promise<string> {
     const { tasklist, title, notes, due } = data;
     const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
     const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
     const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;
-    const REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN;
 
     try {
       const oAuth2Client = new google.auth.OAuth2(
@@ -138,7 +143,7 @@ export class GoogleReactionService implements IReactionHandler {
         CLIENT_SECRET,
         REDIRECT_URI,
       );
-      oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+      oAuth2Client.setCredentials({ refresh_token: refreshToken });
 
       const tasks = google.tasks({ version: 'v1', auth: oAuth2Client });
 
@@ -161,15 +166,18 @@ export class GoogleReactionService implements IReactionHandler {
     }
   }
 
-  private async setCalendarEvent(data: {
-    calendarId: string;
-    summary: string;
-    description?: string;
-    location?: string;
-    startDateTime: string;
-    endDateTime: string;
-    attendees?: { email: string }[];
-  }): Promise<string> {
+  private async setCalendarEvent(
+    refreshToken: string,
+    data: {
+      calendarId: string;
+      summary: string;
+      description?: string;
+      location?: string;
+      startDateTime: string;
+      endDateTime: string;
+      attendees?: { email: string }[];
+    },
+  ): Promise<string> {
     const {
       calendarId,
       summary,
@@ -182,7 +190,6 @@ export class GoogleReactionService implements IReactionHandler {
     const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
     const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
     const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;
-    const REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN;
 
     try {
       const oAuth2Client = new google.auth.OAuth2(
@@ -190,7 +197,7 @@ export class GoogleReactionService implements IReactionHandler {
         CLIENT_SECRET,
         REDIRECT_URI,
       );
-      oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+      oAuth2Client.setCredentials({ refresh_token: refreshToken });
 
       const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
 
@@ -216,18 +223,20 @@ export class GoogleReactionService implements IReactionHandler {
     }
   }
 
-  private async sendEmail(data: {
-    from: string;
-    to: string;
-    subject: string;
-    text: string;
-    html: string;
-  }): Promise<string> {
+  private async sendEmail(
+    refreshToken: string,
+    data: {
+      from: string;
+      to: string;
+      subject: string;
+      text: string;
+      html: string;
+    },
+  ): Promise<string> {
     const { from, to, subject, text, html } = data;
     const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
     const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
     const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;
-    const REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN;
 
     try {
       const oAuth2Client = new google.auth.OAuth2(
@@ -235,7 +244,7 @@ export class GoogleReactionService implements IReactionHandler {
         CLIENT_SECRET,
         REDIRECT_URI,
       );
-      oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+      oAuth2Client.setCredentials({ refresh_token: refreshToken });
 
       const accessToken = await oAuth2Client.getAccessToken();
 
@@ -246,7 +255,7 @@ export class GoogleReactionService implements IReactionHandler {
           user: from,
           clientId: CLIENT_ID,
           clientSecret: CLIENT_SECRET,
-          refreshToken: REFRESH_TOKEN,
+          refreshToken: refreshToken,
           accessToken: accessToken.token || '',
         },
       });
