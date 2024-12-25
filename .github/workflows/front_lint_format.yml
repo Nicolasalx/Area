@@ -21,6 +21,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies and run linter
+        working-directory: front
         run: |
           npm install
           npm run lint
