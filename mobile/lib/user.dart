@@ -1,10 +1,12 @@
 class UserResponse {
-  UserResponse({required this.email, required this.name});
+  UserResponse({required this.id, required this.email, required this.name});
+  final String id;
   final String email;
   final String name;
 
   factory UserResponse.fromJson(Map<String, dynamic> data) {
     return UserResponse(
+      id: data['id'],
       email: data['email'],
       name: data['name'],
     );

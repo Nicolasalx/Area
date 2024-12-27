@@ -29,6 +29,8 @@ class Auth {
             .write(key: 'email', value: jsonResponse.data.user.email);
         await globals.storage
             .write(key: 'name', value: jsonResponse.data.user.name);
+        await globals.storage
+            .write(key: 'id', value: jsonResponse.data.user.id);
         globals.navigatorKey.currentState!
             .popUntil(ModalRoute.withName(routeHome));
         globals.navigatorKey.currentState!.pushNamed(routeHome);

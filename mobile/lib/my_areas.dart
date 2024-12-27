@@ -7,16 +7,18 @@ import 'package:http/http.dart' as http;
 import 'globals.dart' as globals;
 
 Future<List<Widget>> getWorkflow() async {
+  var id = await globals.storage.read(key: "id");
+  var token = await globals.storage.read(key: "token");
   var response = await http.get(
-    Uri.parse(
-        '${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/workflow/${globals.storage.read(key: "token")}'),
+    Uri.parse('${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/workflow/$id'),
     headers: {
-      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
     },
   );
+  print(response.body);
   JsonWorkflowResponse workflow =
       JsonWorkflowResponse.fromJson(json.decode(response.body));
-
+  print("HERE $workflow.message");
   List<Widget> widgets = workflow.data.map((item) {
     return Padding(
       padding: const EdgeInsets.only(top: 20),
@@ -51,6 +53,7 @@ class _MyAreasPageState extends State<MyAreasPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("TESTESTEST");
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -68,6 +71,7 @@ class _MyAreasPageState extends State<MyAreasPage> {
                   builder: (BuildContext context,
                       AsyncSnapshot<List<Widget>> widgets) {
                     if (widgets.hasData) {
+                      print(widgets.data!.length);
                       return Column(children: widgets.data!);
                     } else {
                       return const Column();
