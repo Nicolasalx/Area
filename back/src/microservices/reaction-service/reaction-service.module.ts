@@ -6,6 +6,9 @@ import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { DiscordReactionService } from './discord/discord.service';
 import { SharedAuthModule } from '../../shared/auth/auth.module';
 import { SlackReactionService } from './slack/slack.service';
+import { TrelloReactionService } from './trello/trello.service';
+import { TodoistReactionService } from './todoist/todoist.service';
+import { TwilioReactionService } from './twilio/twilio.service';
 
 @Module({
   imports: [SharedAuthModule],
@@ -16,6 +19,9 @@ import { SlackReactionService } from './slack/slack.service';
     PrismaService,
     DiscordReactionService,
     SlackReactionService,
+    TrelloReactionService,
+    TodoistReactionService,
+    TwilioReactionService,
   ],
 })
 export class ReactionServiceModule {}

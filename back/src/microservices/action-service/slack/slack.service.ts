@@ -90,7 +90,7 @@ export class SlackActionService {
 
       if (result?.messages?.length > 0) {
         console.log(`New Slack messages detected in channel #${channelName}`);
-        await this.actionService.executeReactions(reaction);
+        await this.actionService.executeReactionsBis(reaction);
         this.lastCheckTimestamp = Date.now();
       }
     } catch (error) {
@@ -135,7 +135,7 @@ export class SlackActionService {
         console.log(
           `New mentions detected for @${username} in #${channelName}`,
         );
-        await this.actionService.executeReactions(reaction);
+        await this.actionService.executeReactionsBis(reaction);
         this.lastCheckTimestamp = Date.now();
       }
     } catch (error) {
@@ -170,7 +170,7 @@ export class SlackActionService {
       for (const message of result.messages) {
         if (message.reactions?.some((r) => r.name === emojiToCheck)) {
           console.log(`Detected ${emojiToCheck} reaction in #${channelName}`);
-          await this.actionService.executeReactions(reaction);
+          await this.actionService.executeReactionsBis(reaction);
           this.lastCheckTimestamp = Date.now();
           break;
         }
@@ -202,7 +202,7 @@ export class SlackActionService {
 
       if (result?.messages?.some((msg) => msg.files?.length > 0)) {
         console.log(`New file shared in channel #${channelName}`);
-        await this.actionService.executeReactions(reaction);
+        await this.actionService.executeReactionsBis(reaction);
         this.lastCheckTimestamp = Date.now();
       }
     } catch (error) {

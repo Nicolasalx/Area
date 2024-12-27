@@ -134,7 +134,7 @@ export default function WorkflowsPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="mx-4 py-8">
       <div className="mb-8 flex items-center justify-between">
         <Text variant="h2">My Areas</Text>
         <Button
@@ -148,7 +148,7 @@ export default function WorkflowsPage() {
       {loading ? (
         <WorkflowsLoading />
       ) : error ? (
-        <div className="flex min-h-[300px] items-center justify-center text-red-500">
+        <div className="flex h-full min-h-[300px] items-center justify-center text-red-500">
           {error}
         </div>
       ) : (

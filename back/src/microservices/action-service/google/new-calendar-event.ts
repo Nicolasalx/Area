@@ -1,4 +1,5 @@
 import { IngredientsAction } from '@common/interfaces/ingredientsAction';
+import { getToken, getUserId } from '@common/utils/token.utils';
 import {
   getTriggerDate,
   getUserFriendlyDate,
@@ -30,7 +31,8 @@ export async function newCalendarEvent(
   const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
   const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
   const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;
-  const REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN;
+  const { workflowId } = action;
+  const REFRESH_TOKEN = await getToken(await getUserId(workflowId), 'google');
 
   try {
     const oAuth2Client = new google.auth.OAuth2(
@@ -67,7 +69,7 @@ export async function newCalendarEvent(
           );
 
           const ingredients = await createIngredientsAction(event);
-          await actionService.executeReactionsBis(ingredients, reaction);
+          await actionService.executeReactions(ingredients, reaction);
         }
       }
 

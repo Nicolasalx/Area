@@ -9,7 +9,11 @@ import { useToast } from "@/contexts/ToastContext";
 import api from "@/lib/api";
 import { AxiosError } from "axios";
 
-import { getServiceIcon, getRandomGradient } from "../utils";
+import {
+  getServiceIcon,
+  formatActionReactionName,
+  getServiceGradient,
+} from "../utils";
 
 interface Workflow {
   id: string;
@@ -113,7 +117,7 @@ export default function WorkflowsBody({
 
   if (!workflows.length) {
     return (
-      <div className="flex min-h-[300px] items-center justify-center rounded-lg border border-gray-200 bg-gray-50">
+      <div className="flex min-h-[300px] items-center justify-center rounded-lg border border-gray-200 bg-white">
         <div className="text-center">
           <Ghost className="mx-auto mb-4 h-12 w-12 text-gray-400" />
           <Text variant="h3" className="mb-2">
@@ -128,17 +132,13 @@ export default function WorkflowsBody({
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {workflows.map((workflow) => {
-        console.log("Workflow data:", {
-          id: workflow.id,
-          name: workflow.name,
-          actions: workflow.activeActions,
-          reactions: workflow.activeReactions,
-        });
-
         return (
           <Card key={workflow.id} shadow="small" hover="all">
             <CardHeader
-              className={`bg-gradient-to-r ${getRandomGradient()} rounded-none border-0 to-white p-6`}
+              className={`bg-gradient-to-r ${getServiceGradient(
+                workflow.activeActions[0].service.name,
+                "from",
+              )} ${getServiceGradient(workflow.activeReactions[0].service.name, "to")} rounded-none border-0 p-6`}
             >
               <div className="flex items-start justify-between">
                 <Text variant="h3" className="text-gray-800">
@@ -187,7 +187,7 @@ export default function WorkflowsBody({
                           className="flex items-center gap-2 text-gray-700"
                         >
                           {getServiceIcon(action.service.name)}
-                          <Text>{action.name}</Text>
+                          <Text>{formatActionReactionName(action.name)}</Text>
                           <Text variant="caption">({action.service.name})</Text>
                         </li>
                       ))
@@ -219,7 +219,7 @@ export default function WorkflowsBody({
                           className="flex items-center gap-2 text-gray-700"
                         >
                           {getServiceIcon(reaction.service.name)}
-                          <Text>{reaction.name}</Text>
+                          <Text>{formatActionReactionName(reaction.name)}</Text>
                           <Text variant="caption">
                             ({reaction.service.name})
                           </Text>

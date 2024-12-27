@@ -3,6 +3,7 @@
 import Card from "@/components/ui/Card";
 import Text from "@/components/ui/Text";
 import { Check } from "lucide-react";
+import { formatActionReactionName, getServiceIcon } from "../../utils";
 
 interface Service {
   id: number;
@@ -29,54 +30,63 @@ export default function ReactionList({
   selectedReaction,
   onSelect,
 }: ReactionListProps) {
+  if (!reactions.length) {
+    return (
+      <div className="flex min-h-[300px]">
+        <div className="text-center">
+          <Text variant="h3" className="mb-2">
+            No Reactions Available
+          </Text>
+          <Text color="gray">No reactions are currently available</Text>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="grid grid-cols-1 gap-6 py-1 md:grid-cols-2 lg:grid-cols-3">
-      {reactions.map((reaction) => (
-        <Card
-          key={reaction.id}
-          className={`group cursor-pointer bg-white transition-all duration-200 hover:shadow-md ${
-            selectedReaction?.id === reaction.id
-              ? "ring-2 ring-black"
-              : "hover:ring-1 hover:ring-gray-200"
-          }`}
-          onClick={() => onSelect(reaction)}
-        >
-          <Card.Header className="p-6">
-            <div className="mb-4 flex items-center justify-between">
-              <Text variant="h4" className="text-lg font-medium">
-                {reaction.name}
-              </Text>
-              <div
-                className={`flex h-6 w-6 items-center justify-center rounded-full transition-colors ${
-                  selectedReaction?.id === reaction.id
-                    ? "bg-black"
-                    : "bg-transparent"
-                }`}
-              >
-                <Check
-                  className={`h-4 w-4 ${
-                    selectedReaction?.id === reaction.id
-                      ? "text-white"
-                      : "text-transparent"
-                  }`}
-                />
-              </div>
-            </div>
-            {reaction.service && (
-              <div className="flex items-center gap-2">
-                <Text variant="caption" className="text-gray-500">
-                  {reaction.service.name}
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {reactions.map((reaction) => {
+        const isSelected = selectedReaction?.id === reaction.id;
+
+        return (
+          <Card
+            key={reaction.id}
+            onClick={() => onSelect(reaction)}
+            className={`cursor-pointer transition-all duration-200 hover:border-black hover:shadow-md ${
+              isSelected ? "border-black" : ""
+            }`}
+            shadow={isSelected ? "medium" : "small"}
+          >
+            <Card.Body className="p-6">
+              <div className="relative">
+                {isSelected && (
+                  <div className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-black text-white">
+                    <Check className="h-4 w-4" />
+                  </div>
+                )}
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100">
+                    {getServiceIcon(reaction.service?.name, "h-8 w-8")}
+                  </div>
+                  <div className="flex flex-col">
+                    <Text variant="h5">
+                      {formatActionReactionName(reaction.name)}
+                    </Text>
+                    {reaction.service && (
+                      <Text variant="caption" color="gray">
+                        {formatActionReactionName(reaction.service.name)}
+                      </Text>
+                    )}
+                  </div>
+                </div>
+                <Text variant="small" color="gray">
+                  {reaction.description}
                 </Text>
               </div>
-            )}
-          </Card.Header>
-          <Card.Body className="border-t border-gray-100 p-6">
-            <Text variant="body" className="text-gray-600">
-              {reaction.description}
-            </Text>
-          </Card.Body>
-        </Card>
-      ))}
+            </Card.Body>
+          </Card>
+        );
+      })}
     </div>
   );
 }

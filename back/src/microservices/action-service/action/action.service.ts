@@ -1,5 +1,6 @@
 import { ActionDto } from '@common/dto/action.dto';
 import { IngredientsAction } from '@common/interfaces/ingredientsAction';
+import { getToken, getUserId } from '@common/utils/token.utils';
 import { Injectable } from '@nestjs/common';
 import { ActiveReaction } from '@prisma/client';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
@@ -49,7 +50,7 @@ export class ActionService {
     }));
   }
 
-  async executeReactions(reactions: ActiveReaction[]): Promise<void> {
+  async executeReactionsBis(reactions: ActiveReaction[]): Promise<void> {
     this.updateToken();
 
     for (const reaction of reactions) {
@@ -114,7 +115,7 @@ export class ActionService {
     });
   }
 
-  async executeReactionsBis(
+  async executeReactions(
     ingredientsAction: IngredientsAction[],
     reactions: ActiveReaction[],
   ): Promise<void> {
@@ -133,6 +134,13 @@ export class ActionService {
           continue;
         }
 
+        const { workflowId } = reaction;
+
+        const refreshToken = await getToken(
+          await getUserId(workflowId),
+          'google',
+        );
+
         try {
           const response = await axios.post(
             'http://localhost:8080/reactions',
@@ -140,6 +148,7 @@ export class ActionService {
               service: service.name,
               reaction: reaction.name,
               data: reaction.data,
+              refreshToken: refreshToken,
             },
             {
               headers: {

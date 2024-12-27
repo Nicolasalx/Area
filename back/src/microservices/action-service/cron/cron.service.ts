@@ -11,6 +11,6 @@ export class CronActionService {
     console.log('Cron triggered');
 
     const ingredients = [{ field: 'trigger_date', value: getTriggerDate() }];
-    await this.actionService.executeReactionsBis(ingredients, reaction);
+    await this.actionService.executeReactions(ingredients, reaction);
   }
 }

@@ -9,13 +9,17 @@ import { TimerActionService } from '@action-service/timer/timer.service';
 import { GoogleActionService } from '@action-service/google/google.service';
 import { CronActionService } from '@action-service/cron/cron.service';
 import { RssActionService } from '@action-service/rss/rss.service';
+import { SlackActionService } from '@action-service/slack/slack.service';
+import { TodoistActionService } from '@action-service/todoist/todoist.service';
 
 import { GithubActionHandler } from '@trigger-service/handler/github.handler';
 import { GoogleActionHandler } from '@trigger-service/handler/google.handler';
 import { SchedulerActionHandler } from '@trigger-service/handler/sheduler.handler';
 import { RssActionHandler } from '@trigger-service/handler/rss.handler';
 import { SlackActionHandler } from '@trigger-service/handler/slack.handler';
-import { SlackActionService } from '@action-service/slack/slack.service';
+import { TrelloActionService } from '@action-service/trello/trello.service';
+import { TrelloActionHandler } from '@trigger-service/handler/trello.handler';
+import { TodoistActionHandler } from '@trigger-service/handler/todoist.handler';
 
 describe('TriggerService', () => {
   let service: TriggerService;
@@ -53,12 +57,22 @@ describe('TriggerService', () => {
           provide: SlackActionService,
           useValue: {},
         },
+        {
+          provide: TodoistActionService,
+          useValue: {},
+        },
+        {
+          provide: TrelloActionService,
+          useValue: {},
+        },
 
         GithubActionHandler,
         GoogleActionHandler,
         SchedulerActionHandler,
         RssActionHandler,
         SlackActionHandler,
+        TrelloActionHandler,
+        TodoistActionHandler,
 
         {
           provide: SchedulerRegistry,

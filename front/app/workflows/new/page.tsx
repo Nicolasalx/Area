@@ -15,6 +15,7 @@ import ProgressIndicator from "./components/ProgressIndicator";
 import DataForm from "./components/DataForm";
 import api from "@/lib/api";
 import Loading from "./loading";
+import { formatActionReactionName } from "../utils";
 
 interface Service {
   id: number;
@@ -184,13 +185,13 @@ export default function NewWorkflowPage() {
       case "trigger":
         return `Select an Action from ${selectedService?.name}`;
       case "trigger-data":
-        return `Configure ${selectedAction?.name} Action`;
+        return `Configure ${formatActionReactionName(selectedAction?.name)} Action`;
       case "reaction-service":
         return "Select a Service for the Reaction";
       case "reaction":
         return `Select a Reaction from ${selectedService?.name}`;
       case "reaction-data":
-        return `Configure ${selectedReaction?.name} Reaction`;
+        return `Configure ${formatActionReactionName(selectedReaction?.name)} Reaction`;
       case "name":
         return "Name Your Area";
     }
@@ -306,7 +307,7 @@ export default function NewWorkflowPage() {
       case "trigger-data":
         return (
           <DataForm
-            title={`Configure ${selectedAction?.name}`}
+            title={`Configure ${formatActionReactionName(selectedAction?.name)}`}
             fields={selectedAction?.body ?? []}
             prefix="action_"
             onSubmit={(data) => {
@@ -337,7 +338,7 @@ export default function NewWorkflowPage() {
       case "reaction-data":
         return (
           <DataForm
-            title={`Configure ${selectedReaction?.name}`}
+            title={`Configure ${formatActionReactionName(selectedReaction?.name)}`}
             fields={selectedReaction?.body ?? []}
             prefix="reaction_"
             onSubmit={(data) => {
@@ -364,14 +365,13 @@ export default function NewWorkflowPage() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-gray-50">
+    <div className="flex h-[calc(100vh-64px)] flex-col">
       {/* Fixed Header */}
-      <div className="container mx-auto flex-none p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <Text variant="h2" className="mb-2">
-              Create New Area
-            </Text>
+      <div className="mx-auto flex w-full p-2 py-6">
+        <div className="flex w-full items-center justify-between">
+          <div className="flex flex-col gap-4">
+            <Text variant="h2">Create New Area</Text>
+            <Text variant="h3">{getStepTitle()}</Text>
           </div>
 
           <ProgressIndicator
@@ -381,29 +381,37 @@ export default function NewWorkflowPage() {
             inactiveColor="gray-300"
           />
         </div>
-
-        <Text variant="h3">{getStepTitle()}</Text>
       </div>
 
       {/* Scrollable Content */}
       <div className="flex-1 overflow-auto">
-        <div className="container mx-auto p-4">{renderStep()}</div>
+        <div className="mx-2">{renderStep()}</div>
       </div>
 
       {/* Fixed Footer */}
-      <div className="flex-none border-t border-gray-100 bg-white p-4">
-        <div className="container mx-auto flex items-center justify-between px-8">
+      <div className="w-full rounded-t-lg border border-gray-100 bg-white p-4 py-6 shadow-md duration-200">
+        <div className="mx-auto flex w-full items-center justify-between">
           {currentStep !== "trigger-service" &&
-            currentStep !== "trigger-data" &&
-            currentStep !== "reaction-data" && (
-              <Button
-                onClick={handleBack}
-                className="bg-gray-100 text-gray-700 hover:bg-gray-200"
-              >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back
-              </Button>
-            )}
+          currentStep !== "trigger-data" &&
+          currentStep !== "reaction-data" ? (
+            <Button
+              onClick={handleBack}
+              className="bg-gray-100 text-gray-700 hover:bg-gray-200"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back
+            </Button>
+          ) : (
+            <Button
+              onClick={() => {
+                router.back();
+              }}
+              className="bg-gray-100 text-gray-700 hover:bg-gray-200"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back
+            </Button>
+          )}
 
           {currentStep !== "name" &&
           currentStep !== "trigger-data" &&

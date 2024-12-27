@@ -14,7 +14,7 @@ export class TimerActionService {
     console.log('Timer triggered - executing reactions');
 
     const ingredients = [{ field: 'trigger_date', value: getTriggerDate() }];
-    await this.actionService.executeReactionsBis(ingredients, reaction);
+    await this.actionService.executeReactions(ingredients, reaction);
 
     try {
       await this.actionService.prisma.activeAction.update({
