@@ -8,7 +8,7 @@ export class SpotifyActionHandler implements IActionHandler {
   constructor(private readonly spotifyActionService: SpotifyActionService) {}
 
   canHandle(action: string): boolean {
-    return ['new_music_played', 'new_track_added_to_a_playlist'].includes(
+    return ['new_music_played', 'new_playlist_created_spotify'].includes(
       action,
     );
   }
@@ -21,7 +21,7 @@ export class SpotifyActionHandler implements IActionHandler {
       case 'new_music_played':
         await this.spotifyActionService.newMusicPlayed(action, reactions);
         break;
-      case 'new_track_added_to_a_playlist':
+      case 'new_playlist_created_spotify':
         await this.spotifyActionService.newTrackAddedToPlaylist(
           action,
           reactions,

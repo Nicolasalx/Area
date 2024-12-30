@@ -117,7 +117,7 @@ VALUES
     ((SELECT id FROM "Actions" WHERE "name" = 'new_music_played' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'song_realease_date' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'new_music_played' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1)),
 
-    ((SELECT id FROM "Actions" WHERE "name" = 'new_track_added_to_a_playlist' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'playlist_name' LIMIT 1)),
-    ((SELECT id FROM "Actions" WHERE "name" = 'new_track_added_to_a_playlist' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'playlist_owner_name' LIMIT 1)),
-    ((SELECT id FROM "Actions" WHERE "name" = 'new_track_added_to_a_playlist' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'playlist_id' LIMIT 1)),
-    ((SELECT id FROM "Actions" WHERE "name" = 'new_track_added_to_a_playlist' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1));
+    ((SELECT id FROM "Actions" WHERE "name" = 'new_playlist_created_spotify' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'playlist_name' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'new_playlist_created_spotify' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'playlist_owner_name' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'new_playlist_created_spotify' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'playlist_id' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'new_playlist_created_spotify' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1));

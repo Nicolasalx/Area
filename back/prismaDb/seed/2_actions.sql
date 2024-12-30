@@ -60,4 +60,4 @@ VALUES
         '[{"field": "city", "description": "City name", "required": true}]'),
 -- Spotify
     ('new_music_played', 'Action triggered when a music is played on Spotify.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'spotify' LIMIT 1), '[]'),
-    ('new_track_added_to_a_playlist', 'Action triggered when a track is added to a playlist on Spotify.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'spotify' LIMIT 1), '[]');
+    ('new_playlist_created_spotify', 'Action triggered when a track is added to a playlist on Spotify.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'spotify' LIMIT 1), '[]');
