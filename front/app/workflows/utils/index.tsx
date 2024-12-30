@@ -24,7 +24,7 @@ export const getServiceColor = (
     case "spotify":
       return `green-${intensity}`;
     case "openweather":
-      return `sky-${intensity}`;
+      return `blue-${intensity}`;
     default:
       return intensity === 50 ? "white" : `gray-${intensity}`;
   }
