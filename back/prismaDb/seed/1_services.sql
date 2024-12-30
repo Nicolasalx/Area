@@ -9,4 +9,5 @@ VALUES
     ('trello', 'Managing board and card in Trello.', true, NOW()),
     ('todoist', 'Todoist task management.', true, NOW()),
     ('twilio', 'Twilio SMS / Phone / E-mail sending.', true, NOW()),
-    ('openweather', 'Weather monitoring.', true, NOW());
+    ('openweather', 'Weather monitoring.', true, NOW()),
+    ('spotify', 'Music service.', true, NOW());

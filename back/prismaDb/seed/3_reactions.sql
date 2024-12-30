@@ -40,4 +40,8 @@ VALUES
 
 -- twilio
     ('send_sms', 'Send message to a +33783119455.', '{"reaction": "send_sms"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'twilio' LIMIT 1), '[{"field": "message", "description": "Message to send at the phone number"}]'),
-    ('send_mms', 'Send message with image to +33783119455.', '{"reaction": "send_mms"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'twilio' LIMIT 1), '[{"field": "message", "description": "Message to send at the phone number"}, {"field": "img_url", "description": "Url of the image you want to insert in the message"}]');
+    ('send_mms', 'Send message with image to +33783119455.', '{"reaction": "send_mms"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'twilio' LIMIT 1), '[{"field": "message", "description": "Message to send at the phone number"}, {"field": "img_url", "description": "Url of the image you want to insert in the message"}]'),
+
+-- spotify
+    ('create_spotify_playlist', 'Create a playlist on Spotify', '{"reaction": "create_spotify_playlist"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'spotify' LIMIT 1), '[{"field": "playlist_name", "description": "Name of the playlist"}, {"field": "playlist_type", "description": "Type of the playlist (public or private)"}]'),
+    ('add_song_to_playlist', 'Add a song to the playlist on Spotify', '{"reaction": "add_song_to_playlist"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'spotify' LIMIT 1), '[{"field": "playlist_name", "description": "Name of the playlist"}, {"field": "song_name", "description": "Name of the song you want to add in the playlist"}]');

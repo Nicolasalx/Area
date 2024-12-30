@@ -23,6 +23,8 @@ import { TrelloActionHandler } from './handler/trello.handler';
 import { TodoistActionHandler } from './handler/todoist.handler';
 import { OpenweatherActionHandler } from './handler/openweather.handler';
 import { OpenweatherActionService } from '@action-service/openweather/openweather.service';
+import { SpotifyActionHandler } from './handler/spotify.handler';
+import { SpotifyActionService } from '@action-service/spotify/spotify.service';
 
 @Module({
   imports: [PrismaServiceModule, ScheduleModule.forRoot()],
@@ -39,6 +41,7 @@ import { OpenweatherActionService } from '@action-service/openweather/openweathe
     TrelloActionService,
     TodoistActionService,
     OpenweatherActionService,
+    SpotifyActionService,
 
     GithubActionHandler,
     GoogleActionHandler,
@@ -48,6 +51,7 @@ import { OpenweatherActionService } from '@action-service/openweather/openweathe
     TrelloActionHandler,
     TodoistActionHandler,
     OpenweatherActionHandler,
+    SpotifyActionHandler,
   ],
   controllers: [TriggerController],
 })

@@ -7,6 +7,7 @@ import { SlackReactionService } from '@reaction-service/slack/slack.service';
 import { TrelloReactionService } from '@reaction-service/trello/trello.service';
 import { TodoistReactionService } from '@reaction-service/todoist/todoist.service';
 import { TwilioReactionService } from '@reaction-service/twilio/twilio.service';
+import { SpotifyReactionService } from '@reaction-service/spotify/spotify.service';
 
 describe('ReactionService', () => {
   let service: ReactionService;
@@ -37,6 +38,10 @@ describe('ReactionService', () => {
         },
         {
           provide: TwilioReactionService,
+          useValue: {},
+        },
+        {
+          provide: SpotifyReactionService,
           useValue: {},
         },
       ],

@@ -57,4 +57,7 @@ VALUES
           {"field": "condition", "description": "above or below", "required": true}]'),
     ('check_weather_change', 'Triggered when weather condition changes',
         true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'openweather' LIMIT 1),
-        '[{"field": "city", "description": "City name", "required": true}]');
+        '[{"field": "city", "description": "City name", "required": true}]'),
+-- Spotify
+    ('new_music_played', 'Action triggered when a music is played on Spotify.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'spotify' LIMIT 1), '[]'),
+    ('new_playlist_created_spotify', 'Action triggered when a track is added to a playlist on Spotify.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'spotify' LIMIT 1), '[]');
