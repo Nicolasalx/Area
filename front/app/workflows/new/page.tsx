@@ -150,7 +150,7 @@ export default function NewWorkflowPage() {
     };
 
     fetchActions();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Fetch reactions only when needed
