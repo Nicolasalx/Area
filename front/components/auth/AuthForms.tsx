@@ -43,7 +43,7 @@ export const LoginForm = () => {
   };
 
   return (
-    <Card className="w-full max-w-md overflow-y-auto p-8">
+    <Card className="mt-16 w-full max-w-md overflow-y-auto p-8 py-6">
       <form onSubmit={handleSubmit}>
         <div className="text-center">
           <Text variant="h2">Welcome</Text>
@@ -232,7 +232,7 @@ export const RegisterForm = () => {
   };
 
   return (
-    <Card className="w-full max-w-md p-8">
+    <Card className="mt-16 w-full max-w-md p-8">
       <div className="text-center">
         <Text variant="h2">Create Account</Text>
         <Text variant="small" color="gray">
