@@ -16,7 +16,13 @@ import DataForm from "./components/DataForm";
 import api from "@/lib/api";
 import Loading from "./loading";
 import { formatActionReactionName } from "../utils";
-import { Action, Reaction, Service, WorkflowStep, WorkflowData } from "@/app/workflows/types";
+import {
+  Action,
+  Reaction,
+  Service,
+  WorkflowStep,
+  WorkflowData,
+} from "@/app/workflows/types";
 
 export default function NewWorkflowPage() {
   const router = useRouter();
@@ -27,9 +33,12 @@ export default function NewWorkflowPage() {
   const [availableActions, setAvailableActions] = useState<Action[]>([]);
   const [availableReactions, setAvailableReactions] = useState<Reaction[]>([]);
   const [selectedAction, setSelectedAction] = useState<Action | null>(null);
-  const [selectedReaction, setSelectedReaction] = useState<Reaction | null>(null);
+  const [selectedReaction, setSelectedReaction] = useState<Reaction | null>(
+    null,
+  );
   const [selectedService, setSelectedService] = useState<Service | null>(null);
-  const [currentStep, setCurrentStep] = useState<WorkflowStep>("trigger-service");
+  const [currentStep, setCurrentStep] =
+    useState<WorkflowStep>("trigger-service");
   const [actionData, setActionData] = useState<Record<string, string>>({});
   const [reactionData, setReactionData] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
