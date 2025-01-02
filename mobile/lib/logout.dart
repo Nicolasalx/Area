@@ -1,28 +1,16 @@
-import 'dart:convert';
 import 'package:area/main.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'globals.dart' as globals;
 
 class Auth {
-  static Future<void> login(String email, String passwd) async {
-    try {
-      final response = await http.post(
-        Uri.parse('${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/auth/login'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: json.encode({'email': email, 'password': passwd}),
-      );
-
-      if (response.statusCode == 200) {
-        print("Connected");
-        print(response.body);
-      }
-    } catch (error) {
-      return;
-    }
+  static void logout(BuildContext context) {
+    Navigator.pop(context);
+    globals.storage.delete(key: 'name');
+    globals.storage.delete(key: 'email');
+    globals.storage.delete(key: 'token');
+    globals.isLoggedIn = false;
+    globals.navigatorKey.currentState!.popUntil(ModalRoute.withName(routeHome));
+    globals.navigatorKey.currentState!.pushNamed(routeHome);
   }
 }
 
@@ -37,10 +25,6 @@ class _LogoutPageState extends State<LogoutPage> {
   final name = globals.storage.read(key: 'name');
   @override
   Widget build(BuildContext context) {
-    final formkey = GlobalKey<FormState>();
-    final email = TextEditingController();
-    final passwd = TextEditingController();
-
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -89,15 +73,7 @@ class _LogoutPageState extends State<LogoutPage> {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.pop(context);
-                        globals.storage.delete(key: 'name');
-                        globals.storage.delete(key: 'email');
-                        globals.storage.delete(key: 'token');
-                        print(globals.navigatorKey);
-                        globals.navigatorKey.currentState!
-                            .popUntil(ModalRoute.withName(routeHome));
-                        globals.navigatorKey.currentState!
-                            .pushNamed(routeLogin);
+                        Auth.logout(context);
                       },
                       child: const Text(
                         'Sign out',
