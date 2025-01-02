@@ -16,49 +16,13 @@ import DataForm from "./components/DataForm";
 import api from "@/lib/api";
 import Loading from "./loading";
 import { formatActionReactionName } from "../utils";
-
-interface Service {
-  id: number;
-  name: string;
-  description: string;
-}
-
-interface Action {
-  id: number;
-  name: string;
-  description: string;
-  serviceId: number;
-  service?: Service;
-  body?: Array<{
-    name: string;
-    description: string;
-    required?: boolean;
-    type?: string;
-  }>;
-}
-
-interface Reaction {
-  id: number;
-  name: string;
-  description: string;
-  serviceId: number;
-  service?: Service;
-  body?: Array<{
-    name: string;
-    description: string;
-    required?: boolean;
-    type?: string;
-  }>;
-}
-
-type Step =
-  | "trigger-service"
-  | "trigger"
-  | "trigger-data"
-  | "reaction-service"
-  | "reaction"
-  | "reaction-data"
-  | "name";
+import {
+  Action,
+  Reaction,
+  Service,
+  WorkflowStep,
+  WorkflowData,
+} from "@/app/workflows/types";
 
 export default function NewWorkflowPage() {
   const router = useRouter();
@@ -73,7 +37,8 @@ export default function NewWorkflowPage() {
     null,
   );
   const [selectedService, setSelectedService] = useState<Service | null>(null);
-  const [currentStep, setCurrentStep] = useState<Step>("trigger-service");
+  const [currentStep, setCurrentStep] =
+    useState<WorkflowStep>("trigger-service");
   const [actionData, setActionData] = useState<Record<string, string>>({});
   const [reactionData, setReactionData] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -258,7 +223,7 @@ export default function NewWorkflowPage() {
             trigger: { reaction: selectedReaction.name },
           },
         ],
-      };
+      } satisfies WorkflowData;
 
       console.log("Creating workflow with payload:", payload);
 
