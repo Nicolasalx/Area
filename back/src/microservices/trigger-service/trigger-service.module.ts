@@ -25,6 +25,8 @@ import { OpenweatherActionHandler } from './handler/openweather.handler';
 import { OpenweatherActionService } from '@action-service/openweather/openweather.service';
 import { SpotifyActionHandler } from './handler/spotify.handler';
 import { SpotifyActionService } from '@action-service/spotify/spotify.service';
+import { WorldTimeActionService } from '@action-service/worldtime/worldtime.service';
+import { WorldTimeActionHandler } from './handler/worldtime.handler';
 
 @Module({
   imports: [PrismaServiceModule, ScheduleModule.forRoot()],
@@ -42,6 +44,7 @@ import { SpotifyActionService } from '@action-service/spotify/spotify.service';
     TodoistActionService,
     OpenweatherActionService,
     SpotifyActionService,
+    WorldTimeActionService,
 
     GithubActionHandler,
     GoogleActionHandler,
@@ -52,6 +55,7 @@ import { SpotifyActionService } from '@action-service/spotify/spotify.service';
     TodoistActionHandler,
     OpenweatherActionHandler,
     SpotifyActionHandler,
+    WorldTimeActionHandler,
   ],
   controllers: [TriggerController],
 })
