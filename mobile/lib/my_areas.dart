@@ -15,18 +15,15 @@ Future<List<Widget>> getWorkflow() async {
       'Authorization': 'Bearer $token',
     },
   );
-  print(response.body);
-  print("hello");
   JsonWorkflowResponse workflow =
       JsonWorkflowResponse.fromJson(json.decode(response.body));
-  print("save me");
   List<Widget> widgets = workflow.data.map((item) {
     List<Widget> actions = item.activeActions.map((action) {
       return Text(
         action.name,
         style: const TextStyle(
           fontWeight: FontWeight.w700,
-          fontSize: 23,
+          fontSize: 20,
         ),
       );
     }).toList();
@@ -36,13 +33,13 @@ Future<List<Widget>> getWorkflow() async {
         reaction.name,
         style: const TextStyle(
           fontWeight: FontWeight.w700,
-          fontSize: 23,
+          fontSize: 20,
         ),
       );
     }).toList();
 
     return Padding(
-      padding: const EdgeInsets.only(top: 20),
+      padding: const EdgeInsets.only(top: 20, right: 20),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
@@ -52,38 +49,65 @@ Future<List<Widget>> getWorkflow() async {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.only(top: 20, left: 20, bottom: 20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(
-                item.name,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 23,
-                ),
+              Row(
+                children: <Widget>[
+                  Text(
+                    item.name,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 23,
+                    ),
+                  ),
+                  const Spacer(),
+                  // ElevatedButton.icon(
+                  //   onPressed: () {
+                  //     print("huh");
+                  //   },
+                  //   icon: const Icon(
+                  //     Icons.power_settings_new,
+                  //   ),
+                  //   label: const Text(""),
+                  // ),
+                  MaterialButton(
+                    child: Icon(
+                      Icons.power_settings_new,
+                      color: item.isActive ? Colors.green : Colors.black,
+                    ),
+                    onPressed: () {},
+                  ),
+                ],
               ),
               const Text(
                 "Actions",
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
-                  fontSize: 23,
+                  fontSize: 20,
                 ),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: actions,
+              Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: actions,
+                ),
               ),
               const Text(
                 "Reactions",
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
-                  fontSize: 23,
+                  fontSize: 20,
                 ),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: reactions,
+              Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: reactions,
+                ),
               ),
               Text(
                 item.isActive ? "Active" : "Not active",
@@ -114,12 +138,12 @@ class _MyAreasPageState extends State<MyAreasPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("TESTESTEST");
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(top: 20.0, left: 20),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
                 "My Areas",
