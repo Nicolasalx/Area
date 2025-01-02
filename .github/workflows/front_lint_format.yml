@@ -4,10 +4,6 @@ on:
   push:
     paths:
       - 'front/**'
-  pull_request:
-    paths:
-      - 'front/**'
-    branches: ["main"]
 
 jobs:
   lint:
