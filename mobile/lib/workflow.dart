@@ -9,16 +9,16 @@ class WorkflowTriggerResponse {
 
 class WorkflowDataResponse {
   WorkflowDataResponse({
-    required this.name,
-    required this.description,
+    required this.date,
+    required this.hour,
   });
-  final String name;
-  final String description;
+  final String date;
+  final String hour;
 
   factory WorkflowDataResponse.fromJson(Map<String, dynamic> data) {
     return WorkflowDataResponse(
-      name: data['name'],
-      description: data['description'],
+      date: data['date'],
+      hour: data['hour'],
     );
   }
 }
@@ -28,22 +28,18 @@ class ServiceResponse {
     required this.id,
     required this.name,
     required this.description,
-    required this.isActive,
-    required this.createdAt,
   });
   final int id;
   final String name;
   final String description;
-  final bool isActive;
-  final String createdAt;
 
   factory ServiceResponse.fromJson(Map<String, dynamic> data) {
+    print('service');
+    print(data);
     return ServiceResponse(
       id: data['id'],
       name: data['name'],
       description: data['description'],
-      isActive: data['isActive'],
-      createdAt: data['createdAt'],
     );
   }
 }
@@ -53,37 +49,33 @@ class ActionsResponse {
     required this.id,
     required this.name,
     required this.description,
-    required this.isActive,
-    required this.createdAt,
-    required this.serviceId,
-    required this.service,
     required this.data,
+    required this.isActive,
+    required this.serviceId,
+    required this.workflowId,
+    required this.service,
   });
-  final int id;
+  final String id;
   final String name;
   final String description;
+  final WorkflowDataResponse data;
   final bool isActive;
-  final String createdAt;
-  final String serviceId;
+  final int serviceId;
+  final String workflowId;
   final ServiceResponse service;
-  final List<WorkflowDataResponse> data;
 
-  factory ActionsResponse.fromJson(Map<String, dynamic> data) {
-    final datas = data['data'] as List<dynamic>?;
+  factory ActionsResponse.fromJson(Map<String, dynamic> dataJson) {
+    print("actions");
+    print(dataJson);
     return ActionsResponse(
-      id: data['id'],
-      name: data['name'],
-      description: data['description'],
-      isActive: data['isActive'],
-      createdAt: data['createdAt'],
-      serviceId: data['serviceId'],
-      service: ServiceResponse.fromJson(data['service']),
-      data: datas != null
-          ? datas
-              .map((dataWorkflow) => WorkflowDataResponse.fromJson(
-                  dataWorkflow as Map<String, dynamic>))
-              .toList()
-          : <WorkflowDataResponse>[],
+      id: dataJson['id'],
+      name: dataJson['name'],
+      description: dataJson['description'],
+      data: WorkflowDataResponse.fromJson(dataJson['data']),
+      isActive: dataJson['isActive'],
+      serviceId: dataJson['serviceId'],
+      workflowId: dataJson['workflowId'],
+      service: ServiceResponse.fromJson(dataJson['service']),
     );
   }
 }
@@ -100,7 +92,7 @@ class ReactionsResponse {
     required this.service,
     required this.data,
   });
-  final int id;
+  final String id;
   final String name;
   final String description;
   final WorkflowTriggerResponse trigger;
@@ -108,68 +100,99 @@ class ReactionsResponse {
   final String createdAt;
   final String serviceId;
   final ServiceResponse service;
-  final List<WorkflowDataResponse> data;
+  final WorkflowDataResponse data;
 
   factory ReactionsResponse.fromJson(Map<String, dynamic> data) {
-    final datas = data['data'] as List<dynamic>?;
+    print("reactions");
+    print(data);
     return ReactionsResponse(
       id: data['id'],
       name: data['name'],
       description: data['description'],
       trigger: WorkflowTriggerResponse.fromJson(data['trigger']),
+      data: WorkflowDataResponse.fromJson(data['data']),
       isActive: data['isActive'],
       createdAt: data['createdAt'],
       serviceId: data['serviceId'],
       service: ServiceResponse.fromJson(data['service']),
-      data: datas != null
-          ? datas
-              .map((dataWorkflow) => WorkflowDataResponse.fromJson(
-                  dataWorkflow as Map<String, dynamic>))
-              .toList()
-          : <WorkflowDataResponse>[],
     );
   }
 }
 
-class WorkflowResponse {
-  WorkflowResponse({
-    required this.id,
-    required this.name,
-    required this.isActive,
-    required this.createdAt,
-    required this.userId,
-    required this.actions,
-    required this.reactions,
-  });
+class WorkflowUserResponse {
+  WorkflowUserResponse(
+      {required this.id,
+      required this.name,
+      required this.email,
+      required this.password,
+      required this.picture,
+      required this.isActive,
+      required this.createdAt,
+      required this.type});
   final String id;
   final String name;
+  final String email;
+  final String password;
+  final String picture;
   final bool isActive;
   final String createdAt;
-  final String userId;
-  final List<ActionsResponse> actions;
-  final List<ReactionsResponse> reactions;
+  final String type;
+
+  factory WorkflowUserResponse.fromJson(Map<String, dynamic> data) {
+    print('Users');
+    return WorkflowUserResponse(
+        id: data['id'],
+        name: data['name'],
+        email: data['email'],
+        password: data['password'],
+        picture: data['picture'],
+        isActive: data['isActive'],
+        createdAt: data['createdAt'],
+        type: data['type']);
+  }
+}
+
+class WorkflowResponse {
+  WorkflowResponse(
+      {required this.id,
+      required this.name,
+      required this.usersId,
+      required this.isActive,
+      required this.activeActions,
+      required this.activeReactions,
+      required this.users});
+  final String id;
+  final String name;
+  final String usersId;
+  final bool isActive;
+  final List<ActionsResponse> activeActions;
+  final List<ReactionsResponse> activeReactions;
+  final WorkflowUserResponse users;
 
   factory WorkflowResponse.fromJson(Map<String, dynamic> data) {
-    final actionsList = data['actions'] as List<dynamic>?;
-    final reactionsList = data['reactions'] as List<dynamic>?;
+    final actionsList = data['activeActions'] as List<dynamic>?;
+    final reactionsList = data['activeReactions'] as List<dynamic>?;
+    print(data);
+    print("reactions list");
+    print(reactionsList);
     return WorkflowResponse(
       id: data['id'],
       name: data['name'],
+      usersId: data['usersId'],
       isActive: data['isActive'],
-      createdAt: data['createdAt'],
-      userId: data['userId'],
-      actions: actionsList != null
+      activeActions: actionsList != null
           ? actionsList
               .map((action) =>
                   ActionsResponse.fromJson(action as Map<String, dynamic>))
               .toList()
           : <ActionsResponse>[],
-      reactions: reactionsList != null
+      activeReactions: reactionsList != null
           ? reactionsList
               .map((reaction) =>
                   ReactionsResponse.fromJson(reaction as Map<String, dynamic>))
               .toList()
           : <ReactionsResponse>[],
+      users: WorkflowUserResponse.fromJson(data['Users']),
     );
   }
 }
