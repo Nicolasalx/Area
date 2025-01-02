@@ -16,6 +16,9 @@ import { TrelloActionService } from './trello/trello.service';
 import { TrelloReactionService } from '@reaction-service/trello/trello.service';
 import { TodoistReactionService } from '@reaction-service/todoist/todoist.service';
 import { TwilioReactionService } from '@reaction-service/twilio/twilio.service';
+import { OpenweatherActionService } from './openweather/openweather.service';
+import { SpotifyActionService } from './spotify/spotify.service';
+import { SpotifyReactionService } from '@reaction-service/spotify/spotify.service';
 
 @Module({
   imports: [PrismaServiceModule, SharedAuthModule],
@@ -29,11 +32,14 @@ import { TwilioReactionService } from '@reaction-service/twilio/twilio.service';
     TimerActionService,
     RssActionService,
     SlackActionService,
+    OpenweatherActionService,
     SlackReactionService,
     TrelloActionService,
     TrelloReactionService,
     TodoistReactionService,
     TwilioReactionService,
+    SpotifyActionService,
+    SpotifyReactionService,
   ],
   controllers: [ActionController],
 })

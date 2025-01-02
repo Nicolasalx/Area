@@ -7,6 +7,7 @@ import { TodoistReactionService } from '@reaction-service/todoist/todoist.servic
 import { IReactionHandler } from '@reaction-service/handler/base.handler';
 import { TrelloReactionService } from '@reaction-service/trello/trello.service';
 import { TwilioReactionService } from '@reaction-service/twilio/twilio.service';
+import { SpotifyReactionService } from '@reaction-service/spotify/spotify.service';
 
 @Injectable()
 export class ReactionService {
@@ -19,6 +20,7 @@ export class ReactionService {
     private readonly prisma: PrismaService,
     private readonly trelloService: TrelloReactionService,
     private readonly twilioService: TwilioReactionService,
+    private readonly spotifyService: SpotifyReactionService,
   ) {
     this.handlers = [
       discordService,
@@ -26,6 +28,7 @@ export class ReactionService {
       trelloService,
       todoistService,
       twilioService,
+      spotifyService,
     ];
   }
 

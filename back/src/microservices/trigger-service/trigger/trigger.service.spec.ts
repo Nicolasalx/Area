@@ -20,6 +20,10 @@ import { SlackActionHandler } from '@trigger-service/handler/slack.handler';
 import { TrelloActionService } from '@action-service/trello/trello.service';
 import { TrelloActionHandler } from '@trigger-service/handler/trello.handler';
 import { TodoistActionHandler } from '@trigger-service/handler/todoist.handler';
+import { OpenweatherActionHandler } from '@trigger-service/handler/openweather.handler';
+import { OpenweatherActionService } from '@action-service/openweather/openweather.service';
+import { SpotifyActionHandler } from '@trigger-service/handler/spotify.handler';
+import { SpotifyActionService } from '@action-service/spotify/spotify.service';
 
 describe('TriggerService', () => {
   let service: TriggerService;
@@ -65,6 +69,14 @@ describe('TriggerService', () => {
           provide: TrelloActionService,
           useValue: {},
         },
+        {
+          provide: OpenweatherActionService,
+          useValue: {},
+        },
+        {
+          provide: SpotifyActionService,
+          useValue: {},
+        },
 
         GithubActionHandler,
         GoogleActionHandler,
@@ -73,6 +85,8 @@ describe('TriggerService', () => {
         SlackActionHandler,
         TrelloActionHandler,
         TodoistActionHandler,
+        OpenweatherActionHandler,
+        SpotifyActionHandler,
 
         {
           provide: SchedulerRegistry,

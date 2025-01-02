@@ -72,6 +72,7 @@ export default {
     "from-orange-50",
     "from-cyan-50",
     "from-red-50",
+    "from-green-50",
     "from-white",
     "to-gray-100",
     "to-indigo-50",
@@ -80,6 +81,7 @@ export default {
     "to-orange-50",
     "to-cyan-50",
     "to-red-50",
+    "to-green-50",
     "to-white",
     "text-gray-600",
     "text-indigo-500",
@@ -88,6 +90,7 @@ export default {
     "text-orange-500",
     "text-cyan-500",
     "text-red-500",
+    "text-green-500",
     "text-white",
 
     "bg-gray-50",

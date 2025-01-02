@@ -48,4 +48,16 @@ VALUES
     ('new_card_label', 'Action triggered when a label is added on a card on a trello board.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'trello' LIMIT 1), '[{"field": "board_short_link", "description": "Short link of the board", "required": true}]'),
 -- Todoist
     ('check_new_task', 'Triggered when a new task is created',
-        true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'todoist' LIMIT 1), '[]');
+        true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'todoist' LIMIT 1), '[]'),
+-- openweather
+     ('check_temperature', 'Triggered when temperature reaches threshold',
+        true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'openweather' LIMIT 1),
+        '[{"field": "city", "description": "City name", "required": true},
+          {"field": "threshold", "description": "Temperature threshold in Celsius", "required": true},
+          {"field": "condition", "description": "above or below", "required": true}]'),
+    ('check_weather_change', 'Triggered when weather condition changes',
+        true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'openweather' LIMIT 1),
+        '[{"field": "city", "description": "City name", "required": true}]'),
+-- Spotify
+    ('new_music_played', 'Action triggered when a music is played on Spotify.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'spotify' LIMIT 1), '[]'),
+    ('new_playlist_created_spotify', 'Action triggered when a track is added to a playlist on Spotify.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'spotify' LIMIT 1), '[]');
