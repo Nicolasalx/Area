@@ -19,8 +19,28 @@ Future<List<Widget>> getWorkflow() async {
   print("hello");
   JsonWorkflowResponse workflow =
       JsonWorkflowResponse.fromJson(json.decode(response.body));
-  print("HERE $workflow.message");
+  print("save me");
   List<Widget> widgets = workflow.data.map((item) {
+    List<Widget> actions = item.activeActions.map((action) {
+      return Text(
+        action.name,
+        style: const TextStyle(
+          fontWeight: FontWeight.w700,
+          fontSize: 23,
+        ),
+      );
+    }).toList();
+
+    List<Widget> reactions = item.activeReactions.map((reaction) {
+      return Text(
+        reaction.name,
+        style: const TextStyle(
+          fontWeight: FontWeight.w700,
+          fontSize: 23,
+        ),
+      );
+    }).toList();
+
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: Container(
@@ -31,9 +51,49 @@ Future<List<Widget>> getWorkflow() async {
             color: const Color.fromARGB(255, 185, 185, 185),
           ),
         ),
-        child: Text(
-          item.id,
-          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 25),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 20, left: 20, bottom: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                item.name,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 23,
+                ),
+              ),
+              const Text(
+                "Actions",
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 23,
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: actions,
+              ),
+              const Text(
+                "Reactions",
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 23,
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: reactions,
+              ),
+              Text(
+                item.isActive ? "Active" : "Not active",
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 23,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
