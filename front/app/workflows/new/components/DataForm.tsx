@@ -51,6 +51,7 @@ export default function DataForm({
       initialData[getFieldKey(field)] = "";
     });
     setFormData(initialData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fields, prefix]);
 
   const validateField = (field: InputField, value: string): string | null => {

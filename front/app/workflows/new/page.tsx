@@ -42,6 +42,64 @@ export default function NewWorkflowPage() {
   const [actionData, setActionData] = useState<Record<string, string>>({});
   const [reactionData, setReactionData] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
+  const [loadingActions, setLoadingActions] = useState(true);
+  const [loadingReactions, setLoadingReactions] = useState(true);
+
+  // Handle browser navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      switch (currentStep) {
+        case "trigger-action":
+          setCurrentStep("trigger-service");
+          setSelectedAction(null);
+          break;
+        case "trigger-data":
+          setCurrentStep("trigger-action");
+          break;
+        case "reaction-service":
+          // If coming from reaction-service, go back to trigger-action if no data form
+          setCurrentStep(
+            selectedAction &&
+              selectedAction.body &&
+              selectedAction.body.length > 0
+              ? "trigger-data"
+              : "trigger-action",
+          );
+          break;
+        case "reaction-action":
+          setCurrentStep("reaction-service");
+          setSelectedReaction(null);
+          break;
+        case "reaction-data":
+          setCurrentStep("reaction-action");
+          break;
+        case "name":
+          // If coming from name, go back to reaction-action if no data form
+          setCurrentStep(
+            selectedReaction &&
+              selectedReaction.body &&
+              selectedReaction.body.length > 0
+              ? "reaction-data"
+              : "reaction-action",
+          );
+          setName("");
+          break;
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [currentStep, selectedAction, selectedReaction]);
+
+  // Cache data in session storage
+  const cacheData = (key: string, data: unknown) => {
+    sessionStorage.setItem(key, JSON.stringify(data));
+  };
+
+  const getCachedData = <T,>(key: string): T | null => {
+    const data = sessionStorage.getItem(key);
+    return data ? (JSON.parse(data) as T) : null;
+  };
 
   const serviceMap = new Map<number, Service>();
   const actionsByService = new Map<number, Action[]>();
@@ -66,80 +124,130 @@ export default function NewWorkflowPage() {
     }
   });
 
+  // Fetch actions immediately
   useEffect(() => {
-    const fetchServices = async () => {
+    const fetchActions = async () => {
       try {
-        const [actionsResponse, reactionsResponse] = await Promise.all([
-          api.get("/actions"),
-          api.get("/reactions"),
-        ]);
+        setLoadingActions(true);
+        // Check cache first for actions
+        const cachedActions = getCachedData<Action[]>("available-actions");
+        if (cachedActions) {
+          setAvailableActions(cachedActions);
+          setLoadingActions(false);
+          return;
+        }
 
-        console.log("Actions:", actionsResponse.data);
+        // Fetch fresh actions data
+        const actionsResponse = await api.get("/actions");
         setAvailableActions(actionsResponse.data);
-
-        console.log("Reactions:", reactionsResponse.data);
-        setAvailableReactions(reactionsResponse.data);
-      } catch (error) {
-        console.error("Error fetching services:", error);
-        showToast("Failed to load available services", "error");
+        cacheData("available-actions", actionsResponse.data);
+      } catch (err) {
+        console.error("Failed to load actions:", err);
+        showToast("Failed to load available actions", "error");
       } finally {
-        setLoading(false);
+        setLoadingActions(false);
       }
     };
 
-    fetchServices();
-  }, [showToast]);
+    fetchActions();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Fetch reactions only when needed
+  useEffect(() => {
+    const fetchReactions = async () => {
+      if (!currentStep.startsWith("reaction")) return;
+
+      try {
+        setLoadingReactions(true);
+        // Check cache first for reactions
+        const cachedReactions = getCachedData<Reaction[]>(
+          "available-reactions",
+        );
+        if (cachedReactions) {
+          setAvailableReactions(cachedReactions);
+          setLoadingReactions(false);
+          return;
+        }
+
+        // Fetch fresh reactions data
+        const reactionsResponse = await api.get("/reactions");
+        setAvailableReactions(reactionsResponse.data);
+        cacheData("available-reactions", reactionsResponse.data);
+      } catch (err) {
+        console.error("Failed to load reactions:", err);
+        showToast("Failed to load available reactions", "error");
+      } finally {
+        setLoadingReactions(false);
+      }
+    };
+
+    fetchReactions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStep]);
+
+  // Update loading state to depend on the current step
+  useEffect(() => {
+    if (currentStep.startsWith("trigger")) {
+      setLoading(loadingActions);
+    } else if (currentStep.startsWith("reaction")) {
+      setLoading(loadingReactions);
+    } else {
+      setLoading(false);
+    }
+  }, [currentStep, loadingActions, loadingReactions]);
 
   const handleBack = () => {
-    switch (currentStep) {
-      case "trigger":
-        setCurrentStep("trigger-service");
-        setSelectedAction(null);
-        break;
-      case "trigger-data":
-        setCurrentStep("trigger");
-        setActionData({});
-        break;
-      case "reaction-service":
-        setCurrentStep("trigger-data");
-        setSelectedService(null);
-        break;
-      case "reaction":
-        setCurrentStep("reaction-service");
-        setSelectedReaction(null);
-        break;
-      case "reaction-data":
-        setCurrentStep("reaction");
-        setReactionData({});
-        break;
-      case "name":
-        setCurrentStep("reaction-data");
-        setName("");
-        break;
+    if (currentStep !== "trigger-service") {
+      window.history.back();
+    } else {
+      router.back();
     }
   };
 
   const handleNext = () => {
+    let nextStep: WorkflowStep | null = null;
+
     switch (currentStep) {
       case "trigger-service":
-        setCurrentStep("trigger");
+        if (selectedService) {
+          nextStep = "trigger-action";
+        }
         break;
-      case "trigger":
-        setCurrentStep("trigger-data");
+      case "trigger-action":
+        if (selectedAction) {
+          // Skip trigger-data if no body fields
+          nextStep =
+            !selectedAction.body || selectedAction.body.length === 0
+              ? "reaction-service"
+              : "trigger-data";
+        }
         break;
       case "trigger-data":
-        setCurrentStep("reaction-service");
-        setSelectedService(null);
+        nextStep = "reaction-service";
         break;
       case "reaction-service":
-        setCurrentStep("reaction");
+        if (selectedService) {
+          nextStep = "reaction-action";
+        }
         break;
-      case "reaction":
-        setCurrentStep("reaction-data");
+      case "reaction-action":
+        if (selectedReaction) {
+          // Skip reaction-data if no body fields
+          nextStep =
+            !selectedReaction.body || selectedReaction.body.length === 0
+              ? "name"
+              : "reaction-data";
+        }
         break;
       case "reaction-data":
-        setCurrentStep("name");
+        nextStep = "name";
         break;
+    }
+
+    if (nextStep) {
+      window.history.pushState(null, "", "");
+      setCurrentStep(nextStep);
     }
   };
 
@@ -147,13 +255,13 @@ export default function NewWorkflowPage() {
     switch (currentStep) {
       case "trigger-service":
         return "Select a Service for the Action";
-      case "trigger":
+      case "trigger-action":
         return `Select an Action from ${selectedService?.name}`;
       case "trigger-data":
         return `Configure ${formatActionReactionName(selectedAction?.name)} Action`;
       case "reaction-service":
         return "Select a Service for the Reaction";
-      case "reaction":
+      case "reaction-action":
         return `Select a Reaction from ${selectedService?.name}`;
       case "reaction-data":
         return `Configure ${formatActionReactionName(selectedReaction?.name)} Reaction`;
@@ -165,11 +273,11 @@ export default function NewWorkflowPage() {
   const getProgressStep = () => {
     switch (currentStep) {
       case "trigger-service":
-      case "trigger":
+      case "trigger-action":
       case "trigger-data":
         return "trigger";
       case "reaction-service":
-      case "reaction":
+      case "reaction-action":
       case "reaction-data":
         return "reaction";
       case "name":
@@ -225,17 +333,12 @@ export default function NewWorkflowPage() {
         ],
       } satisfies WorkflowData;
 
-      console.log("Creating workflow with payload:", payload);
-
-      const response = await api.post("/workflow", payload);
-      console.log("Workflow created successfully:", response.data);
-
+      await api.post("/workflow", payload);
       showToast("Workflow created successfully", "success");
       router.push("/workflows");
-    } catch (error) {
-      console.error("Create error:", error);
+    } catch (err) {
       showToast(
-        error instanceof Error ? error.message : "Failed to create workflow",
+        err instanceof Error ? err.message : "Failed to create workflow",
         "error",
       );
     } finally {
@@ -259,14 +362,18 @@ export default function NewWorkflowPage() {
             onSelect={setSelectedService}
             forTrigger={true}
             actionsByService={actionsByService}
+            loading={loading}
           />
         );
-      case "trigger":
+      case "trigger-action":
+        if (!selectedService) return null;
+        const serviceActions = actionsByService.get(selectedService.id) ?? [];
         return (
           <TriggerList
-            triggers={actionsByService.get(selectedService?.id ?? -1) ?? []}
+            triggers={serviceActions}
             selectedTrigger={selectedAction}
             onSelect={setSelectedAction}
+            loading={loadingActions}
           />
         );
       case "trigger-data":
@@ -290,14 +397,16 @@ export default function NewWorkflowPage() {
             onSelect={setSelectedService}
             forTrigger={false}
             reactionsByService={reactionsByService}
+            loading={loading}
           />
         );
-      case "reaction":
+      case "reaction-action":
         return (
           <ReactionList
             reactions={reactionsByService.get(selectedService?.id ?? -1) ?? []}
             selectedReaction={selectedReaction}
             onSelect={setSelectedReaction}
+            loading={loading}
           />
         );
       case "reaction-data":
@@ -354,11 +463,9 @@ export default function NewWorkflowPage() {
       </div>
 
       {/* Fixed Footer */}
-      <div className="w-full rounded-t-lg border border-gray-100 bg-white p-4 py-6 shadow-md duration-200">
-        <div className="mx-auto flex w-full items-center justify-between">
-          {currentStep !== "trigger-service" &&
-          currentStep !== "trigger-data" &&
-          currentStep !== "reaction-data" ? (
+      {currentStep !== "trigger-data" && currentStep !== "reaction-data" && (
+        <div className="w-full rounded-t-lg border border-gray-100 bg-white p-4 py-6 shadow-md duration-200">
+          <div className="mx-auto flex w-full items-center justify-between">
             <Button
               onClick={handleBack}
               className="bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -366,59 +473,46 @@ export default function NewWorkflowPage() {
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back
             </Button>
-          ) : (
-            <Button
-              onClick={() => {
-                router.back();
-              }}
-              className="bg-gray-100 text-gray-700 hover:bg-gray-200"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back
-            </Button>
-          )}
-
-          {currentStep !== "name" &&
-          currentStep !== "trigger-data" &&
-          currentStep !== "reaction-data" ? (
-            <Button
-              onClick={handleNext}
-              disabled={
-                currentStep === "trigger-service" ||
-                currentStep === "reaction-service"
-                  ? !selectedService
-                  : currentStep === "trigger"
-                    ? !selectedAction
-                    : currentStep === "reaction"
-                      ? !selectedReaction
-                      : false
-              }
-              className="bg-black text-white hover:bg-gray-800 disabled:bg-gray-200"
-            >
-              Next
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          ) : currentStep === "name" ? (
-            <Button
-              onClick={handleSubmit}
-              disabled={submitting || !name.trim()}
-              className="bg-black text-white hover:bg-gray-800 disabled:bg-gray-200"
-            >
-              {submitting ? (
-                <>
-                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  Creating...
-                </>
-              ) : (
-                <>
-                  Create Area
-                  <Check className="ml-2 h-4 w-4" />
-                </>
-              )}
-            </Button>
-          ) : null}
+            {currentStep !== "name" ? (
+              <Button
+                onClick={handleNext}
+                disabled={
+                  currentStep === "trigger-service" ||
+                  currentStep === "reaction-service"
+                    ? !selectedService
+                    : currentStep === "trigger-action"
+                      ? !selectedAction
+                      : currentStep === "reaction-action"
+                        ? !selectedReaction
+                        : false
+                }
+                className="bg-black text-white hover:bg-gray-800 disabled:bg-gray-200"
+              >
+                Next
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            ) : currentStep === "name" ? (
+              <Button
+                onClick={handleSubmit}
+                disabled={submitting || !name.trim()}
+                className="bg-black text-white hover:bg-gray-800 disabled:bg-gray-200"
+              >
+                {submitting ? (
+                  <>
+                    <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    Create Area
+                    <Check className="ml-2 h-4 w-4" />
+                  </>
+                )}
+              </Button>
+            ) : null}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
