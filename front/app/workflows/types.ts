@@ -50,10 +50,10 @@ export interface Reaction extends BaseAction {
 
 export type WorkflowStep =
   | "trigger-service"
-  | "trigger"
+  | "trigger-action"
   | "trigger-data"
   | "reaction-service"
-  | "reaction"
+  | "reaction-action"
   | "reaction-data"
   | "name";
 
