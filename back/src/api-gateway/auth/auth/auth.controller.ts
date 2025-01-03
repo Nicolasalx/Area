@@ -11,7 +11,13 @@ import {
   Request,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
 class LoginDto {
@@ -103,6 +109,7 @@ export class AuthController {
     summary: 'Delete user account',
     description: "Permanently delete the authenticated user's account",
   })
+  @ApiBearerAuth()
   @ApiResponse({
     status: 200,
     description: 'Account successfully deleted',

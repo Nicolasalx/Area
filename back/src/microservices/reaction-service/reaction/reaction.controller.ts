@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
 import { ReactionService } from './reaction.service';
-import { ApiOperation, ApiResponse, ApiTags, ApiBody } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { ReactionDto } from '@common/dto/reaction.dto';
 import { JwtAuthGuard } from '../../../shared/auth/jwt-auth.guard';
 import { GoogleReactionService } from '@reaction-service/google/google.service';
@@ -13,6 +13,7 @@ class HandleReactionDto {
 }
 
 @ApiTags('Reactions')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('reactions')
 export class ReactionController {

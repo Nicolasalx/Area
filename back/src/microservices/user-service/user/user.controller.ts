@@ -12,7 +12,13 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ConnectionType, Users } from '@prisma/client';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../shared/auth/jwt-auth.guard';
 import { UserDto } from '@common/dto/user-dto';
 
@@ -105,6 +111,8 @@ export class UserController {
     status: 401,
     description: 'Unauthorized - Invalid or missing authentication token',
   })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Get()
   async getUsers(): Promise<Users[]> {
     return this.userService.getUsers();
@@ -124,6 +132,7 @@ export class UserController {
     status: 404,
     description: 'User not found',
   })
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getUserById(@Param('id') id: string): Promise<Users> {
@@ -150,6 +159,7 @@ export class UserController {
     status: 404,
     description: 'User not found',
   })
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async deleteUser(@Param('id') id: string) {
