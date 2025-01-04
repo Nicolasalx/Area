@@ -10,18 +10,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { WorkflowService } from './workflow.service';
-import {
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-  ApiBody,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiBody } from '@nestjs/swagger';
 import { WorkflowDto } from '@common/dto/workflow.dto';
 import { JwtAuthGuard } from '../../../shared/auth/jwt-auth.guard';
 
 @ApiTags('Workflows')
-@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('workflow')
 export class WorkflowController {
