@@ -27,9 +27,96 @@ class AreaActions {
       return false;
     }
   }
+
+  static Future<bool> deleteArea(String workflowId) async {
+    try {
+      var token = await globals.storage.read(key: "token");
+      final response = await http.delete(
+        Uri.parse(
+            '${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/workflow/$workflowId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      print(response.body);
+      return true;
+    } catch (error) {
+      print("Unable to communicate with the server");
+      return false;
+    }
+  }
+
+  static Future<void> _askedDelete(
+    BuildContext context,
+    String workflowId,
+    Function? callback,
+  ) async {
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: const Text(
+              'Are you sure you want to delete this area ?',
+              style: const TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 20,
+              ),
+            ),
+            children: <Widget>[
+              Row(
+                children: [
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(top: 10, left: 25, bottom: 10),
+                    child: SimpleDialogOption(
+                      onPressed: () {
+                        final deleted = AreaActions.deleteArea(workflowId);
+                        deleted.then(
+                          (onValue) {
+                            if (onValue) {
+                              callback!();
+                            }
+                          },
+                        );
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'Yes',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(top: 10, right: 25, bottom: 10),
+                    child: SimpleDialogOption(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'No',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        });
+  }
 }
 
-Future<List<Widget>> getWorkflow(Function? callback) async {
+Future<List<Widget>> getWorkflow(
+    Function? callback, BuildContext context) async {
   var id = await globals.storage.read(key: "id");
   var token = await globals.storage.read(key: "token");
   var response = await http.get(
@@ -87,6 +174,7 @@ Future<List<Widget>> getWorkflow(Function? callback) async {
                   ),
                   const Spacer(),
                   MaterialButton(
+                    minWidth: 40,
                     child: Icon(
                       Icons.power_settings_new,
                       color: item.isActive ? Colors.green : Colors.black,
@@ -101,6 +189,16 @@ Future<List<Widget>> getWorkflow(Function? callback) async {
                           }
                         },
                       );
+                    },
+                  ),
+                  MaterialButton(
+                    minWidth: 40,
+                    child: const Icon(
+                      Icons.delete,
+                      color: Colors.grey,
+                    ),
+                    onPressed: () {
+                      AreaActions._askedDelete(context, item.id, callback);
                     },
                   ),
                 ],
@@ -180,10 +278,11 @@ class _MyAreasPageState extends State<MyAreasPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 20.0),
                 child: FutureBuilder(
-                  future: getWorkflow(rechargePage),
+                  future: getWorkflow(rechargePage, context),
                   builder: (BuildContext context,
                       AsyncSnapshot<List<Widget>> widgets) {
                     if (widgets.hasData) {
+                      print(widgets.data!.length);
                       return Column(children: widgets.data!);
                     } else {
                       return const Column();
