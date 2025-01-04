@@ -1,17 +1,11 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ActionService } from './action.service';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ActionDto } from '@common/dto/action.dto';
 import { JwtAuthGuard } from '../../../shared/auth/jwt-auth.guard';
 
-@ApiTags('Actions')
-@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
+@ApiTags('Actions')
 @Controller('actions')
 export class ActionController {
   constructor(private readonly actionService: ActionService) {}
