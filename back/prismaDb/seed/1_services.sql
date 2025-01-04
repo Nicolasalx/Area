@@ -10,4 +10,5 @@ VALUES
     ('todoist', 'Todoist task management.', true, NOW()),
     ('twilio', 'Twilio SMS / Phone / E-mail sending.', true, NOW()),
     ('openweather', 'Weather monitoring.', true, NOW()),
-    ('spotify', 'Music service.', true, NOW());
+    ('spotify', 'Music service.', true, NOW()),
+    ('coingecko', 'Check crypto price on the market with CoinGecko.', true, NOW());

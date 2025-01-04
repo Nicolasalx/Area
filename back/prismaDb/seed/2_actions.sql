@@ -60,4 +60,7 @@ VALUES
         '[{"field": "city", "description": "City name", "required": true}]'),
 -- Spotify
     ('new_music_played', 'Action triggered when a music is played on Spotify.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'spotify' LIMIT 1), '[]'),
-    ('new_playlist_created_spotify', 'Action triggered when a track is added to a playlist on Spotify.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'spotify' LIMIT 1), '[]');
+    ('new_playlist_created_spotify', 'Action triggered when a track is added to a playlist on Spotify.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'spotify' LIMIT 1), '[]'),
+-- CoinGecko
+    ('check_price_increase', 'Action triggered when a price increase on the market, price is checked with CoinGecko.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'coingecko' LIMIT 1), '[{"field": "crypto", "description": "The crypto selectionned to check the price"}, {"field": "price", "description": "Si le prix du marché dépasse le prix indiquer ici alors on déclenche l action"}]'),
+    ('check_price_decrease', 'Action triggered when a price decrease on the market, price is checked with CoinGecko.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'coingecko' LIMIT 1), '[{"field": "crypto", "description": "The crypto selectionned to check the price"}, {"field": "price", "description": "Si le prix du marché passe en dessous du prix indiquer ici alors on déclenche l action"}]');
