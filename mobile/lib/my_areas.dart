@@ -6,7 +6,30 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'globals.dart' as globals;
 
-Future<List<Widget>> getWorkflow() async {
+class AreaActions {
+  static Future<bool> setActive(bool newState, String workflowId) async {
+    try {
+      print("new state: $newState");
+      var token = await globals.storage.read(key: "token");
+      final response = await http.patch(
+        Uri.parse(
+            '${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/workflow/$workflowId/toggle'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode({'isActive': newState}),
+      );
+      print(response.body);
+      return true;
+    } catch (error) {
+      print("Unable to communicate with the server");
+      return false;
+    }
+  }
+}
+
+Future<List<Widget>> getWorkflow(Function? callback) async {
   var id = await globals.storage.read(key: "id");
   var token = await globals.storage.read(key: "token");
   var response = await http.get(
@@ -63,21 +86,22 @@ Future<List<Widget>> getWorkflow() async {
                     ),
                   ),
                   const Spacer(),
-                  // ElevatedButton.icon(
-                  //   onPressed: () {
-                  //     print("huh");
-                  //   },
-                  //   icon: const Icon(
-                  //     Icons.power_settings_new,
-                  //   ),
-                  //   label: const Text(""),
-                  // ),
                   MaterialButton(
                     child: Icon(
                       Icons.power_settings_new,
                       color: item.isActive ? Colors.green : Colors.black,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      final newStatus =
+                          AreaActions.setActive(!item.isActive, item.id);
+                      newStatus.then(
+                        (onValue) {
+                          if (onValue) {
+                            callback!();
+                          }
+                        },
+                      );
+                    },
                   ),
                 ],
               ),
@@ -136,6 +160,10 @@ class MyAreasPage extends StatefulWidget {
 class _MyAreasPageState extends State<MyAreasPage> {
   int currentPage = 0;
 
+  void rechargePage() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -152,11 +180,10 @@ class _MyAreasPageState extends State<MyAreasPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 20.0),
                 child: FutureBuilder(
-                  future: getWorkflow(),
+                  future: getWorkflow(rechargePage),
                   builder: (BuildContext context,
                       AsyncSnapshot<List<Widget>> widgets) {
                     if (widgets.hasData) {
-                      print(widgets.data!.length);
                       return Column(children: widgets.data!);
                     } else {
                       return const Column();

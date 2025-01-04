@@ -170,7 +170,7 @@ class WorkflowResponse {
   final String id;
   final String name;
   final String usersId;
-  final bool isActive;
+  bool isActive;
   final List<ActionsResponse> activeActions;
   final List<ReactionsResponse> activeReactions;
   final WorkflowUserResponse users;
