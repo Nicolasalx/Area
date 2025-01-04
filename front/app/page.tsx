@@ -83,7 +83,7 @@ const features = [
   {
     title: "Easy to Use",
     description:
-      " Labore in irure cupidatat incididunt voluptate irure occaecat reprehenderit incididunt.",
+      " Create easily automations in only some clicks, accessible from any web browser or smartphone.",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -262,7 +262,7 @@ export default function LandingPage() {
       {/* Stats Section */}
       <section
         ref={statsRef}
-        className="relative bg-gradient-to-b from-transparent to-gray-50 py-12 pt-0 sm:py-24 sm:pt-0"
+        className="relative -mt-12 bg-gradient-to-b from-transparent to-gray-50 py-12 pt-0 sm:py-24 sm:pt-0"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto grid max-w-2xl grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-16 lg:mx-0 lg:max-w-none lg:grid-cols-4">
@@ -299,7 +299,7 @@ export default function LandingPage() {
               </div>
             </div>
             <div
-              className={`flex flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white/80 p-8 backdrop-blur-sm transition-colors duration-300 hover:border-pink-500 ${
+              className={`flex flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white/80 p-8 backdrop-blur-sm transition-colors duration-300 hover:border-blue-500 ${
                 statsInView ? "animate-fadeInUp-delay-2" : "opacity-0"
               }`}
             >
@@ -315,7 +315,7 @@ export default function LandingPage() {
               </div>
             </div>
             <div
-              className={`flex flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white/80 p-8 backdrop-blur-sm transition-colors duration-300 hover:border-blue-500 ${
+              className={`flex flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white/80 p-8 backdrop-blur-sm transition-colors duration-300 hover:border-pink-500 ${
                 statsInView ? "animate-fadeInUp-delay-3" : "opacity-0"
               }`}
             >
@@ -337,7 +337,7 @@ export default function LandingPage() {
       {/* Services Section */}
       <section
         ref={servicesRef}
-        className="bg-gray-50 py-16 pt-8 sm:py-32 sm:pt-8"
+        className="bg-gray-50 py-8 pt-8 sm:py-16 sm:pt-8"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div
