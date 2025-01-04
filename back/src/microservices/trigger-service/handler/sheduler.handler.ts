@@ -136,7 +136,9 @@ export class SchedulerActionHandler implements IActionHandler {
         console.log(`Cleaned up timer job ${timerJobId}`);
       }
     } catch (error) {
-      console.warn(`Failed to cleanup timer job ${timerJobId}: ${error.message}`);
+      console.warn(
+        `Failed to cleanup timer job ${timerJobId}: ${error.message}`,
+      );
     }
   }
 }
