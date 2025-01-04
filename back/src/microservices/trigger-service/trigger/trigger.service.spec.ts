@@ -24,6 +24,8 @@ import { OpenweatherActionHandler } from '@trigger-service/handler/openweather.h
 import { OpenweatherActionService } from '@action-service/openweather/openweather.service';
 import { SpotifyActionHandler } from '@trigger-service/handler/spotify.handler';
 import { SpotifyActionService } from '@action-service/spotify/spotify.service';
+import { WorldTimeActionService } from '@action-service/worldtime/worldtime.service';
+import { WorldTimeActionHandler } from '@trigger-service/handler/worldtime.handler';
 
 describe('TriggerService', () => {
   let service: TriggerService;
@@ -77,6 +79,10 @@ describe('TriggerService', () => {
           provide: SpotifyActionService,
           useValue: {},
         },
+        {
+          provide: WorldTimeActionService,
+          useValue: {},
+        },
 
         GithubActionHandler,
         GoogleActionHandler,
@@ -87,6 +93,7 @@ describe('TriggerService', () => {
         TodoistActionHandler,
         OpenweatherActionHandler,
         SpotifyActionHandler,
+        WorldTimeActionHandler,
 
         {
           provide: SchedulerRegistry,

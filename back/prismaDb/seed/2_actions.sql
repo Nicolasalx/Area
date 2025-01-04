@@ -60,4 +60,12 @@ VALUES
         '[{"field": "city", "description": "City name", "required": true}]'),
 -- Spotify
     ('new_music_played', 'Action triggered when a music is played on Spotify.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'spotify' LIMIT 1), '[]'),
-    ('new_playlist_created_spotify', 'Action triggered when a track is added to a playlist on Spotify.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'spotify' LIMIT 1), '[]');
+    ('new_playlist_created_spotify', 'Action triggered when a track is added to a playlist on Spotify.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'spotify' LIMIT 1), '[]'),
+-- Worldtime
+    ('check_timezone', 'Monitor time in specific timezone',
+        true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'worldtime' LIMIT 1),
+    '[{"field": "timezone", "description": "Timezone to monitor (ex: Europe/Paris)", "required": true},
+    {"field": "time", "description": "Time to trigger action (ex: 12:34)", "required": true}]'),
+        ('check_daynight', 'Monitor day/night transitions',
+        true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'worldtime' LIMIT 1),
+    '[{"field": "timezone", "description": "Timezone to monitor", "required": true}]');
