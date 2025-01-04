@@ -95,4 +95,30 @@ export class TriggerService implements OnModuleInit {
 
     await this.selectAction(payload.action, payload.reactions);
   }
+
+  @OnEvent(WORKFLOW_EVENTS.UPDATED)
+  async handleWorkflowUpdated(payload: WorkflowEventPayload) {
+    if (!payload?.action) {
+      return;
+    }
+
+    if (this.schedulerHandler.canHandle(payload.action.name)) {
+      if (!payload.action.isActive) {
+        await this.selectAction(payload.action, payload.reactions);
+      } else {
+        this.schedulerHandler.cleanupJob(payload.action.id);
+      }
+    }
+  }
+
+  @OnEvent(WORKFLOW_EVENTS.DELETED)
+  async handleWorkflowDeleted(payload: WorkflowEventPayload) {
+    if (!payload?.action) {
+      return;
+    }
+
+    if (this.schedulerHandler.canHandle(payload.action.name)) {
+      this.schedulerHandler.cleanupJob(payload.action.id);
+    }
+  }
 }
