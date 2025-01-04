@@ -9,7 +9,6 @@ import 'globals.dart' as globals;
 class AreaActions {
   static Future<bool> setActive(bool newState, String workflowId) async {
     try {
-      print("new state: $newState");
       var token = await globals.storage.read(key: "token");
       final response = await http.patch(
         Uri.parse(
@@ -20,10 +19,9 @@ class AreaActions {
         },
         body: json.encode({'isActive': newState}),
       );
-      print(response.body);
+      // TODO check value of response and return false in error case
       return true;
     } catch (error) {
-      print("Unable to communicate with the server");
       return false;
     }
   }
@@ -39,10 +37,8 @@ class AreaActions {
           'Authorization': 'Bearer $token',
         },
       );
-      print(response.body);
       return true;
     } catch (error) {
-      print("Unable to communicate with the server");
       return false;
     }
   }
@@ -282,7 +278,6 @@ class _MyAreasPageState extends State<MyAreasPage> {
                   builder: (BuildContext context,
                       AsyncSnapshot<List<Widget>> widgets) {
                     if (widgets.hasData) {
-                      print(widgets.data!.length);
                       return Column(children: widgets.data!);
                     } else {
                       return const Column();
@@ -295,22 +290,5 @@ class _MyAreasPageState extends State<MyAreasPage> {
         ),
       ),
     );
-  }
-}
-import 'package:flutter/material.dart';
-
-class MyAreasPage extends StatefulWidget {
-  const MyAreasPage({super.key});
-
-  @override
-  State<MyAreasPage> createState() => _MyAreasPageState();
-}
-
-class _MyAreasPageState extends State<MyAreasPage> {
-  int currentPage = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(body: Text("myArea"));
   }
 }
