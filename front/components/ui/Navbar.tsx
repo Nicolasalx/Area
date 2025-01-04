@@ -24,8 +24,6 @@ const Navbar = () => {
   };
 
   const navigationLinks = [
-    // { href: "/test", label: "Tests" },
-    // { href: "/test/form", label: "Forms tests" },
     { href: "/workflows/new", label: "New area" },
     { href: "/workflows", label: "My Areas" },
   ];
@@ -50,15 +48,16 @@ const Navbar = () => {
           <div className="flex h-full w-full flex-row items-center justify-end gap-2">
             {/* Desktop Navigation */}
             <div className="hidden h-full md:flex md:items-center">
-              {navigationLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-md flex h-full items-center border-b-0 border-black p-4 text-gray-800 duration-200 hover:border-b-4 hover:bg-gray-200 hover:pb-3 hover:text-black focus-visible:rounded-md focus-visible:border-b-4 focus-visible:bg-gray-100 focus-visible:pb-3 focus-visible:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {user &&
+                navigationLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="text-md flex h-full items-center border-b-0 border-black p-4 text-gray-800 duration-200 hover:border-b-4 hover:bg-gray-200 hover:pb-3 hover:text-black focus-visible:rounded-md focus-visible:border-b-4 focus-visible:bg-gray-100 focus-visible:pb-3 focus-visible:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
             </div>
 
             {/* Mobile Menu Button */}

@@ -19,7 +19,7 @@ import ValidatedInput from "@/components/ui/ValidatedInput";
 import { ValidationRules } from "@/components/ui/useFormValidation";
 import TimeInput from "@/components/ui/TimeInput";
 import DateInput from "@/components/ui/DateInput";
-import { InputType, InputField } from "@/app/workflows/types";
+import { InputType, InputField } from "@/app/(app)/workflows/types";
 
 type DataFormData = Record<string, string>;
 

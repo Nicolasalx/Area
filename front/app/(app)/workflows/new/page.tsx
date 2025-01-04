@@ -22,7 +22,7 @@ import {
   Service,
   WorkflowStep,
   WorkflowData,
-} from "@/app/workflows/types";
+} from "@/app/(app)/workflows/types";
 
 export default function NewWorkflowPage() {
   const router = useRouter();
