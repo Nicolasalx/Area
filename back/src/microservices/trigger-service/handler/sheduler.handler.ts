@@ -87,6 +87,8 @@ export class SchedulerActionHandler implements IActionHandler {
     const cronData = CronUtils.parseCronExpression(action.data);
     const jobId = `cron_${action.id}`;
 
+    this.cleanupJob(action.id);
+
     try {
       const job = new CronJob(
         cronData.patern,
@@ -110,6 +112,33 @@ export class SchedulerActionHandler implements IActionHandler {
       if (this.schedulerRegistry.doesExist('cron', jobId)) {
         this.schedulerRegistry.deleteCronJob(jobId);
       }
+    }
+  }
+
+  public cleanupJob(actionId: string) {
+    const cronJobId = `cron_${actionId}`;
+    const timerJobId = `timer_${actionId}`;
+
+    try {
+      if (this.schedulerRegistry.doesExist('cron', cronJobId)) {
+        const job = this.schedulerRegistry.getCronJob(cronJobId);
+        job.stop();
+        this.schedulerRegistry.deleteCronJob(cronJobId);
+        console.log(`Cleaned up cron job ${cronJobId}`);
+      }
+    } catch (error) {
+      console.warn(`Failed to cleanup cron job ${cronJobId}: ${error.message}`);
+    }
+
+    try {
+      if (this.schedulerRegistry.doesExist('timeout', timerJobId)) {
+        this.schedulerRegistry.deleteTimeout(timerJobId);
+        console.log(`Cleaned up timer job ${timerJobId}`);
+      }
+    } catch (error) {
+      console.warn(
+        `Failed to cleanup timer job ${timerJobId}: ${error.message}`,
+      );
     }
   }
 }

@@ -56,48 +56,46 @@ interface WorkflowResponse {
 }
 
 export default function WorkflowsPage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const cacheData = (key: string, data: unknown) => {
+    sessionStorage.setItem(key, JSON.stringify(data));
+  };
+
+  const getCachedData = <T,>(key: string): T | null => {
+    const data = sessionStorage.getItem(key);
+    return data ? (JSON.parse(data) as T) : null;
+  };
 
   useEffect(() => {
     const fetchWorkflows = async () => {
       if (!user?.id) return;
 
       try {
-        console.log("Fetching workflows for user:", user.id);
-        console.log("API base URL:", process.env.NEXT_PUBLIC_BACKEND_URL);
+        const cachedWorkflows = getCachedData<Workflow[]>(
+          `workflows-${user.id}`,
+        );
+        if (cachedWorkflows) {
+          setWorkflows(cachedWorkflows);
+          setLoading(false);
+        }
 
         const response = await api.get<WorkflowResponse>(
           `/workflow/${user.id}`,
         );
-        console.log("Workflows response:", response);
 
         if (Array.isArray(response.data.data)) {
           setWorkflows(response.data.data);
+          cacheData(`workflows-${user.id}`, response.data.data);
         } else {
-          console.error("Unexpected data format:", response.data);
           setWorkflows([]);
         }
       } catch (err) {
-        console.error("Fetch error:", {
-          message: err instanceof Error ? err.message : "Unknown error",
-          status: err instanceof AxiosError ? err.response?.status : undefined,
-          data: err instanceof AxiosError ? err.response?.data : undefined,
-          config:
-            err instanceof AxiosError
-              ? {
-                  url: err.config?.url,
-                  baseURL: err.config?.baseURL,
-                  headers: err.config?.headers,
-                }
-              : undefined,
-        });
-
         if (err instanceof AxiosError && err.response?.status === 404) {
-          console.log("No workflows found, setting empty array");
           setWorkflows([]);
           return;
         }
@@ -117,7 +115,7 @@ export default function WorkflowsPage() {
     if (user?.id) {
       fetchWorkflows();
     }
-  }, [user, authLoading, router]);
+  }, [user?.id]);
 
   const handleDelete = (id: string) => {
     setWorkflows((prevWorkflows) =>

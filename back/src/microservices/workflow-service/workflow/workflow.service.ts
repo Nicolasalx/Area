@@ -216,6 +216,12 @@ export class WorkflowService {
       activeReactions: workflow.activeReactions,
     });
 
+    this.eventEmitter.emit(WORKFLOW_EVENTS.DELETED, {
+      workflow,
+      action: workflow.activeActions.at(0), // ! Will be changed to support multiple actions later
+      reactions: workflow.activeReactions,
+    } as WorkflowEventPayload);
+
     await this.prisma.$transaction(async (prisma) => {
       await prisma.activeAction.deleteMany({
         where: {
@@ -249,7 +255,7 @@ export class WorkflowService {
       throw new NotFoundException(`Workflow with ID ${id} not found`);
     }
 
-    return this.prisma.workflows.update({
+    const updatedWorkflow = await this.prisma.workflows.update({
       where: { id },
       data: { isActive },
       include: {
@@ -265,5 +271,14 @@ export class WorkflowService {
         },
       },
     });
+
+    this.eventEmitter.emit(WORKFLOW_EVENTS.UPDATED, {
+      workflow: updatedWorkflow,
+      action: updatedWorkflow.activeActions.at(0), // ! Will be changed to support multiple actions later
+      reactions: updatedWorkflow.activeReactions,
+      isActive,
+    } as WorkflowEventPayload);
+
+    return updatedWorkflow;
   }
 }

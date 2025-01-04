@@ -41,6 +41,7 @@ const ValidatedInput = forwardRef<HTMLInputElement, ValidatedInputProps>(
     useEffect(() => {
       const isValid = validate(currentValue as string);
       onValidChange?.(isValid);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentValue]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

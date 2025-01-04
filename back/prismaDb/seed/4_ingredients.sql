@@ -38,7 +38,13 @@ VALUES
 
     ('playlist_name', 'Name of the playlist'),
     ('playlist_owner_name', 'Name of the playlist owner'),
-    ('playlist_id', 'Id of the playlist')
+    ('playlist_id', 'Id of the playlist'),
+
+-- WorldTime
+    ('current_time', 'Current time in the monitored timezone'),
+    ('is_daytime', 'It is currently daytime'),
+    ('timezone', 'The timezone being monitored'),
+    ('day_of_week', 'Current day of the week')
 RETURNING "id";
 
 INSERT INTO "ActionsIngredients" ("actionId", "ingredientId")
@@ -120,4 +126,21 @@ VALUES
     ((SELECT id FROM "Actions" WHERE "name" = 'new_playlist_created_spotify' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'playlist_name' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'new_playlist_created_spotify' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'playlist_owner_name' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'new_playlist_created_spotify' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'playlist_id' LIMIT 1)),
-    ((SELECT id FROM "Actions" WHERE "name" = 'new_playlist_created_spotify' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1));
+    ((SELECT id FROM "Actions" WHERE "name" = 'new_playlist_created_spotify' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1)),
+
+-- WorldTime
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_timezone' LIMIT 1),
+        (SELECT id FROM "Ingredients" WHERE "name" = 'current_time' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_timezone' LIMIT 1),
+        (SELECT id FROM "Ingredients" WHERE "name" = 'timezone' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_timezone' LIMIT 1),
+        (SELECT id FROM "Ingredients" WHERE "name" = 'day_of_week' LIMIT 1)),
+    
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_daynight' LIMIT 1),
+        (SELECT id FROM "Ingredients" WHERE "name" = 'current_time' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_daynight' LIMIT 1),
+        (SELECT id FROM "Ingredients" WHERE "name" = 'is_daytime' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_daynight' LIMIT 1),
+        (SELECT id FROM "Ingredients" WHERE "name" = 'timezone' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_daynight' LIMIT 1),
+        (SELECT id FROM "Ingredients" WHERE "name" = 'day_of_week' LIMIT 1));

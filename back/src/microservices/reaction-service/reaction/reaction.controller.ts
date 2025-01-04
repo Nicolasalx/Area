@@ -1,12 +1,6 @@
 import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
 import { ReactionService } from './reaction.service';
-import {
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-  ApiBearerAuth,
-  ApiBody,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiBody } from '@nestjs/swagger';
 import { ReactionDto } from '@common/dto/reaction.dto';
 import { JwtAuthGuard } from '../../../shared/auth/jwt-auth.guard';
 import { GoogleReactionService } from '@reaction-service/google/google.service';
@@ -19,7 +13,6 @@ class HandleReactionDto {
 }
 
 @ApiTags('Reactions')
-@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('reactions')
 export class ReactionController {
@@ -36,7 +29,61 @@ export class ReactionController {
   @ApiResponse({
     status: 200,
     description: 'A list of all reactions successfully retrieved.',
-    type: [ReactionDto],
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: { type: 'number', example: 1 },
+          name: { type: 'string', example: 'send_email' },
+          description: {
+            type: 'string',
+            example: 'Sends an email when triggered.',
+          },
+          trigger: {
+            type: 'object',
+            example: { reaction: 'send_email' },
+          },
+          isActive: { type: 'boolean', example: true },
+          createdAt: {
+            type: 'string',
+            format: 'date-time',
+            example: '2025-01-03T13:24:56.738Z',
+          },
+          serviceId: { type: 'number', example: 1 },
+          service: {
+            type: 'object',
+            properties: {
+              id: { type: 'number', example: 1 },
+              name: { type: 'string', example: 'google' },
+              description: {
+                type: 'string',
+                example: 'Google services like Gmail, Calendar, Drive, etc.',
+              },
+              isActive: { type: 'boolean', example: true },
+              createdAt: {
+                type: 'string',
+                format: 'date-time',
+                example: '2025-01-03T13:24:56.725Z',
+              },
+            },
+          },
+          body: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                field: { type: 'string', example: 'from' },
+                description: {
+                  type: 'string',
+                  example: 'The senders email address of the request',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   })
   @ApiResponse({
     status: 401,
