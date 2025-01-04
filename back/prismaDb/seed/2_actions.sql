@@ -68,4 +68,7 @@ VALUES
     {"field": "time", "description": "Time to trigger action (ex: 12:34)", "required": true}]'),
         ('check_daynight', 'Monitor day/night transitions',
         true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'worldtime' LIMIT 1),
-    '[{"field": "timezone", "description": "Timezone to monitor", "required": true}]');
+    '[{"field": "timezone", "description": "Timezone to monitor", "required": true}]'),
+-- Newsapi
+    ('monitor_breaking_news', 'Trigger on any new headline',
+        true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'newsapi' LIMIT 1), '[]');
