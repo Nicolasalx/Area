@@ -7,8 +7,8 @@ export function middleware(request: NextRequest) {
   // Public routes that don't require authentication
   const publicRoutes = ["/auth", "/api/auth"];
 
-  const isPublicRoute = publicRoutes.some((route) =>
-    pathname.startsWith(route),
+  const isPublicRoute = publicRoutes.some(
+    (route) => pathname.startsWith(route) || pathname === "/",
   );
 
   // Get auth token from cookie
@@ -19,7 +19,7 @@ export function middleware(request: NextRequest) {
   }
 
   if (authToken && pathname.startsWith("/auth")) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/workflows", request.url));
   }
 
   // Clone the request headers and add Authorization header if token exists

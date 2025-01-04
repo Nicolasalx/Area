@@ -44,7 +44,7 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center pb-16">
+    <div className="flex h-full w-full flex-col items-center justify-center">
       {isLogin ? <LoginForm /> : <RegisterForm />}
       <div className="mt-6 flex items-center justify-center gap-4 text-center">
         <Text variant="small" color="gray">
