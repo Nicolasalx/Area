@@ -171,7 +171,6 @@ class _LoginPageState extends State<LoginPage> {
                                     ? const Icon(Icons.visibility_off)
                                     : const Icon(Icons.visibility),
                                 onPressed: () {
-                                  print(email.text);
                                   _toggle();
                                 },
                               ),
