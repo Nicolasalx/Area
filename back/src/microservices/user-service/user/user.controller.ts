@@ -12,14 +12,9 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ConnectionType, Users } from '@prisma/client';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiBody,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../shared/auth/jwt-auth.guard';
+import { UserDto } from '@common/dto/user-dto';
 
 class CreateUserDto {
   username: string;
@@ -101,12 +96,15 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Get all users' })
-  @ApiResponse({ status: 200, description: 'Returns all users' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns all users',
+    type: [UserDto],
+  })
   @ApiResponse({
     status: 401,
     description: 'Unauthorized - Invalid or missing authentication token',
   })
-  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get()
   async getUsers(): Promise<Users[]> {
@@ -114,7 +112,11 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Get user by ID' })
-  @ApiResponse({ status: 200, description: 'Returns a user by ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a user by ID',
+    type: UserDto,
+  })
   @ApiResponse({
     status: 401,
     description: 'Unauthorized - Invalid or missing authentication token',
@@ -123,7 +125,6 @@ export class UserController {
     status: 404,
     description: 'User not found',
   })
-  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getUserById(@Param('id') id: string): Promise<Users> {
@@ -131,7 +132,17 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Delete user by id' })
-  @ApiResponse({ status: 200, description: 'User successfully deleted' })
+  @ApiResponse({
+    status: 200,
+    description: 'User successfully deleted',
+    content: {
+      'application/json': {
+        example: {
+          message: 'User successfully deleted',
+        },
+      },
+    },
+  })
   @ApiResponse({
     status: 401,
     description: 'Unauthorized - Invalid or missing authentication token',
@@ -140,7 +151,6 @@ export class UserController {
     status: 404,
     description: 'User not found',
   })
-  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async deleteUser(@Param('id') id: string) {
