@@ -7,22 +7,6 @@ class WorkflowTriggerResponse {
   }
 }
 
-class WorkflowDataResponse {
-  WorkflowDataResponse({
-    required this.date,
-    required this.hour,
-  });
-  final String date;
-  final String hour;
-
-  factory WorkflowDataResponse.fromJson(Map<String, dynamic> data) {
-    return WorkflowDataResponse(
-      date: data['date'],
-      hour: data['hour'],
-    );
-  }
-}
-
 class ServiceResponse {
   ServiceResponse({
     required this.id,
@@ -47,7 +31,6 @@ class ActionsResponse {
     required this.id,
     required this.name,
     required this.description,
-    required this.data,
     required this.isActive,
     required this.serviceId,
     required this.workflowId,
@@ -56,7 +39,6 @@ class ActionsResponse {
   final String id;
   final String name;
   final String description;
-  final WorkflowDataResponse data;
   final bool isActive;
   final int serviceId;
   final String workflowId;
@@ -67,24 +49,10 @@ class ActionsResponse {
       id: dataJson['id'],
       name: dataJson['name'],
       description: dataJson['description'],
-      data: WorkflowDataResponse.fromJson(dataJson['data']),
       isActive: dataJson['isActive'],
       serviceId: dataJson['serviceId'],
       workflowId: dataJson['workflowId'],
       service: ServiceResponse.fromJson(dataJson['service']),
-    );
-  }
-}
-
-class WorkflowMessageDataResponse {
-  WorkflowMessageDataResponse({
-    required this.message,
-  });
-  final String message;
-
-  factory WorkflowMessageDataResponse.fromJson(Map<String, dynamic> data) {
-    return WorkflowMessageDataResponse(
-      message: data['message'],
     );
   }
 }
@@ -99,7 +67,6 @@ class ReactionsResponse {
     required this.serviceId,
     required this.workflowId,
     required this.service,
-    required this.data,
   });
   final String id;
   final String name;
@@ -109,7 +76,6 @@ class ReactionsResponse {
   final int serviceId;
   final String workflowId;
   final ServiceResponse service;
-  final WorkflowMessageDataResponse data;
 
   factory ReactionsResponse.fromJson(Map<String, dynamic> data) {
     return ReactionsResponse(
@@ -117,7 +83,6 @@ class ReactionsResponse {
       name: data['name'],
       description: data['description'],
       trigger: WorkflowTriggerResponse.fromJson(data['trigger']),
-      data: WorkflowMessageDataResponse.fromJson(data['data']),
       isActive: data['isActive'],
       serviceId: data['serviceId'],
       workflowId: data['workflowId'],
