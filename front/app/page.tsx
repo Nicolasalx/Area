@@ -205,7 +205,6 @@ export default function LandingPage() {
             >
               <div className="absolute inset-0 bg-gradient-to-tr from-black to-transparent lg:bg-none" />
               <div className="animate-float relative aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 bg-transparent shadow-xl">
-                <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
                 <Image
                   src="/giphy.webp"
                   alt="Leonardo"
