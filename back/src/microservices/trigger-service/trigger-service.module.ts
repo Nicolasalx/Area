@@ -25,6 +25,8 @@ import { OpenweatherActionHandler } from './handler/openweather.handler';
 import { OpenweatherActionService } from '@action-service/openweather/openweather.service';
 import { SpotifyActionHandler } from './handler/spotify.handler';
 import { SpotifyActionService } from '@action-service/spotify/spotify.service';
+import { CoingeckoActionService } from '@action-service/coingecko/coingecko.service';
+import { CoinGeckoActionHandler } from './handler/coingecko.handler';
 
 @Module({
   imports: [PrismaServiceModule, ScheduleModule.forRoot()],
@@ -42,6 +44,7 @@ import { SpotifyActionService } from '@action-service/spotify/spotify.service';
     TodoistActionService,
     OpenweatherActionService,
     SpotifyActionService,
+    CoingeckoActionService,
 
     GithubActionHandler,
     GoogleActionHandler,
@@ -52,6 +55,7 @@ import { SpotifyActionService } from '@action-service/spotify/spotify.service';
     TodoistActionHandler,
     OpenweatherActionHandler,
     SpotifyActionHandler,
+    CoinGeckoActionHandler,
   ],
   controllers: [TriggerController],
 })

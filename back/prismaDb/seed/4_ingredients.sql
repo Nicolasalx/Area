@@ -38,7 +38,12 @@ VALUES
 
     ('playlist_name', 'Name of the playlist'),
     ('playlist_owner_name', 'Name of the playlist owner'),
-    ('playlist_id', 'Id of the playlist')
+    ('playlist_id', 'Id of the playlist'),
+-- coingecko
+    ('crypto', 'Crypto name'),
+    ('given_crypto_price', 'Given price of the crypto'),
+    ('current_crypto_price', 'Actual price of the crypto')
+
 RETURNING "id";
 
 INSERT INTO "ActionsIngredients" ("actionId", "ingredientId")
@@ -120,4 +125,15 @@ VALUES
     ((SELECT id FROM "Actions" WHERE "name" = 'new_playlist_created_spotify' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'playlist_name' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'new_playlist_created_spotify' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'playlist_owner_name' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'new_playlist_created_spotify' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'playlist_id' LIMIT 1)),
-    ((SELECT id FROM "Actions" WHERE "name" = 'new_playlist_created_spotify' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1));
+    ((SELECT id FROM "Actions" WHERE "name" = 'new_playlist_created_spotify' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1)),
+
+-- coingecko
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_price_increase' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'crypto' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_price_increase' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'given_crypto_price' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_price_increase' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'current_crypto_price' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_price_increase' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1)),
+
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_price_decrease' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'crypto' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_price_decrease' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'given_crypto_price' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_price_decrease' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'current_crypto_price' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_price_decrease' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1));
