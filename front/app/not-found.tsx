@@ -21,7 +21,7 @@ export default function NotFound() {
           We couldn&apos;t find the page you&apos;re looking for.
         </Text>
         <Button
-          onClick={() => router.push("/")}
+          onClick={() => router.push("/workflows")}
           leftIcon={<Home className="h-5 w-5" />}
         >
           Return Home

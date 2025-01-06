@@ -19,6 +19,7 @@ import { TwilioReactionService } from '@reaction-service/twilio/twilio.service';
 import { OpenweatherActionService } from './openweather/openweather.service';
 import { SpotifyActionService } from './spotify/spotify.service';
 import { SpotifyReactionService } from '@reaction-service/spotify/spotify.service';
+import { CoingeckoActionService } from './coingecko/coingecko.service';
 
 @Module({
   imports: [PrismaServiceModule, SharedAuthModule],
@@ -40,6 +41,7 @@ import { SpotifyReactionService } from '@reaction-service/spotify/spotify.servic
     TwilioReactionService,
     SpotifyActionService,
     SpotifyReactionService,
+    CoingeckoActionService,
   ],
   controllers: [ActionController],
 })

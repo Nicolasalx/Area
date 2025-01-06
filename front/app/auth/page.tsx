@@ -18,7 +18,7 @@ export default function AuthPage() {
     if (user && !loading) {
       const params = new URLSearchParams(window.location.search);
       const redirectPath = params.get("redirect");
-      router.replace(redirectPath || "/");
+      router.replace(redirectPath || "/workflows");
     }
   }, [user, loading, router]);
 

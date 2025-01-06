@@ -98,8 +98,11 @@ const Navbar = () => {
                       Settings
                     </DropdownItem>
                     <DropdownItem
-                      icon={<LogOut className="h-4 w-4" />}
+                      icon={<LogOut className="h-4 w-4 text-red-500" />}
                       onClick={handleLogout}
+                      textColor="text-red-500"
+                      className="text-red-500"
+                      hover="hover:bg-red-100/50"
                     >
                       Sign out
                     </DropdownItem>
@@ -156,9 +159,9 @@ const Navbar = () => {
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-2 text-sm text-gray-700 duration-200 focus:outline-none focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+                  className="flex items-center gap-2 text-sm text-red-700 duration-200 focus:outline-none focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
                 >
-                  <LogOut className="h-4 w-4" />
+                  <LogOut className="h-4 w-4 text-red-700" />
                   Sign out
                 </button>
               </div>

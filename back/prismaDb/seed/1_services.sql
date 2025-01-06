@@ -11,4 +11,6 @@ VALUES
     ('twilio', 'Twilio SMS / Phone / E-mail sending.', true, NOW()),
     ('openweather', 'Weather monitoring.', true, NOW()),
     ('spotify', 'Music service.', true, NOW()),
-    ('worldtime', 'World Time monitoring service.', true, NOW());
+    ('worldtime', 'World Time monitoring service.', true, NOW()),
+    ('newsapi', 'Monitor breaking news.', true, NOW()),
+    ('coingecko', 'Check crypto price on the market with CoinGecko.', true, NOW());

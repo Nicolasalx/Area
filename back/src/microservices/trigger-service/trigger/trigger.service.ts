@@ -14,7 +14,9 @@ import { TrelloActionHandler } from '@trigger-service/handler/trello.handler';
 import { TodoistActionHandler } from '@trigger-service/handler/todoist.handler';
 import { OpenweatherActionHandler } from '@trigger-service/handler/openweather.handler';
 import { SpotifyActionHandler } from '@trigger-service/handler/spotify.handler';
+import { CoinGeckoActionHandler } from '@trigger-service/handler/coingecko.handler';
 import { WorldTimeActionHandler } from '@trigger-service/handler/worldtime.handler';
+import { NewsActionHandler } from '@trigger-service/handler/news.handler';
 
 @Injectable()
 export class TriggerService implements OnModuleInit {
@@ -31,7 +33,9 @@ export class TriggerService implements OnModuleInit {
     private readonly todoistHandler: TodoistActionHandler,
     private readonly openweatherHandler: OpenweatherActionHandler,
     private readonly spotifyHandler: SpotifyActionHandler,
+    private readonly coinGeckoHandler: CoinGeckoActionHandler,
     private readonly worldtimeHandler: WorldTimeActionHandler,
+    private readonly newsHandler: NewsActionHandler,
   ) {
     this.handlers = [
       githubHandler,
@@ -43,7 +47,9 @@ export class TriggerService implements OnModuleInit {
       todoistHandler,
       openweatherHandler,
       spotifyHandler,
+      coinGeckoHandler,
       worldtimeHandler,
+      newsHandler,
     ];
   }
 

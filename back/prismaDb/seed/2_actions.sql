@@ -6,7 +6,7 @@ VALUES
     ('check_new_pr', 'Action triggered when a user create a pr on a repository.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'github' LIMIT 1), '[{"field": "repositoryOwner", "description": "Name of the repository owner "}, {"field": "repositoryName", "description": "Name of the repository"}]'),
 
 -- cron
-    ('cron_action', 'Action triggered each X time.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'time' LIMIT 1), '[{"field": "expression", "description": "The cron expression describing the schedule of the action"}]'),
+    ('cron_action', 'Action triggered each X time.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'time' LIMIT 1), '[{"field": "expression", "description": "The cron expression describing the schedule of the action", "options": ["5 sec", "1 min", "2 min", "3 min", "5 min", "15 min", "30 min", "1 hour", "1 day"]}]'),
 
 -- timer
     ('timer_action', 'Action triggered when the date is reached.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'time' LIMIT 1), '[{"field": "date", "description": "Date when the timer will be triggered (Ex: date: 2024-12-10)"}, {"field": "hour", "description": "Hour when the timer will be triggered (Ex: hour: 10)"}]'),
@@ -61,6 +61,9 @@ VALUES
 -- Spotify
     ('new_music_played', 'Action triggered when a music is played on Spotify.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'spotify' LIMIT 1), '[]'),
     ('new_playlist_created_spotify', 'Action triggered when a track is added to a playlist on Spotify.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'spotify' LIMIT 1), '[]'),
+-- CoinGecko
+    ('check_price_increase', 'Action triggered when a price increase on the market, price is checked with CoinGecko.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'coingecko' LIMIT 1), '[{"field": "crypto", "description": "The crypto selectionned to check the price", "options": ["Bitcoin", "Ethereum", "Solana", "Cardano"]}, {"field": "price", "description": "Si le prix du marché dépasse le prix indiquer ici alors on déclenche l action"}]'),
+    ('check_price_decrease', 'Action triggered when a price decrease on the market, price is checked with CoinGecko.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'coingecko' LIMIT 1), '[{"field": "crypto", "description": "The crypto selectionned to check the price", "options": ["Bitcoin", "Ethereum", "Solana", "Cardano"]}, {"field": "price", "description": "Si le prix du marché passe en dessous du prix indiquer ici alors on déclenche l action"}]'),
 -- Worldtime
     ('check_timezone', 'Monitor time in specific timezone',
         true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'worldtime' LIMIT 1),
@@ -68,4 +71,7 @@ VALUES
     {"field": "time", "description": "Time to trigger action (ex: 12:34)", "required": true}]'),
         ('check_daynight', 'Monitor day/night transitions',
         true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'worldtime' LIMIT 1),
-    '[{"field": "timezone", "description": "Timezone to monitor", "required": true}]');
+    '[{"field": "timezone", "description": "Timezone to monitor", "required": true}]'),
+-- Newsapi
+    ('monitor_breaking_news', 'Trigger on any new headline',
+        true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'newsapi' LIMIT 1), '[]');

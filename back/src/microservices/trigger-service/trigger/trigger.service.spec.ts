@@ -26,6 +26,10 @@ import { SpotifyActionHandler } from '@trigger-service/handler/spotify.handler';
 import { SpotifyActionService } from '@action-service/spotify/spotify.service';
 import { WorldTimeActionService } from '@action-service/worldtime/worldtime.service';
 import { WorldTimeActionHandler } from '@trigger-service/handler/worldtime.handler';
+import { NewsActionService } from '@action-service/news/news.service';
+import { NewsActionHandler } from '@trigger-service/handler/news.handler';
+import { CoingeckoActionService } from '@action-service/coingecko/coingecko.service';
+import { CoinGeckoActionHandler } from '@trigger-service/handler/coingecko.handler';
 
 describe('TriggerService', () => {
   let service: TriggerService;
@@ -83,6 +87,14 @@ describe('TriggerService', () => {
           provide: WorldTimeActionService,
           useValue: {},
         },
+        {
+          provide: NewsActionService,
+          useValue: {},
+        },
+        {
+          provide: CoingeckoActionService,
+          useValue: {},
+        },
 
         GithubActionHandler,
         GoogleActionHandler,
@@ -94,6 +106,8 @@ describe('TriggerService', () => {
         OpenweatherActionHandler,
         SpotifyActionHandler,
         WorldTimeActionHandler,
+        NewsActionHandler,
+        CoinGeckoActionHandler,
 
         {
           provide: SchedulerRegistry,
