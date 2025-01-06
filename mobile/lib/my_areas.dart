@@ -140,7 +140,7 @@ Future<List<Widget>> getWorkflow(
         child: Text(
           action.name.format(),
           style: const TextStyle(
-            fontSize: 20,
+            fontSize: 18,
           ),
         ),
       );
@@ -156,7 +156,7 @@ Future<List<Widget>> getWorkflow(
         child: Text(
           reaction.name.format(),
           style: const TextStyle(
-            fontSize: 20,
+            fontSize: 18,
           ),
         ),
       );
@@ -165,99 +165,122 @@ Future<List<Widget>> getWorkflow(
     return Padding(
       padding: const EdgeInsets.only(top: 20, right: 20),
       child: Card(
+        semanticContainer: true,
         color: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
-        elevation: 6,
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    flex: 8,
-                    child: Text(
-                      item.name.format(),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 23,
+        elevation: 2,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+              ),
+              width: double.infinity,
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 8,
+                      child: Text(
+                        item.name.format(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                        ),
                       ),
                     ),
-                  ),
-                  const Spacer(),
-                  MaterialButton(
-                    minWidth: 20,
-                    child: Icon(
-                      Icons.power_settings_new,
-                      color: item.isActive ? Colors.green : Colors.black,
+                    const Spacer(),
+                    MaterialButton(
+                      minWidth: 20,
+                      child: Icon(
+                        Icons.power_settings_new,
+                        color: item.isActive ? Colors.green : Colors.black,
+                      ),
+                      onPressed: () {
+                        final newStatus =
+                            AreaActions.setActive(!item.isActive, item.id);
+                        newStatus.then(
+                          (onValue) {
+                            if (onValue) {
+                              callback!();
+                            }
+                          },
+                        );
+                      },
                     ),
-                    onPressed: () {
-                      final newStatus =
-                          AreaActions.setActive(!item.isActive, item.id);
-                      newStatus.then(
-                        (onValue) {
-                          if (onValue) {
-                            callback!();
-                          }
-                        },
-                      );
-                    },
-                  ),
-                  MaterialButton(
-                    minWidth: 20,
-                    child: const Icon(
-                      Icons.delete,
-                      color: Colors.grey,
+                    MaterialButton(
+                      minWidth: 20,
+                      child: const Icon(
+                        Icons.delete,
+                        color: Colors.grey,
+                      ),
+                      onPressed: () {
+                        AreaActions._askedDelete(context, item.id, callback);
+                      },
                     ),
-                    onPressed: () {
-                      AreaActions._askedDelete(context, item.id, callback);
-                    },
-                  ),
-                ],
-              ),
-              const Row(
-                children: [
-                  Icon(Icons.play_circle_outlined),
-                  Text(
-                    " Actions",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 20,
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: actions,
+                  ],
                 ),
               ),
-              const Row(
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.arrow_forward),
-                  Text(
-                    " Reactions",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 20,
+                  const Row(
+                    children: [
+                      Icon(Icons.play_circle_outlined),
+                      Text(
+                        " Actions",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: actions,
                     ),
                   ),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: reactions,
-                ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Row(
+                    children: [
+                      Icon(Icons.arrow_forward),
+                      Text(
+                        " Reactions",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: reactions,
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
