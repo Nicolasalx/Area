@@ -13,7 +13,15 @@ interface DropdownItemProps {
   hover?: string;
 }
 
-const DropdownItem = ({ icon, children, onClick, href, className, textColor, hover }: DropdownItemProps) => {
+const DropdownItem = ({
+  icon,
+  children,
+  onClick,
+  href,
+  className,
+  textColor,
+  hover,
+}: DropdownItemProps) => {
   return href ? (
     <Link
       className={twMerge(
