@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:area/svg_services.dart';
 import 'package:area/workflow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'globals.dart' as globals;
 import 'string_extension.dart';
@@ -141,8 +143,13 @@ Future<List<Widget>> getWorkflow(
           ),
           child: Row(
             children: [
+              SvgPicture.string(
+                getServiceSvg(action.service.name),
+                width: 20,
+                height: 20,
+              ),
               Text(
-                action.name.format(),
+                " ${action.name.format()}",
                 style: const TextStyle(
                   fontSize: 18,
                 ),
@@ -172,8 +179,13 @@ Future<List<Widget>> getWorkflow(
           ),
           child: Row(
             children: [
+              SvgPicture.string(
+                getServiceSvg(reaction.service.name),
+                width: 20,
+                height: 20,
+              ),
               Text(
-                reaction.name.format(),
+                " ${reaction.name.format()}",
                 style: const TextStyle(
                   fontSize: 18,
                 ),
@@ -355,24 +367,17 @@ class _MyAreasPageState extends State<MyAreasPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                "My Areas",
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 25),
+              FutureBuilder(
+                future: getWorkflow(rechargePage, context),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<Widget>> widgets) {
+                  if (widgets.hasData && widgets.data!.isNotEmpty) {
+                    return Column(children: widgets.data!);
+                  } else {
+                    return const NoAreaFound();
+                  }
+                },
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: FutureBuilder(
-                  future: getWorkflow(rechargePage, context),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<List<Widget>> widgets) {
-                    if (widgets.hasData && widgets.data!.isNotEmpty) {
-                      return Column(children: widgets.data!);
-                    } else {
-                      return const NoAreaFound();
-                    }
-                  },
-                ),
-              )
             ],
           ),
         ),
