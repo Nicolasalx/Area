@@ -49,6 +49,11 @@ VALUES
     ('is_daytime', 'It is currently daytime'),
     ('timezone', 'The timezone being monitored'),
     ('day_of_week', 'Current day of the week')
+-- newsapi
+    ('headline', 'News headline text'),
+    ('source', 'News source name'),
+    ('news_url', 'URL to full article'),
+    ('news_description', 'Article description')
 RETURNING "id";
 
 INSERT INTO "ActionsIngredients" ("actionId", "ingredientId")
@@ -149,7 +154,7 @@ VALUES
         (SELECT id FROM "Ingredients" WHERE "name" = 'timezone' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'check_timezone' LIMIT 1),
         (SELECT id FROM "Ingredients" WHERE "name" = 'day_of_week' LIMIT 1)),
-    
+
     ((SELECT id FROM "Actions" WHERE "name" = 'check_daynight' LIMIT 1),
         (SELECT id FROM "Ingredients" WHERE "name" = 'current_time' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'check_daynight' LIMIT 1),
@@ -157,4 +162,13 @@ VALUES
     ((SELECT id FROM "Actions" WHERE "name" = 'check_daynight' LIMIT 1),
         (SELECT id FROM "Ingredients" WHERE "name" = 'timezone' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'check_daynight' LIMIT 1),
-        (SELECT id FROM "Ingredients" WHERE "name" = 'day_of_week' LIMIT 1));
+        (SELECT id FROM "Ingredients" WHERE "name" = 'day_of_week' LIMIT 1)),
+-- Newsapi
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_headline' LIMIT 1),
+        (SELECT id FROM "Ingredients" WHERE "name" = 'headline' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_headline' LIMIT 1),
+        (SELECT id FROM "Ingredients" WHERE "name" = 'source' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_headline' LIMIT 1),
+        (SELECT id FROM "Ingredients" WHERE "name" = 'news_url' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_headline' LIMIT 1),
+        (SELECT id FROM "Ingredients" WHERE "name" = 'news_description' LIMIT 1));
