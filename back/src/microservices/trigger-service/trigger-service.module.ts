@@ -25,6 +25,8 @@ import { OpenweatherActionHandler } from './handler/openweather.handler';
 import { OpenweatherActionService } from '@action-service/openweather/openweather.service';
 import { SpotifyActionHandler } from './handler/spotify.handler';
 import { SpotifyActionService } from '@action-service/spotify/spotify.service';
+import { CoingeckoActionService } from '@action-service/coingecko/coingecko.service';
+import { CoinGeckoActionHandler } from './handler/coingecko.handler';
 import { WorldTimeActionService } from '@action-service/worldtime/worldtime.service';
 import { WorldTimeActionHandler } from './handler/worldtime.handler';
 import { NewsActionService } from '@action-service/news/news.service';
@@ -46,6 +48,7 @@ import { NewsActionHandler } from './handler/news.handler';
     TodoistActionService,
     OpenweatherActionService,
     SpotifyActionService,
+    CoingeckoActionService,
     WorldTimeActionService,
     NewsActionService,
 
@@ -58,6 +61,7 @@ import { NewsActionHandler } from './handler/news.handler';
     TodoistActionHandler,
     OpenweatherActionHandler,
     SpotifyActionHandler,
+    CoinGeckoActionHandler,
     WorldTimeActionHandler,
     NewsActionHandler,
   ],
