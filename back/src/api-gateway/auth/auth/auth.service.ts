@@ -8,6 +8,7 @@ import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { ConnectionType } from '@prisma/client';
+import { OAuthService } from 'src/api-gateway/oauth/oauth/oauth.service';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +16,7 @@ export class AuthService {
 
   constructor(
     private prisma: PrismaService,
+    private oauthService: OAuthService,
     private jwtService: JwtService,
   ) {}
 
@@ -85,6 +87,7 @@ export class AuthService {
     }
 
     try {
+      await this.oauthService.deleteAllServiceToken(userId);
       await this.prisma.$transaction(async (tx) => {
         await tx.activeAction.deleteMany({
           where: {
@@ -106,25 +109,20 @@ export class AuthService {
           where: { userId: userId },
         });
 
-        await tx.serviceTokens.deleteMany({
-          where: { userId: userId },
-        });
-
         await tx.users.delete({
           where: { id: userId },
         });
       });
-
       return { message: 'User deleted successfully' };
     } catch (error) {
       this.logger.error('Error deleting user:', error);
-      if (error.code === 'P2003') {
-        throw new Error(
-          'Cannot delete user due to existing references. Error: ' +
-            error.message,
-        );
-      }
-      throw new Error(`Failed to delete user: ${error.message}`);
+      // if (error.code === 'P2003') {
+      //   throw new Error(
+      //     'Cannot delete user due to existing references. Error: ' +
+      //       error.message,
+      //   );
+      // }
+      // throw new Error(`Failed to delete user: ${error.message}`);
     }
   }
 }

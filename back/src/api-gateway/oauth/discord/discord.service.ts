@@ -6,6 +6,7 @@ import {
 } from '@common/interfaces/user/user';
 import { IServideOauth } from '../oauth/IServiceOauth';
 
+
 @Injectable()
 export class DiscordService implements IServideOauth {
   constructor(private readonly httpService: HttpService) {}
@@ -18,7 +19,6 @@ export class DiscordService implements IServideOauth {
       client_secret: process.env.DISCORD_CLIENT_SECRET!,
       redirect_uri: process.env.DISCORD_REDIRECT_URI!,
       grant_type: 'authorization_code',
-      scope: ['identify', 'email'].join(' '),
     }).toString();
     const header = {
       headers: {
@@ -48,5 +48,22 @@ export class DiscordService implements IServideOauth {
         '/' +
         response.data.avatar,
     };
+  }
+
+  async revokeAccessToken(access_token: string): Promise<any>{
+    const url = 'https://discord.com/api/oauth2/token/revoke';
+    const body = new URLSearchParams({
+      token: access_token,
+      client_id: process.env.DISCORD_CLIENT_ID!,
+      client_secret: process.env.DISCORD_CLIENT_SECRET!,
+      token_type_hint: 'access_token',
+    }).toString();
+    const header = {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    };
+    const response = await this.httpService.axiosRef.post(url, body, header);
+    return response;
   }
 }

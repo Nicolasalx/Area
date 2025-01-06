@@ -122,6 +122,7 @@ model Services {
   reactions      Reactions[]      @relation("ServiceReactions")
   serviceTokens  ServiceTokens[]
   isActive       Boolean          @default(true)
+  oauthNeed      Boolean          @default(false)
   createdAt      DateTime         @default(now())
   Actions        Actions[]
   Reactions      Reactions[]

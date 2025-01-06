@@ -36,4 +36,19 @@ export class GoogleService implements IServideOauth {
       ...response.data,
     };
   }
+
+  async revokeAccessToken(access_token: string): Promise<any>{
+    const url = 'https://oauth2.googleapis.com/revoke';
+    const values = {
+      token: access_token,
+      client_id: process.env.DISCORD_CLIENT_ID!,
+      client_secret: process.env.DISCORD_CLIENT_SECRET!,
+    };
+    const config = {
+      headers: {
+      },
+    };
+    const response = await this.httpService.axiosRef.post(url, values, config);
+    return response;
+  }
 }

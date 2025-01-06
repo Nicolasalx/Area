@@ -7,10 +7,12 @@ import { OAuthController } from './oauth/oauth.controller';
 import { UserServiceModule } from '@userService/user-service.module';
 import { JwtConfigModule } from 'src/shared/jwt/jwt-config.module';
 import { DiscordService } from './discord/discord.service';
+import { PrismaServiceModule } from '@prismaService/prisma-service.module';
 
 @Module({
-  imports: [JwtConfigModule, UserServiceModule, HttpModule],
+  imports: [JwtConfigModule, UserServiceModule, PrismaServiceModule, HttpModule],
   providers: [GithubService, GoogleService, DiscordService, OAuthService],
   controllers: [OAuthController],
+  exports: [OAuthService]
 })
 export class OAuthModule {}
