@@ -148,19 +148,25 @@ Future<List<Widget>> getWorkflow(
                 width: 20,
                 height: 20,
               ),
-              Text(
-                " ${action.name.format()}",
-                style: const TextStyle(
-                  fontSize: 18,
+              Expanded(
+                flex: 8,
+                child: Text(
+                  " ${action.name.format()}",
+                  style: const TextStyle(
+                    fontSize: 18,
+                  ),
                 ),
               ),
-              Text(
-                " (${action.service.name})",
-                style: TextStyle(
-                  color: Colors.grey[700],
-                  fontSize: 14,
+              Expanded(
+                flex: 8,
+                child: Text(
+                  " (${action.service.name})",
+                  style: TextStyle(
+                    color: Colors.grey[700],
+                    fontSize: 14,
+                  ),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -184,19 +190,25 @@ Future<List<Widget>> getWorkflow(
                 width: 20,
                 height: 20,
               ),
-              Text(
-                " ${reaction.name.format()}",
-                style: const TextStyle(
-                  fontSize: 18,
+              Expanded(
+                flex: 8,
+                child: Text(
+                  " ${reaction.name.format()}",
+                  style: const TextStyle(
+                    fontSize: 18,
+                  ),
                 ),
               ),
-              Text(
-                " (${reaction.service.name})",
-                style: TextStyle(
-                  color: Colors.grey[700],
-                  fontSize: 14,
+              Expanded(
+                flex: 8,
+                child: Text(
+                  " (${reaction.service.name})",
+                  style: TextStyle(
+                    color: Colors.grey[700],
+                    fontSize: 14,
+                  ),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -339,8 +351,51 @@ class NoAreaFound extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text("No areas found",
-        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 25));
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 50,
+        right: 20,
+      ),
+      child: Center(
+        child: Card(
+          elevation: 5,
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: 30,
+              right: 30,
+              top: 50,
+              bottom: 50,
+            ),
+            child: Column(
+              children: [
+                SvgPicture.string(
+                  '''<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ghost"><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></svg>''',
+                  width: 70,
+                  height: 70,
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(top: 20),
+                  child: Text(
+                    "No areas found",
+                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 25),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 20),
+                  child: Text(
+                    "Create your first area to get started",
+                    style: TextStyle(
+                      color: Colors.grey[700],
+                      fontSize: 17,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -363,22 +418,28 @@ class _MyAreasPageState extends State<MyAreasPage> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(top: 20.0, left: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              FutureBuilder(
-                future: getWorkflow(rechargePage, context),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<Widget>> widgets) {
-                  if (widgets.hasData && widgets.data!.isNotEmpty) {
-                    return Column(children: widgets.data!);
-                  } else {
-                    return const NoAreaFound();
-                  }
-                },
-              ),
-            ],
+          padding: const EdgeInsets.only(
+            top: 20.0,
+            left: 20,
+          ),
+          child: FutureBuilder(
+            future: getWorkflow(rechargePage, context),
+            builder:
+                (BuildContext context, AsyncSnapshot<List<Widget>> widgets) {
+              if (widgets.hasData && widgets.data!.isNotEmpty) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: widgets.data!,
+                );
+              } else {
+                return const Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    NoAreaFound(),
+                  ],
+                );
+              }
+            },
           ),
         ),
       ),
