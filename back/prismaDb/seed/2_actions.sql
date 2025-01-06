@@ -63,4 +63,12 @@ VALUES
     ('new_playlist_created_spotify', 'Action triggered when a track is added to a playlist on Spotify.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'spotify' LIMIT 1), '[]'),
 -- CoinGecko
     ('check_price_increase', 'Action triggered when a price increase on the market, price is checked with CoinGecko.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'coingecko' LIMIT 1), '[{"field": "crypto", "description": "The crypto selectionned to check the price", "options": ["Bitcoin", "Ethereum", "Solana", "Cardano"]}, {"field": "price", "description": "Si le prix du marché dépasse le prix indiquer ici alors on déclenche l action"}]'),
-    ('check_price_decrease', 'Action triggered when a price decrease on the market, price is checked with CoinGecko.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'coingecko' LIMIT 1), '[{"field": "crypto", "description": "The crypto selectionned to check the price", "options": ["Bitcoin", "Ethereum", "Solana", "Cardano"]}, {"field": "price", "description": "Si le prix du marché passe en dessous du prix indiquer ici alors on déclenche l action"}]');
+    ('check_price_decrease', 'Action triggered when a price decrease on the market, price is checked with CoinGecko.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'coingecko' LIMIT 1), '[{"field": "crypto", "description": "The crypto selectionned to check the price", "options": ["Bitcoin", "Ethereum", "Solana", "Cardano"]}, {"field": "price", "description": "Si le prix du marché passe en dessous du prix indiquer ici alors on déclenche l action"}]'),
+-- Worldtime
+    ('check_timezone', 'Monitor time in specific timezone',
+        true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'worldtime' LIMIT 1),
+    '[{"field": "timezone", "description": "Timezone to monitor (ex: Europe/Paris)", "required": true},
+    {"field": "time", "description": "Time to trigger action (ex: 12:34)", "required": true}]'),
+        ('check_daynight', 'Monitor day/night transitions',
+        true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'worldtime' LIMIT 1),
+    '[{"field": "timezone", "description": "Timezone to monitor", "required": true}]');

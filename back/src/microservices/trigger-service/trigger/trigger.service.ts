@@ -15,6 +15,7 @@ import { TodoistActionHandler } from '@trigger-service/handler/todoist.handler';
 import { OpenweatherActionHandler } from '@trigger-service/handler/openweather.handler';
 import { SpotifyActionHandler } from '@trigger-service/handler/spotify.handler';
 import { CoinGeckoActionHandler } from '@trigger-service/handler/coingecko.handler';
+import { WorldTimeActionHandler } from '@trigger-service/handler/worldtime.handler';
 
 @Injectable()
 export class TriggerService implements OnModuleInit {
@@ -32,6 +33,7 @@ export class TriggerService implements OnModuleInit {
     private readonly openweatherHandler: OpenweatherActionHandler,
     private readonly spotifyHandler: SpotifyActionHandler,
     private readonly coinGeckoHandler: CoinGeckoActionHandler,
+    private readonly worldtimeHandler: WorldTimeActionHandler,
   ) {
     this.handlers = [
       githubHandler,
@@ -44,6 +46,7 @@ export class TriggerService implements OnModuleInit {
       openweatherHandler,
       spotifyHandler,
       coinGeckoHandler,
+      worldtimeHandler,
     ];
   }
 
@@ -94,5 +97,31 @@ export class TriggerService implements OnModuleInit {
     }
 
     await this.selectAction(payload.action, payload.reactions);
+  }
+
+  @OnEvent(WORKFLOW_EVENTS.UPDATED)
+  async handleWorkflowUpdated(payload: WorkflowEventPayload) {
+    if (!payload?.action) {
+      return;
+    }
+
+    if (this.schedulerHandler.canHandle(payload.action.name)) {
+      if (!payload.action.isActive) {
+        await this.selectAction(payload.action, payload.reactions);
+      } else {
+        this.schedulerHandler.cleanupJob(payload.action.id);
+      }
+    }
+  }
+
+  @OnEvent(WORKFLOW_EVENTS.DELETED)
+  async handleWorkflowDeleted(payload: WorkflowEventPayload) {
+    if (!payload?.action) {
+      return;
+    }
+
+    if (this.schedulerHandler.canHandle(payload.action.name)) {
+      this.schedulerHandler.cleanupJob(payload.action.id);
+    }
   }
 }
