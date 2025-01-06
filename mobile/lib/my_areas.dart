@@ -157,16 +157,6 @@ Future<List<Widget>> getWorkflow(
                   ),
                 ),
               ),
-              Expanded(
-                flex: 8,
-                child: Text(
-                  " (${action.service.name})",
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontSize: 14,
-                  ),
-                ),
-              ),
             ],
           ),
         ),
@@ -196,16 +186,6 @@ Future<List<Widget>> getWorkflow(
                   " ${reaction.name.format()}",
                   style: const TextStyle(
                     fontSize: 18,
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 8,
-                child: Text(
-                  " (${reaction.service.name})",
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontSize: 14,
                   ),
                 ),
               ),
