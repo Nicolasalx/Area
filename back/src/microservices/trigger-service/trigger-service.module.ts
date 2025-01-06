@@ -25,6 +25,8 @@ import { OpenweatherActionHandler } from './handler/openweather.handler';
 import { OpenweatherActionService } from '@action-service/openweather/openweather.service';
 import { SpotifyActionHandler } from './handler/spotify.handler';
 import { SpotifyActionService } from '@action-service/spotify/spotify.service';
+import { CoingeckoActionService } from '@action-service/coingecko/coingecko.service';
+import { CoinGeckoActionHandler } from './handler/coingecko.handler';
 import { WorldTimeActionService } from '@action-service/worldtime/worldtime.service';
 import { WorldTimeActionHandler } from './handler/worldtime.handler';
 
@@ -44,6 +46,7 @@ import { WorldTimeActionHandler } from './handler/worldtime.handler';
     TodoistActionService,
     OpenweatherActionService,
     SpotifyActionService,
+    CoingeckoActionService,
     WorldTimeActionService,
 
     GithubActionHandler,
@@ -55,6 +58,7 @@ import { WorldTimeActionHandler } from './handler/worldtime.handler';
     TodoistActionHandler,
     OpenweatherActionHandler,
     SpotifyActionHandler,
+    CoinGeckoActionHandler,
     WorldTimeActionHandler,
   ],
   controllers: [TriggerController],
