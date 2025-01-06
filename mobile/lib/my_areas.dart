@@ -86,7 +86,7 @@ class AreaActions {
                       child: const Text(
                         'Yes',
                         style: TextStyle(
-                          fontWeight: FontWeight.w700,
+                          color: Colors.red,
                           fontSize: 20,
                         ),
                       ),
@@ -103,7 +103,6 @@ class AreaActions {
                       child: const Text(
                         'No',
                         style: TextStyle(
-                          fontWeight: FontWeight.w700,
                           fontSize: 20,
                         ),
                       ),
@@ -131,32 +130,62 @@ Future<List<Widget>> getWorkflow(
       JsonWorkflowResponse.fromJson(json.decode(response.body));
   List<Widget> widgets = workflow.data.map((item) {
     List<Widget> actions = item.activeActions.map((action) {
-      return Container(
-        padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: Colors.grey[200],
-        ),
-        child: Text(
-          action.name.format(),
-          style: const TextStyle(
-            fontSize: 18,
+      return Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: Colors.grey[100],
+          ),
+          child: Row(
+            children: [
+              Text(
+                action.name.format(),
+                style: const TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+              Text(
+                " (${action.service.name})",
+                style: TextStyle(
+                  color: Colors.grey[700],
+                  fontSize: 14,
+                ),
+              )
+            ],
           ),
         ),
       );
     }).toList();
 
     List<Widget> reactions = item.activeReactions.map((reaction) {
-      return Container(
-        padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: Colors.grey[200],
-        ),
-        child: Text(
-          reaction.name.format(),
-          style: const TextStyle(
-            fontSize: 18,
+      return Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: Colors.grey[100],
+          ),
+          child: Row(
+            children: [
+              Text(
+                reaction.name.format(),
+                style: const TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+              Text(
+                " (${reaction.service.name})",
+                style: TextStyle(
+                  color: Colors.grey[700],
+                  fontSize: 14,
+                ),
+              )
+            ],
           ),
         ),
       );
@@ -177,6 +206,10 @@ Future<List<Widget>> getWorkflow(
             Container(
               decoration: BoxDecoration(
                 color: Colors.grey[300],
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(8.0),
+                  topRight: Radius.circular(8.0),
+                ),
               ),
               width: double.infinity,
               child: Padding(
