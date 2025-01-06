@@ -10,9 +10,14 @@ import { DiscordService } from './discord/discord.service';
 import { PrismaServiceModule } from '@prismaService/prisma-service.module';
 
 @Module({
-  imports: [JwtConfigModule, UserServiceModule, PrismaServiceModule, HttpModule],
+  imports: [
+    JwtConfigModule,
+    UserServiceModule,
+    PrismaServiceModule,
+    HttpModule,
+  ],
   providers: [GithubService, GoogleService, DiscordService, OAuthService],
   controllers: [OAuthController],
-  exports: [OAuthService]
+  exports: [OAuthService],
 })
 export class OAuthModule {}

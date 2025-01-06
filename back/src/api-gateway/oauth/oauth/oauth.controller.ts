@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Logger, Param, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Logger,
+  Param,
+  Query,
+} from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GithubService } from '../github/github.service';
 import { GoogleService } from '../google/google.service';
@@ -48,12 +56,10 @@ export class OAuthController {
   })
   @Delete('sercice/delete')
   async deleteServiceToken(@Body() body: PreciseServiceToken) {
-    try {
-      return await this.oauthService.deleteServiceToken(body.userId, body.serviceId);
-    } catch (err) {
-      console.log("err NOW ???");
-    }
-    console.log("OUT");
+    return await this.oauthService.deleteServiceToken(
+      body.userId,
+      body.serviceId,
+    );
   }
 
   @ApiOperation({
@@ -75,7 +81,7 @@ export class OAuthController {
   })
   @Get('github/callback')
   async getGithubOAuth(@Query() query: any) {
-    console.log("IN");
+    console.log('IN');
     return await this.oauthService.getServiceOAuth(
       query.code,
       ConnectionType.GITHUB,

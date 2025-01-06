@@ -6,7 +6,6 @@ import {
 } from '@common/interfaces/user/user';
 import { IServideOauth } from '../oauth/IServiceOauth';
 
-
 @Injectable()
 export class DiscordService implements IServideOauth {
   constructor(private readonly httpService: HttpService) {}
@@ -50,7 +49,7 @@ export class DiscordService implements IServideOauth {
     };
   }
 
-  async revokeAccessToken(access_token: string): Promise<any>{
+  async revokeAccessToken(access_token: string): Promise<any> {
     const url = 'https://discord.com/api/oauth2/token/revoke';
     const body = new URLSearchParams({
       token: access_token,

@@ -11,7 +11,6 @@ import { DiscordService } from '../discord/discord.service';
 
 @Injectable()
 export class OAuthService {
-
   private readonly logger = new Logger(OAuthService.name);
 
   constructor(
@@ -23,37 +22,42 @@ export class OAuthService {
     private readonly discordSercice: DiscordService,
   ) {}
 
-  private readonly serviceOAuthList : {name: string, service: IServideOauth}[] = [
-    {name: "google" ,service: this.googleService},
-    {name: "github" ,service: this.githubService},
-    {name: "discord" ,service: this.discordSercice},
-  ]
+  private readonly serviceOAuthList: {
+    name: string;
+    service: IServideOauth;
+  }[] = [
+    { name: 'google', service: this.googleService },
+    { name: 'github', service: this.githubService },
+    { name: 'discord', service: this.discordSercice },
+  ];
 
-  async deleteAllServiceToken(
-    userId: string,
-  ): Promise<any> {
+  async deleteAllServiceToken(userId: string): Promise<any> {
     const serviceOauth = await this.prisma.serviceTokens.findMany({
       where: {
         userId: userId,
         services: {
-          oauthNeed: true
-        }
+          oauthNeed: true,
+        },
       },
       select: {
         token: true,
         services: true,
-      }
+      },
     });
     try {
       for (const serviceOauthUser of serviceOauth) {
         for (const serviceOauthElem of this.serviceOAuthList) {
-          if (serviceOauthUser.services.name.localeCompare(serviceOauthElem.name) == 0) {
+          if (
+            serviceOauthUser.services.name.localeCompare(
+              serviceOauthElem.name,
+            ) == 0
+          ) {
             serviceOauthElem.service.revokeAccessToken(serviceOauthUser.token);
-          };
+          }
         }
       }
     } catch (err) {
-      console.log('deleteAllServiceToken: Revoke Oauth failed');
+      console.log('deleteAllServiceToken: Revoke Oauth failed, ' + err);
     }
     return this.prisma.serviceTokens.deleteMany({
       where: {
@@ -62,33 +66,32 @@ export class OAuthService {
     });
   }
 
-  async deleteServiceToken(
-    userId: string,
-    serviceId: number,
-  ): Promise<any> {
+  async deleteServiceToken(userId: string, serviceId: number): Promise<any> {
     const serviceOauth = await this.prisma.serviceTokens.findMany({
       where: {
         userId: userId,
         serviceId: serviceId,
         services: {
-          oauthNeed: true
-        }
+          oauthNeed: true,
+        },
       },
       select: {
         token: true,
         services: true,
-      }
+      },
     });
     try {
       for (const serviceOauthUser of serviceOauth) {
         for (const serviceOauthElem of this.serviceOAuthList) {
-          if (serviceOauthUser.services.name.localeCompare(serviceOauthElem.name)) {
-            // serviceOauthElem.service.revokeAccessToken(serviceOauthUser.token);
-          };
+          if (
+            serviceOauthUser.services.name.localeCompare(serviceOauthElem.name)
+          ) {
+            serviceOauthElem.service.revokeAccessToken(serviceOauthUser.token);
+          }
         }
       }
     } catch (err) {
-      console.log('deleteServiceToken: Revoke Oauth failed');
+      console.log('deleteServiceToken: Revoke Oauth failed, ' + err);
     }
     return this.prisma.serviceTokens.deleteMany({
       where: {
@@ -98,9 +101,7 @@ export class OAuthService {
     });
   }
 
-  async getServiceOAuthList(
-    userId: string,
-  ): Promise<ServiceOauthResponse[]> {
+  async getServiceOAuthList(userId: string): Promise<ServiceOauthResponse[]> {
     const service_list = await this.prisma.services.findMany({
       where: {
         oauthNeed: true,
@@ -112,7 +113,15 @@ export class OAuthService {
         serviceTokens: true,
       },
     });
-    const new_service = service_list.map((o) => {return {id: o.id, name: o.name, description: o.description, isSet: (o.serviceTokens.filter((elem) => elem.userId == userId).length != 0)}});
+    const new_service = service_list.map((o) => {
+      return {
+        id: o.id,
+        name: o.name,
+        description: o.description,
+        isSet:
+          o.serviceTokens.filter((elem) => elem.userId == userId).length != 0,
+      };
+    });
     return new_service;
   }
 
