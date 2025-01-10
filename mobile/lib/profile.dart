@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'globals.dart' as globals;
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -49,6 +50,8 @@ class ProfileButton extends StatelessWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   int currentPage = 0;
+  final name = globals.storage.read(key: 'name');
+  final email = globals.storage.read(key: 'email');
 
   @override
   Widget build(BuildContext context) {
@@ -66,29 +69,47 @@ class _ProfilePageState extends State<ProfilePage> {
                 padding: const EdgeInsets.all(
                   50,
                 ),
-                child: Text("data"),
+                child: Column(
+                  children: [
+                    FutureBuilder<String?>(
+                      future: name,
+                      builder:
+                          (BuildContext context, AsyncSnapshot<String?> name) {
+                        if (name.hasData) {
+                          return Text(
+                            "${name.data}",
+                            style: TextStyle(
+                              fontSize: 15,
+                            ),
+                          );
+                        } else {
+                          return CircularProgressIndicator();
+                        }
+                      },
+                    ),
+                    FutureBuilder<String?>(
+                      future: email,
+                      builder:
+                          (BuildContext context, AsyncSnapshot<String?> email) {
+                        if (email.hasData) {
+                          return Text(
+                            "${email.data}",
+                            style: TextStyle(
+                              fontSize: 15,
+                            ),
+                          );
+                        } else {
+                          return CircularProgressIndicator();
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
           Column(
             children: [
-              Row(
-                children: [
-                  ProfileButton(
-                    text: Text(
-                      " Profile",
-                      style: TextStyle(
-                        fontSize: 22,
-                      ),
-                    ),
-                    path: "",
-                    icon: Icon(
-                      Icons.person,
-                      size: 30,
-                    ),
-                  ),
-                ],
-              ),
               Row(
                 children: [
                   ProfileButton(
@@ -125,6 +146,25 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ],
               ),
+              // Row(
+              //   children: [
+              //     ProfileButton(
+              //       text: Text(
+              //         " Delete Account",
+              //         style: TextStyle(
+              //           fontSize: 22,
+              //           color: Colors.red,
+              //         ),
+              //       ),
+              //       path: "",
+              //       icon: Icon(
+              //         Icons.delete,
+              //         size: 30,
+              //         color: Colors.red,
+              //       ),
+              //     ),
+              //   ],
+              // ),
             ],
           ),
         ],
