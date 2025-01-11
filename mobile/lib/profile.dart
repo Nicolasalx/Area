@@ -1,10 +1,33 @@
 import 'package:area/logout.dart';
 import 'package:flutter/material.dart';
+import 'confirmation.dart' as confirmation;
 import 'globals.dart' as globals;
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 const routeHome = '/';
 const routeProfile = "profile";
 const routeSettings = "Settings";
+
+Future<bool> deleteAccount() async {
+  try {
+    var id = await globals.storage.read(key: "id");
+    var token = await globals.storage.read(key: "token");
+    final response = await http.delete(
+      Uri.parse('${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/users/$id'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    if (response.statusCode != 200) {
+      return false;
+    }
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -203,7 +226,27 @@ class ProfilePageSettings extends StatelessWidget {
                   size: 30,
                   color: Colors.red,
                 ),
-                fun: () {},
+                fun: () {
+                  confirmation.askedDelete(
+                    context,
+                    "Are you sure you want to delete your account ?",
+                    () {
+                      final delete = deleteAccount();
+                      delete.then((onValue) {
+                        if (onValue) {
+                          globals.storage.delete(key: 'name');
+                          globals.storage.delete(key: 'email');
+                          globals.storage.delete(key: 'token');
+                          globals.isLoggedIn = false;
+                          globals.navigatorKey.currentState!
+                              .popUntil(ModalRoute.withName(routeHome));
+                          globals.navigatorKey.currentState!
+                              .pushNamed(routeHome);
+                        }
+                      });
+                    },
+                  );
+                },
               ),
             ],
           ),
