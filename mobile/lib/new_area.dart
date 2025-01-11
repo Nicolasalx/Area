@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 import 'globals.dart' as globals;
+import 'package:flutter_svg/flutter_svg.dart';
+import 'svg_services.dart';
 
 class NewAreaPage extends StatefulWidget {
   const NewAreaPage({super.key});
@@ -32,6 +34,8 @@ class _NewAreaPageState extends State<NewAreaPage> {
   List<dynamic> availableActions = [];
   List<dynamic> availableReactions = [];
 
+  final Map<String, TextEditingController> _controllers = {};
+
   String capitalizeFirst(String text) {
     if (text.isEmpty) return text;
     return text[0].toUpperCase() + text.substring(1);
@@ -48,6 +52,14 @@ class _NewAreaPageState extends State<NewAreaPage> {
   void initState() {
     super.initState();
     fetchData();
+  }
+
+  @override
+  void dispose() {
+    for (var controller in _controllers.values) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 
   Future<void> fetchData() async {
@@ -116,7 +128,12 @@ class _NewAreaPageState extends State<NewAreaPage> {
           {
             'name': selectedAction!['name'],
             'serviceId': selectedAction!['service']['id'],
-            'data': actionData,
+            'data': Map.fromEntries(
+              actionData.entries.map((e) => MapEntry(
+                    e.key.replaceFirst('action_', ''),
+                    e.value,
+                  )),
+            ),
             'isActive': true
           }
         ],
@@ -124,7 +141,12 @@ class _NewAreaPageState extends State<NewAreaPage> {
           {
             'name': selectedReaction!['name'],
             'serviceId': selectedReaction!['service']['id'],
-            'data': reactionData,
+            'data': Map.fromEntries(
+              reactionData.entries.map((e) => MapEntry(
+                    e.key.replaceFirst('reaction_', ''),
+                    e.value,
+                  )),
+            ),
             'isActive': true,
             'trigger': {'reaction': selectedReaction!['name']}
           }
@@ -486,6 +508,7 @@ class _NewAreaPageState extends State<NewAreaPage> {
                 selectedReactionService!['id'] == service['id']);
 
         return Card(
+            color: Colors.white,
             elevation: isSelected ? 2 : 1,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
@@ -522,16 +545,12 @@ class _NewAreaPageState extends State<NewAreaPage> {
                                 color: Colors.grey[100],
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.network(
-                                  service['imageUrl'] ?? '',
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) => const Icon(
-                                    Icons.settings,
-                                    size: 24,
-                                    color: Colors.grey,
-                                  ),
+                              child: Center(
+                                child: SvgPicture.string(
+                                  getServiceSvg(service['name']),
+                                  width: 32,
+                                  height: 32,
+                                  fit: BoxFit.contain,
                                 ),
                               ),
                             ),
@@ -610,6 +629,7 @@ class _NewAreaPageState extends State<NewAreaPage> {
             selectedAction != null && selectedAction!['name'] == action['name'];
 
         return Card(
+          color: Colors.white,
           elevation: isSelected ? 2 : 1,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
@@ -638,10 +658,12 @@ class _NewAreaPageState extends State<NewAreaPage> {
                               color: Colors.grey[100],
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: Icon(
-                              Icons.bolt,
-                              size: 24,
-                              color: Colors.grey[600],
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: SvgPicture.string(
+                                getServiceSvg(action['service']['name']),
+                                fit: BoxFit.contain,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -712,6 +734,7 @@ class _NewAreaPageState extends State<NewAreaPage> {
             selectedReaction!['name'] == reaction['name'];
 
         return Card(
+          color: Colors.white,
           elevation: isSelected ? 2 : 1,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
@@ -740,10 +763,12 @@ class _NewAreaPageState extends State<NewAreaPage> {
                               color: Colors.grey[100],
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: Icon(
-                              Icons.bolt,
-                              size: 24,
-                              color: Colors.grey[600],
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: SvgPicture.string(
+                                getServiceSvg(reaction['service']['name']),
+                                fit: BoxFit.contain,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -815,8 +840,13 @@ class _NewAreaPageState extends State<NewAreaPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ...fields.map((field) {
-          Widget inputField;
+          final fieldKey = prefix + field['field'];
+          final value = data[fieldKey] ?? '';
 
+          _controllers[fieldKey] ??= TextEditingController(text: value);
+          final controller = _controllers[fieldKey]!;
+
+          Widget inputField;
           if (field['field'] == 'date') {
             inputField = TextField(
               decoration: InputDecoration(
@@ -825,6 +855,7 @@ class _NewAreaPageState extends State<NewAreaPage> {
                 border: const OutlineInputBorder(),
               ),
               readOnly: true,
+              controller: controller,
               onTap: () async {
                 final now = DateTime.now();
                 final date = await showDatePicker(
@@ -835,14 +866,11 @@ class _NewAreaPageState extends State<NewAreaPage> {
                 );
                 if (date != null) {
                   setState(() {
-                    data[prefix + field['field']] =
-                        date.toIso8601String().split('T')[0];
+                    data[fieldKey] = date.toIso8601String().split('T')[0];
+                    controller.text = data[fieldKey]!;
                   });
                 }
               },
-              controller: TextEditingController(
-                text: data[prefix + field['field']] ?? '',
-              ),
             );
           } else if (field['field'] == 'hour') {
             inputField = TextField(
@@ -852,6 +880,7 @@ class _NewAreaPageState extends State<NewAreaPage> {
                 border: const OutlineInputBorder(),
               ),
               readOnly: true,
+              controller: controller,
               onTap: () async {
                 final time = await showTimePicker(
                   context: context,
@@ -859,14 +888,12 @@ class _NewAreaPageState extends State<NewAreaPage> {
                 );
                 if (time != null) {
                   setState(() {
-                    data[prefix + field['field']] =
+                    data[fieldKey] =
                         '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+                    controller.text = data[fieldKey]!;
                   });
                 }
               },
-              controller: TextEditingController(
-                text: data[prefix + field['field']] ?? '',
-              ),
             );
           } else {
             inputField = TextField(
@@ -875,9 +902,10 @@ class _NewAreaPageState extends State<NewAreaPage> {
                 helperText: field['description'],
                 border: const OutlineInputBorder(),
               ),
+              controller: controller,
               onChanged: (value) {
                 setState(() {
-                  data[prefix + field['field']] = value;
+                  data[fieldKey] = value;
                 });
               },
             );
