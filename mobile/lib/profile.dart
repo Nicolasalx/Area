@@ -1,5 +1,10 @@
+import 'package:area/logout.dart';
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
+
+const routeHome = '/';
+const routeProfile = "profile";
+const routeSettings = "Settings";
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -12,12 +17,14 @@ class ProfileButton extends StatelessWidget {
   final Text text;
   final String path;
   final Icon icon;
+  final Function fun;
 
   const ProfileButton({
     super.key,
     required this.text,
     required this.path,
     required this.icon,
+    required this.fun,
   });
 
   @override
@@ -33,7 +40,7 @@ class ProfileButton extends StatelessWidget {
         ),
         child: MaterialButton(
           onPressed: () {
-            print("han");
+            fun();
           },
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,8 +55,11 @@ class ProfileButton extends StatelessWidget {
   }
 }
 
-class _ProfilePageState extends State<ProfilePage> {
-  int currentPage = 0;
+class ProfilePageHome extends StatelessWidget {
+  final Function(String newPath) callback;
+
+  ProfilePageHome({super.key, required this.callback});
+
   final name = globals.storage.read(key: 'name');
   final email = globals.storage.read(key: 'email');
 
@@ -124,6 +134,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       Icons.settings,
                       size: 30,
                     ),
+                    fun: () {
+                      callback(routeSettings);
+                    },
                   ),
                 ],
               ),
@@ -143,32 +156,103 @@ class _ProfilePageState extends State<ProfilePage> {
                       color: Colors.red,
                       size: 30,
                     ),
+                    fun: () {
+                      Navigator.pop(context);
+                      globals.storage.delete(key: 'name');
+                      globals.storage.delete(key: 'email');
+                      globals.storage.delete(key: 'token');
+                      globals.isLoggedIn = false;
+                      globals.navigatorKey.currentState!
+                          .popUntil(ModalRoute.withName(routeHome));
+                      globals.navigatorKey.currentState!.pushNamed(routeHome);
+                    },
                   ),
                 ],
               ),
-              // Row(
-              //   children: [
-              //     ProfileButton(
-              //       text: Text(
-              //         " Delete Account",
-              //         style: TextStyle(
-              //           fontSize: 22,
-              //           color: Colors.red,
-              //         ),
-              //       ),
-              //       path: "",
-              //       icon: Icon(
-              //         Icons.delete,
-              //         size: 30,
-              //         color: Colors.red,
-              //       ),
-              //     ),
-              //   ],
-              // ),
             ],
           ),
         ],
       ),
     );
+  }
+}
+
+class ProfilePageSettings extends StatelessWidget {
+  final Function callback;
+  const ProfilePageSettings({super.key, required this.callback});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Row(
+            children: [
+              ProfileButton(
+                text: Text(
+                  " Delete Account",
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Colors.red,
+                  ),
+                ),
+                path: "",
+                icon: Icon(
+                  Icons.delete,
+                  size: 30,
+                  color: Colors.red,
+                ),
+                fun: () {},
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              ProfileButton(
+                text: Text(
+                  " Back",
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Colors.black,
+                  ),
+                ),
+                path: "",
+                icon: Icon(
+                  Icons.arrow_back,
+                  size: 30,
+                  color: Colors.black,
+                ),
+                fun: () {
+                  callback(routeProfile);
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  String path = routeProfile;
+
+  void setPath(String newPath) {
+    path = newPath;
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return switch (path) {
+      routeProfile => ProfilePageHome(
+          callback: setPath,
+        ),
+      routeSettings => ProfilePageSettings(
+          callback: setPath,
+        ),
+      _ => throw StateError('Unexpected route name: $path!'),
+    };
   }
 }
