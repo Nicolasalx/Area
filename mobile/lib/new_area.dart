@@ -1,6 +1,8 @@
 import 'package:area/new_area/input_field.dart';
+import 'package:area/new_area/navigation_button.dart';
 import 'package:area/new_area/service_card.dart';
 import 'package:area/new_area/trigger_card.dart';
+import 'package:area/new_area/workflow_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -183,6 +185,81 @@ class _NewAreaPageState extends State<NewAreaPage> {
     }
   }
 
+  void handleBack() {
+    if (currentStep == 'trigger-service') {
+      globals.navigatorKey.currentState
+          ?.pushNamedAndRemoveUntil('/main', (route) => false);
+    } else {
+      setState(() {
+        switch (currentStep) {
+          case 'trigger-action':
+            currentStep = 'trigger-service';
+            break;
+          case 'trigger-data':
+            currentStep = 'trigger-action';
+            break;
+          case 'reaction-service':
+            currentStep = selectedAction!['body'] != null &&
+                    (selectedAction!['body'] as List).isNotEmpty
+                ? 'trigger-data'
+                : 'trigger-action';
+            break;
+          case 'reaction-action':
+            currentStep = 'reaction-service';
+            break;
+          case 'reaction-data':
+            currentStep = 'reaction-action';
+            break;
+          case 'name':
+            currentStep = selectedReaction!['body'] != null &&
+                    (selectedReaction!['body'] as List).isNotEmpty
+                ? 'reaction-data'
+                : 'reaction-action';
+            break;
+        }
+      });
+    }
+  }
+
+  void handleNext() {
+    setState(() {
+      switch (currentStep) {
+        case 'trigger-service':
+          if (selectedService != null) {
+            currentStep = 'trigger-action';
+          }
+          break;
+        case 'trigger-action':
+          if (selectedAction != null) {
+            currentStep = selectedAction!['body'] != null &&
+                    (selectedAction!['body'] as List).isNotEmpty
+                ? 'trigger-data'
+                : 'reaction-service';
+          }
+          break;
+        case 'trigger-data':
+          currentStep = 'reaction-service';
+          break;
+        case 'reaction-service':
+          if (selectedReactionService != null) {
+            currentStep = 'reaction-action';
+          }
+          break;
+        case 'reaction-action':
+          if (selectedReaction != null) {
+            currentStep = selectedReaction!['body'] != null &&
+                    (selectedReaction!['body'] as List).isNotEmpty
+                ? 'reaction-data'
+                : 'name';
+          }
+          break;
+        case 'reaction-data':
+          currentStep = 'name';
+          break;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -193,18 +270,14 @@ class _NewAreaPageState extends State<NewAreaPage> {
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border(
-                bottom: BorderSide(
-                  color: Colors.grey[200]!,
-                  width: 1,
-                ),
-              ),
+                  bottom: BorderSide(color: Colors.grey[200]!, width: 1)),
             ),
             child: SafeArea(
               child: Center(
                 child: Container(
                   constraints: const BoxConstraints(maxWidth: 600),
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: _buildStepper(),
+                  child: WorkflowStepper(currentStep: currentStep),
                 ),
               ),
             ),
@@ -214,218 +287,26 @@ class _NewAreaPageState extends State<NewAreaPage> {
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildCurrentStep(),
-                ],
+                children: [_buildCurrentStep()],
               ),
             ),
           ),
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border(
-                top: BorderSide(
-                  color: Colors.grey[200]!,
-                  width: 1,
-                ),
-              ),
+              border:
+                  Border(top: BorderSide(color: Colors.grey[200]!, width: 1)),
             ),
             padding: const EdgeInsets.all(16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton.icon(
-                  onPressed: () {
-                    if (currentStep == 'trigger-service') {
-                      globals.navigatorKey.currentState
-                          ?.pushNamedAndRemoveUntil('/main', (route) => false);
-                    } else {
-                      setState(() {
-                        switch (currentStep) {
-                          case 'trigger-action':
-                            currentStep = 'trigger-service';
-                            break;
-                          case 'trigger-data':
-                            currentStep = 'trigger-action';
-                            break;
-                          case 'reaction-service':
-                            currentStep = selectedAction!['body'] != null &&
-                                    (selectedAction!['body'] as List).isNotEmpty
-                                ? 'trigger-data'
-                                : 'trigger-action';
-                            break;
-                          case 'reaction-action':
-                            currentStep = 'reaction-service';
-                            break;
-                          case 'reaction-data':
-                            currentStep = 'reaction-action';
-                            break;
-                          case 'name':
-                            currentStep = selectedReaction!['body'] != null &&
-                                    (selectedReaction!['body'] as List)
-                                        .isNotEmpty
-                                ? 'reaction-data'
-                                : 'reaction-action';
-                            break;
-                        }
-                      });
-                    }
-                  },
-                  icon: Icon(Icons.arrow_back, color: Colors.grey[700]),
-                  label: const Text('Back'),
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.grey[700],
-                    backgroundColor: Colors.grey[100],
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                  ),
-                ),
-                if (currentStep != 'name')
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      setState(() {
-                        switch (currentStep) {
-                          case 'trigger-service':
-                            if (selectedService != null) {
-                              currentStep = 'trigger-action';
-                            }
-                            break;
-                          case 'trigger-action':
-                            if (selectedAction != null) {
-                              currentStep = selectedAction!['body'] != null &&
-                                      (selectedAction!['body'] as List)
-                                          .isNotEmpty
-                                  ? 'trigger-data'
-                                  : 'reaction-service';
-                            }
-                            break;
-                          case 'trigger-data':
-                            currentStep = 'reaction-service';
-                            break;
-                          case 'reaction-service':
-                            if (selectedReactionService != null) {
-                              currentStep = 'reaction-action';
-                            }
-                            break;
-                          case 'reaction-action':
-                            if (selectedReaction != null) {
-                              currentStep = selectedReaction!['body'] != null &&
-                                      (selectedReaction!['body'] as List)
-                                          .isNotEmpty
-                                  ? 'reaction-data'
-                                  : 'name';
-                            }
-                            break;
-                          case 'reaction-data':
-                            currentStep = 'name';
-                            break;
-                        }
-                      });
-                    },
-                    icon: const Text('Next'),
-                    label: const Icon(Icons.arrow_forward, color: Colors.white),
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                    ),
-                  )
-                else
-                  ElevatedButton(
-                    onPressed: submitting ? null : handleSubmit,
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 12,
-                      ),
-                    ),
-                    child: submitting
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
-                          )
-                        : const Text('Create Area'),
-                  ),
-              ],
+            child: NavigationButtons(
+              onBack: handleBack,
+              onNext: currentStep != 'name' ? handleNext : null,
+              showNext: currentStep != 'name',
+              submitting: submitting,
+              onSubmit: handleSubmit,
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildStepper() {
-    final steps = [
-      {'key': 'trigger-service', 'label': 'Action'},
-      {'key': 'reaction-service', 'label': 'Reaction'},
-      {'key': 'name', 'label': 'Name'}
-    ];
-
-    bool isStepActive(String stepKey) {
-      if (stepKey == 'trigger-service') {
-        return currentStep.startsWith('trigger-');
-      } else if (stepKey == 'reaction-service') {
-        return currentStep.startsWith('reaction-');
-      } else {
-        return currentStep == stepKey;
-      }
-    }
-
-    bool isStepComplete(String stepKey) {
-      if (stepKey == 'trigger-service') {
-        return currentStep.startsWith('reaction-') || currentStep == 'name';
-      } else if (stepKey == 'reaction-service') {
-        return currentStep == 'name';
-      }
-      return false;
-    }
-
-    return Center(
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 400),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: steps.map((step) {
-            final isActive = isStepActive(step['key']!);
-            final isCompleted = isStepComplete(step['key']!);
-            final color = isActive || isCompleted ? Colors.black : Colors.grey;
-
-            return Expanded(
-              child: Column(
-                children: [
-                  Text(
-                    step['label']!,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: color,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    width: 60,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: color,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
-        ),
       ),
     );
   }
