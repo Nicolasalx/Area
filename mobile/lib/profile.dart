@@ -9,11 +9,10 @@ const routeSettings = "Settings";
 
 Future<bool> deleteAccount() async {
   try {
-    final id = await globals.storage.read(key: "id");
-    final token = await globals.storage.read(key: "token");
-    final server = await globals.storage.read(key: 'server');
+    var id = await globals.storage.read(key: "id");
+    var token = await globals.storage.read(key: "token");
     final response = await http.delete(
-      Uri.parse('http://$server/users/$id'),
+      Uri.parse('${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/users/$id'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
