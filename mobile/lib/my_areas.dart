@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'confirmation.dart' as confirmation;
 import 'package:area/svg_services.dart';
 import 'package:area/workflow.dart';
 import 'package:flutter/material.dart';
@@ -49,72 +49,6 @@ class AreaActions {
     } catch (error) {
       return false;
     }
-  }
-
-  static Future<void> _askedDelete(
-    BuildContext context,
-    String workflowId,
-    Function? callback,
-  ) async {
-    await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            title: const Text(
-              'Are you sure you want to delete this area ?',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 20,
-              ),
-            ),
-            children: <Widget>[
-              Row(
-                children: [
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(top: 10, left: 25, bottom: 10),
-                    child: SimpleDialogOption(
-                      onPressed: () {
-                        final deleted = AreaActions.deleteArea(workflowId);
-                        deleted.then(
-                          (onValue) {
-                            if (onValue) {
-                              callback!();
-                            }
-                          },
-                        );
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        'Yes',
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontSize: 20,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const Spacer(),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(top: 10, right: 25, bottom: 10),
-                    child: SimpleDialogOption(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        'No',
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          );
-        });
   }
 }
 
@@ -256,7 +190,20 @@ Future<List<Widget>> getWorkflow(
                         color: Colors.grey,
                       ),
                       onPressed: () {
-                        AreaActions._askedDelete(context, item.id, callback);
+                        confirmation.askedDelete(
+                          context,
+                          'Are you sure you want to delete this area ?',
+                          () {
+                            final deleted = AreaActions.deleteArea(item.id);
+                            deleted.then(
+                              (onValue) {
+                                if (onValue) {
+                                  callback!();
+                                }
+                              },
+                            );
+                          },
+                        );
                       },
                     ),
                   ],
@@ -387,8 +334,6 @@ class MyAreasPage extends StatefulWidget {
 }
 
 class _MyAreasPageState extends State<MyAreasPage> {
-  int currentPage = 0;
-
   void rechargePage() {
     setState(() {});
   }

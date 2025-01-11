@@ -13,6 +13,31 @@ class UserResponse {
   }
 }
 
+class ExtendedUserResponse {
+  ExtendedUserResponse({
+    required this.base,
+    this.picture = "",
+    required this.isActive,
+    required this.createdAt,
+    required this.type,
+  });
+  final UserResponse base;
+  final String picture;
+  final bool isActive;
+  final String createdAt;
+  final String type;
+
+  factory ExtendedUserResponse.fromJson(Map<String, dynamic> data) {
+    return ExtendedUserResponse(
+      base: UserResponse.fromJson(data),
+      picture: data['picture'],
+      isActive: data['isActive'],
+      createdAt: data['createdAt'],
+      type: data['type'],
+    );
+  }
+}
+
 class LoginResponse {
   LoginResponse({required this.token, required this.user});
   final String token;
