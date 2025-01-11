@@ -40,6 +40,30 @@ class Auth {
       return false;
     }
   }
+
+  static Future<bool> register(
+      String email, String password, String name, BuildContext context) async {
+    try {
+      final response = await http.post(
+        Uri.parse('${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/users'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'email': email,
+          'password': password,
+          'username': name,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        return login(email, password, context);
+      }
+      return false;
+    } catch (error) {
+      return false;
+    }
+  }
 }
 
 class LoginPage extends StatefulWidget {
@@ -50,13 +74,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  bool _passwordObscure = true;
-
-  String emailValue = "";
-  String passwordValue = "";
   final formkey = GlobalKey<FormState>();
   final email = TextEditingController();
   final passwd = TextEditingController();
+  bool _passwordObscure = true;
 
   void _toggle() {
     setState(() {
@@ -73,206 +94,171 @@ class _LoginPageState extends State<LoginPage> {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: const Color.fromARGB(255, 255, 255, 255),
-              border: Border.all(
-                color: const Color.fromARGB(255, 185, 185, 185),
-              ),
+              color: Colors.white,
+              border: Border.all(color: Colors.grey[300]!),
             ),
             child: Column(
-              children: <Widget>[
+              children: [
                 const Padding(
                   padding: EdgeInsets.only(top: 30.0),
-                  child: Center(
-                    child: Text(
-                      'Welcome',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 30,
-                      ),
+                  child: Text(
+                    'Welcome',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 30,
                     ),
                   ),
                 ),
                 const Padding(
                   padding: EdgeInsets.only(top: 5.0),
-                  child: Center(
-                    child: Text(
-                      'Sign in to your account',
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Color.fromARGB(255, 119, 119, 119),
-                      ),
+                  child: Text(
+                    'Sign in to your account',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.grey,
                     ),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: const EdgeInsets.all(20.0),
                   child: Form(
                     key: formkey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        const Padding(
-                          padding: EdgeInsets.only(left: 15),
-                          child: Text(
-                            'Email',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 15,
+                      children: [
+                        const Text(
+                          'Email',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          controller: email,
+                          validator: MultiValidator([
+                            RequiredValidator(errorText: 'Email is required'),
+                            EmailValidator(errorText: 'Invalid email address'),
+                          ]).call,
+                          decoration: InputDecoration(
+                            hintText: 'Enter your email',
+                            prefixIcon: const Icon(Icons.alternate_email),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: TextFormField(
-                            controller: email,
-                            validator: MultiValidator([
-                              RequiredValidator(errorText: 'Email is required'),
-                              EmailValidator(
-                                  errorText: 'Invalid email address'),
-                            ]).call,
-                            decoration: const InputDecoration(
-                              hintText: 'Enter your email',
-                              prefixIcon: Icon(
-                                Icons.alternate_email,
-                                color: Color.fromARGB(255, 119, 119, 119),
-                              ),
-                              errorStyle: TextStyle(fontSize: 18.0),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.red),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(9.0),
-                                ),
-                              ),
+                        const SizedBox(height: 20),
+                        const Text(
+                          'Password',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          controller: passwd,
+                          obscureText: _passwordObscure,
+                          validator: RequiredValidator(
+                                  errorText: 'Password is required')
+                              .call,
+                          decoration: InputDecoration(
+                            hintText: 'Enter your password',
+                            prefixIcon: const Icon(Icons.lock_outline),
+                            suffixIcon: IconButton(
+                              icon: Icon(_passwordObscure
+                                  ? Icons.visibility_off
+                                  : Icons.visibility),
+                              onPressed: _toggle,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
                             ),
                           ),
                         ),
-                        const Padding(
-                          padding: EdgeInsets.only(left: 15),
-                          child: Text(
-                            'Password',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 15,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: TextFormField(
-                            controller: passwd,
-                            decoration: InputDecoration(
-                              hintText: 'Enter your password',
-                              prefixIcon: const Icon(
-                                Icons.lock,
-                                color: Color.fromARGB(255, 119, 119, 119),
-                              ),
-                              suffixIcon: IconButton(
-                                icon: _passwordObscure
-                                    ? const Icon(Icons.visibility_off)
-                                    : const Icon(Icons.visibility),
-                                onPressed: () {
-                                  _toggle();
-                                },
-                              ),
-                              errorStyle: const TextStyle(fontSize: 18.0),
-                              border: const OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.red),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(9.0),
-                                ),
+                        const SizedBox(height: 30),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(32),
                               ),
                             ),
-                            obscureText: _passwordObscure,
-                          ),
-                        ),
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 10.0, left: 10, right: 10),
-                            child: SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      WidgetStateProperty.all(Colors.green),
-                                  padding: WidgetStateProperty.all(
-                                    const EdgeInsets.all(20),
-                                  ),
-                                  textStyle: WidgetStateProperty.all(
-                                    const TextStyle(
-                                        fontSize: 14, color: Colors.white),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  if (formkey.currentState!.validate()) {
-                                    Auth.login(
-                                        email.text, passwd.text, context);
-                                  }
-                                },
-                                child: const Text(
-                                  'Sign in',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 22),
-                                ),
+                            onPressed: () {
+                              if (formkey.currentState!.validate()) {
+                                Auth.login(
+                                  email.text,
+                                  passwd.text,
+                                  context,
+                                );
+                              }
+                            },
+                            child: const Text(
+                              'Sign In',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
                               ),
                             ),
                           ),
                         ),
+                        const SizedBox(height: 20),
                         const Center(
-                          child: Padding(
-                            padding: EdgeInsets.only(top: 20.0),
-                            child: Center(
-                              child: Text(
-                                'Or continue with',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: Color.fromARGB(255, 119, 119, 119),
-                                ),
-                              ),
+                          child: Text(
+                            'Or continue with',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(32),
+                            ),
+                          ),
+                          onPressed: () {
+                            // ! to replace later with Google sign in
+                            print('Sign in with Google');
+                          },
+                          icon: Image.asset(
+                            'assets/google.png',
+                            height: 24,
+                          ),
+                          label: const Text(
+                            'Sign in with Google',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
                             ),
                           ),
                         ),
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 20.0, left: 10, right: 10, bottom: 20),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 1,
-                                  color:
-                                      const Color.fromARGB(255, 119, 119, 119),
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              "Don't have an account?   ",
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(context, '/register');
+                              },
+                              child: const Text(
+                                'Create an account',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  decoration: TextDecoration.underline,
                                 ),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              width: double.infinity,
-                              child: ElevatedButton.icon(
-                                label: const Text(
-                                  'Sign in with Google',
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 22),
-                                ),
-                                icon: Image.asset(
-                                  'assets/google.png',
-                                  width: 40,
-                                  height: 40,
-                                ),
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      WidgetStateProperty.all(Colors.white),
-                                  padding: WidgetStateProperty.all(
-                                      const EdgeInsets.all(20)),
-                                  textStyle: WidgetStateProperty.all(
-                                    const TextStyle(
-                                        fontSize: 14, color: Colors.white),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  print('form submited');
-                                },
                               ),
                             ),
-                          ),
+                          ],
                         ),
                       ],
                     ),
