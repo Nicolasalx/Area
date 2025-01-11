@@ -54,7 +54,7 @@ class FormInput extends StatelessWidget {
           ),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(
-              Radius.circular(9.0),
+              Radius.circular(8),
             ),
           ),
         ),
@@ -100,7 +100,7 @@ class PasswordInput extends StatelessWidget {
           ),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(
-              Radius.circular(9.0),
+              Radius.circular(8),
             ),
           ),
         ),
@@ -141,145 +141,154 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 100.0, left: 20, right: 20),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.white,
-              border: Border.all(
-                color: const Color.fromARGB(255, 185, 185, 185),
-              ),
-            ),
-            child: Column(
-              children: <Widget>[
-                const Padding(
-                  padding: EdgeInsets.only(top: 30.0),
-                  child: Text(
-                    'Create Account',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 30,
-                    ),
-                  ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 100.0, left: 20, right: 20),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
+                  border: Border.all(color: Colors.grey[300]!),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 5.0),
-                  child: Text(
-                    'Sign up for a new account',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Color.fromARGB(255, 119, 119, 119),
+                child: Column(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(top: 30.0),
+                      child: Text(
+                        'Create Account',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 30,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Form(
-                    key: formkey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        const LabelText(text: 'Name'),
-                        FormInput(
-                          controller: name,
-                          hintText: 'Enter your name',
-                          icon: Icons.person_outline,
-                          validator: RequiredValidator(errorText: 'Name is required').call,
+                    const Padding(
+                      padding: EdgeInsets.only(top: 5.0),
+                      child: Text(
+                        'Sign up for a new account',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Color.fromARGB(255, 119, 119, 119),
                         ),
-                        const LabelText(text: 'Email'),
-                        FormInput(
-                          controller: email,
-                          hintText: 'Enter your email',
-                          icon: Icons.alternate_email,
-                          validator: MultiValidator([
-                            RequiredValidator(errorText: 'Email is required'),
-                            EmailValidator(errorText: 'Invalid email address'),
-                          ]).call,
-                        ),
-                        const LabelText(text: 'Password'),
-                        PasswordInput(
-                          controller: passwd,
-                          obscure: _passwordObscure,
-                          onToggle: _togglePassword,
-                          validator: MultiValidator([
-                            RequiredValidator(errorText: 'Password is required'),
-                            MinLengthValidator(8, errorText: 'Password must be at least 8 characters'),
-                          ]).call,
-                        ),
-                        const LabelText(text: 'Confirm Password'),
-                        PasswordInput(
-                          controller: confirmPasswd,
-                          obscure: _confirmPasswordObscure,
-                          onToggle: _toggleConfirmPassword,
-                          validator: (val) {
-                            if (val != passwd.text) {
-                              return 'Passwords do not match';
-                            }
-                            return null;
-                          },
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 20),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              minimumSize: const Size(double.infinity, 60),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Form(
+                        key: formkey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            const LabelText(text: 'Name'),
+                            FormInput(
+                              controller: name,
+                              hintText: 'Enter your name',
+                              icon: Icons.person_outline,
+                              validator: RequiredValidator(
+                                      errorText: 'Name is required')
+                                  .call,
                             ),
-                            onPressed: () {
-                              if (formkey.currentState!.validate()) {
-                                Auth.register(
-                                  email.text,
-                                  passwd.text,
-                                  name.text,
-                                  context,
-                                );
-                              }
-                            },
-                            child: const Text(
-                              'Create Account',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
+                            const LabelText(text: 'Email'),
+                            FormInput(
+                              controller: email,
+                              hintText: 'Enter your email',
+                              icon: Icons.alternate_email,
+                              validator: MultiValidator([
+                                RequiredValidator(
+                                    errorText: 'Email is required'),
+                                EmailValidator(
+                                    errorText: 'Invalid email address'),
+                              ]).call,
                             ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                "Already have an account?   ",
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: Color.fromARGB(255, 119, 119, 119),
+                            const LabelText(text: 'Password'),
+                            PasswordInput(
+                              controller: passwd,
+                              obscure: _passwordObscure,
+                              onToggle: _togglePassword,
+                              validator: MultiValidator([
+                                RequiredValidator(
+                                    errorText: 'Password is required'),
+                                MinLengthValidator(8,
+                                    errorText:
+                                        'Password must be at least 8 characters'),
+                              ]).call,
+                            ),
+                            const LabelText(text: 'Confirm Password'),
+                            PasswordInput(
+                              controller: confirmPasswd,
+                              obscure: _confirmPasswordObscure,
+                              onToggle: _toggleConfirmPassword,
+                              validator: (val) {
+                                if (val != passwd.text) {
+                                  return 'Passwords do not match';
+                                }
+                                return null;
+                              },
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.black,
+                                  minimumSize: const Size(double.infinity, 50),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(32),
+                                  ),
                                 ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.pushReplacementNamed(context, '/login');
+                                onPressed: () {
+                                  if (formkey.currentState!.validate()) {
+                                    Auth.register(
+                                      email.text,
+                                      passwd.text,
+                                      name.text,
+                                      context,
+                                    );
+                                  }
                                 },
                                 child: const Text(
-                                  "Sign in",
+                                  'Create Account',
                                   style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    decoration: TextDecoration.underline,
+                                    color: Colors.white,
+                                    fontSize: 18,
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Already have an account?   ',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacementNamed(context, '/login');
+                    },
+                    child: const Text(
+                      'Sign in',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
