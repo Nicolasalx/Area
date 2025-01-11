@@ -13,13 +13,19 @@ class LabelText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 15, bottom: 8),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontWeight: FontWeight.w700,
-          fontSize: 15,
-        ),
+      padding: const EdgeInsets.only(left: 0, bottom: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            text,
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 15,
+            ),
+            textAlign: TextAlign.start,
+          ),
+        ],
       ),
     );
   }
@@ -30,6 +36,7 @@ class FormInput extends StatelessWidget {
   final String hintText;
   final IconData icon;
   final String? Function(String?)? validator;
+  final bool attemptedSubmit = false;
 
   const FormInput({
     super.key,
@@ -37,6 +44,7 @@ class FormInput extends StatelessWidget {
     required this.hintText,
     required this.icon,
     this.validator,
+    attemptedSubmit,
   });
 
   @override
@@ -46,16 +54,17 @@ class FormInput extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         validator: validator,
+        autovalidateMode: attemptedSubmit
+            ? AutovalidateMode.onUserInteraction
+            : AutovalidateMode.disabled,
         decoration: InputDecoration(
           hintText: hintText,
           prefixIcon: Icon(
             icon,
-            color: const Color.fromARGB(255, 119, 119, 119),
+            color: Colors.grey,
           ),
-          border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(8),
-            ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
           ),
         ),
       ),
@@ -68,6 +77,7 @@ class PasswordInput extends StatelessWidget {
   final bool obscure;
   final VoidCallback onToggle;
   final String? Function(String?)? validator;
+  final bool attemptedSubmit = false;
 
   const PasswordInput({
     super.key,
@@ -75,33 +85,35 @@ class PasswordInput extends StatelessWidget {
     required this.obscure,
     required this.onToggle,
     this.validator,
+    attemptedSubmit,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: 20),
       child: TextFormField(
         controller: controller,
         obscureText: obscure,
         validator: validator,
+        autovalidateMode: attemptedSubmit
+            ? AutovalidateMode.onUserInteraction
+            : AutovalidateMode.disabled,
         decoration: InputDecoration(
           hintText: 'Enter your password',
           prefixIcon: const Icon(
             Icons.lock_outline,
-            color: Color.fromARGB(255, 119, 119, 119),
+            color: Colors.grey,
           ),
           suffixIcon: IconButton(
             icon: Icon(
               obscure ? Icons.visibility_off : Icons.visibility,
-              color: const Color.fromARGB(255, 119, 119, 119),
+              color: Colors.grey,
             ),
             onPressed: onToggle,
           ),
-          border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(8),
-            ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
           ),
         ),
       ),
@@ -124,6 +136,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final name = TextEditingController();
   bool _passwordObscure = true;
   bool _confirmPasswordObscure = true;
+  bool _attemptedSubmit = false;
 
   void _togglePassword() {
     setState(() {
@@ -174,7 +187,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(12.0),
+                      padding: const EdgeInsets.all(20.0),
                       child: Form(
                         key: formkey,
                         child: Column(
@@ -188,6 +201,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               validator: RequiredValidator(
                                       errorText: 'Name is required')
                                   .call,
+                              attemptedSubmit: _attemptedSubmit,
                             ),
                             const LabelText(text: 'Email'),
                             FormInput(
@@ -200,6 +214,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 EmailValidator(
                                     errorText: 'Invalid email address'),
                               ]).call,
+                              attemptedSubmit: _attemptedSubmit,
                             ),
                             const LabelText(text: 'Password'),
                             PasswordInput(
@@ -213,6 +228,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     errorText:
                                         'Password must be at least 8 characters'),
                               ]).call,
+                              attemptedSubmit: _attemptedSubmit,
                             ),
                             const LabelText(text: 'Confirm Password'),
                             PasswordInput(
@@ -225,18 +241,25 @@ class _RegisterPageState extends State<RegisterPage> {
                                 }
                                 return null;
                               },
+                              attemptedSubmit: _attemptedSubmit,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(20.0),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 50,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.black,
-                                  minimumSize: const Size(double.infinity, 50),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(32),
                                   ),
                                 ),
                                 onPressed: () {
+                                  setState(() {
+                                    _attemptedSubmit = true;
+                                  });
                                   if (formkey.currentState!.validate()) {
                                     Auth.register(
                                       email.text,
@@ -249,8 +272,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                 child: const Text(
                                   'Create Account',
                                   style: TextStyle(
-                                    color: Colors.white,
                                     fontSize: 18,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
