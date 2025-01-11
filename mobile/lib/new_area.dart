@@ -1,10 +1,11 @@
+import 'package:area/new_area/input_field.dart';
+import 'package:area/new_area/service_card.dart';
+import 'package:area/new_area/trigger_card.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 import 'globals.dart' as globals;
-import 'package:flutter_svg/flutter_svg.dart';
-import 'svg_services.dart';
 
 class NewAreaPage extends StatefulWidget {
   const NewAreaPage({super.key});
@@ -467,7 +468,6 @@ class _NewAreaPageState extends State<NewAreaPage> {
         final serviceId = service['id'];
 
         uniqueServices[serviceId] = service;
-
         actionCounts[serviceId] = (actionCounts[serviceId] ?? 0) + 1;
       }
     }
@@ -507,109 +507,22 @@ class _NewAreaPageState extends State<NewAreaPage> {
             : (selectedReactionService != null &&
                 selectedReactionService!['id'] == service['id']);
 
-        return Card(
-            color: Colors.white,
-            elevation: isSelected ? 2 : 1,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-              side: BorderSide(
-                color: isSelected ? Colors.black : Colors.grey[200]!,
-                width: isSelected ? 2 : 1,
-              ),
-            ),
-            child: InkWell(
-              onTap: () {
-                setState(() {
-                  if (isAction) {
-                    selectedService = service;
-                  } else {
-                    selectedReactionService = service;
-                  }
-                });
-              },
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                padding: const EdgeInsets.all(24),
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 48,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[100],
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Center(
-                                child: SvgPicture.string(
-                                  getServiceSvg(service['name']),
-                                  width: 32,
-                                  height: 32,
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    capitalizeFirst(service['name']),
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    '$count ${isAction ? 'action' : 'reaction'}${count > 1 ? 's' : ''} available',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          service['description'] ?? '',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (isSelected)
-                      Positioned(
-                        top: -12,
-                        right: -12,
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: const BoxDecoration(
-                            color: Colors.black,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.check,
-                            size: 16,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ));
+        return ServiceCard(
+          service: service,
+          isSelected: isSelected,
+          onTap: () {
+            setState(() {
+              if (isAction) {
+                selectedService = service;
+              } else {
+                selectedReactionService = service;
+              }
+            });
+          },
+          count: count,
+          isAction: isAction,
+          description: service['description'],
+        );
       },
     );
   }
@@ -625,95 +538,12 @@ class _NewAreaPageState extends State<NewAreaPage> {
       itemCount: actions.length,
       itemBuilder: (context, index) {
         final action = actions[index];
-        final isSelected =
-            selectedAction != null && selectedAction!['name'] == action['name'];
-
-        return Card(
-          color: Colors.white,
-          elevation: isSelected ? 2 : 1,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-            side: BorderSide(
-              color: isSelected ? Colors.black : Colors.grey[200]!,
-              width: isSelected ? 2 : 1,
-            ),
-          ),
-          child: InkWell(
-            onTap: () => setState(() => selectedAction = action),
-            borderRadius: BorderRadius.circular(8),
-            child: Container(
-              padding: const EdgeInsets.all(24),
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            width: 48,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[100],
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: SvgPicture.string(
-                                getServiceSvg(action['service']['name']),
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  formatSnakeCase(action['name']),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        action['description'] ?? '',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (isSelected)
-                    Positioned(
-                      top: -12,
-                      right: -12,
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          color: Colors.black,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.check,
-                          size: 16,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ),
+        return TriggerCard(
+          trigger: action,
+          isSelected: selectedAction != null &&
+              selectedAction!['name'] == action['name'],
+          onTap: () => setState(() => selectedAction = action),
+          isAction: true,
         );
       },
     );
@@ -730,95 +560,12 @@ class _NewAreaPageState extends State<NewAreaPage> {
       itemCount: reactions.length,
       itemBuilder: (context, index) {
         final reaction = reactions[index];
-        final isSelected = selectedReaction != null &&
-            selectedReaction!['name'] == reaction['name'];
-
-        return Card(
-          color: Colors.white,
-          elevation: isSelected ? 2 : 1,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-            side: BorderSide(
-              color: isSelected ? Colors.black : Colors.grey[200]!,
-              width: isSelected ? 2 : 1,
-            ),
-          ),
-          child: InkWell(
-            onTap: () => setState(() => selectedReaction = reaction),
-            borderRadius: BorderRadius.circular(8),
-            child: Container(
-              padding: const EdgeInsets.all(24),
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            width: 48,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[100],
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: SvgPicture.string(
-                                getServiceSvg(reaction['service']['name']),
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  formatSnakeCase(reaction['name']),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        reaction['description'] ?? '',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (isSelected)
-                    Positioned(
-                      top: -12,
-                      right: -12,
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          color: Colors.black,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.check,
-                          size: 16,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ),
+        return TriggerCard(
+          trigger: reaction,
+          isSelected: selectedReaction != null &&
+              selectedReaction!['name'] == reaction['name'],
+          onTap: () => setState(() => selectedReaction = reaction),
+          isAction: false,
         );
       },
     );
@@ -840,68 +587,48 @@ class _NewAreaPageState extends State<NewAreaPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ...fields.map((field) {
-          final fieldKey = prefix + field['field'];
+          if (field == null || field['field'] == null) {
+            return const SizedBox.shrink();
+          }
+
+          final fieldKey = prefix + (field['field'] as String);
           final value = data[fieldKey] ?? '';
+          final fieldName =
+              field['name'] ?? formatSnakeCase(field['field'] as String);
 
           _controllers[fieldKey] ??= TextEditingController(text: value);
           final controller = _controllers[fieldKey]!;
 
           Widget inputField;
           if (field['field'] == 'date') {
-            inputField = TextField(
-              decoration: InputDecoration(
-                labelText: field['name'],
-                helperText: field['description'],
-                border: const OutlineInputBorder(),
-              ),
-              readOnly: true,
+            inputField = CustomDateField(
+              label: fieldName,
+              helperText: field['description'] as String?,
               controller: controller,
-              onTap: () async {
-                final now = DateTime.now();
-                final date = await showDatePicker(
-                  context: context,
-                  initialDate: now,
-                  firstDate: now,
-                  lastDate: DateTime(now.year + 1),
-                );
-                if (date != null) {
-                  setState(() {
-                    data[fieldKey] = date.toIso8601String().split('T')[0];
-                    controller.text = data[fieldKey]!;
-                  });
-                }
+              onDateSelected: (date) {
+                setState(() {
+                  data[fieldKey] = date.toIso8601String().split('T')[0];
+                  controller.text = data[fieldKey]!;
+                });
               },
             );
           } else if (field['field'] == 'hour') {
-            inputField = TextField(
-              decoration: InputDecoration(
-                labelText: field['name'],
-                helperText: field['description'],
-                border: const OutlineInputBorder(),
-              ),
-              readOnly: true,
+            inputField = CustomTimeField(
+              label: fieldName,
+              helperText: field['description'] as String?,
               controller: controller,
-              onTap: () async {
-                final time = await showTimePicker(
-                  context: context,
-                  initialTime: TimeOfDay.now(),
-                );
-                if (time != null) {
-                  setState(() {
-                    data[fieldKey] =
-                        '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
-                    controller.text = data[fieldKey]!;
-                  });
-                }
+              onTimeSelected: (time) {
+                setState(() {
+                  data[fieldKey] =
+                      '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+                  controller.text = data[fieldKey]!;
+                });
               },
             );
           } else {
-            inputField = TextField(
-              decoration: InputDecoration(
-                labelText: field['name'],
-                helperText: field['description'],
-                border: const OutlineInputBorder(),
-              ),
+            inputField = BaseTextField(
+              label: fieldName,
+              helperText: field['description'] as String?,
               controller: controller,
               onChanged: (value) {
                 setState(() {
@@ -915,7 +642,7 @@ class _NewAreaPageState extends State<NewAreaPage> {
             padding: const EdgeInsets.only(bottom: 16),
             child: inputField,
           );
-        }),
+        })
       ],
     );
   }
