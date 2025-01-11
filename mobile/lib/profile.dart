@@ -1,4 +1,3 @@
-import 'package:area/logout.dart';
 import 'package:flutter/material.dart';
 import 'confirmation.dart' as confirmation;
 import 'globals.dart' as globals;
@@ -104,6 +103,10 @@ class ProfilePageHome extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
+                    Icon(
+                      Icons.person,
+                      size: 50,
+                    ),
                     FutureBuilder<String?>(
                       future: name,
                       builder:
