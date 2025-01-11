@@ -6,6 +6,7 @@ class NavigationButtons extends StatelessWidget {
   final bool showNext;
   final bool submitting;
   final VoidCallback? onSubmit;
+  final bool isNextEnabled;
 
   const NavigationButtons({
     super.key,
@@ -14,6 +15,7 @@ class NavigationButtons extends StatelessWidget {
     this.showNext = true,
     this.submitting = false,
     this.onSubmit,
+    this.isNextEnabled = true,
   });
 
   @override
@@ -36,12 +38,14 @@ class NavigationButtons extends StatelessWidget {
         ),
         if (showNext)
           ElevatedButton.icon(
-            onPressed: onNext,
+            onPressed: isNextEnabled ? onNext : null,
             icon: const Text('Next'),
             label: const Icon(Icons.arrow_forward, color: Colors.white),
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,
-              backgroundColor: Colors.black,
+              backgroundColor: isNextEnabled ? Colors.black : Colors.grey[300],
+              disabledForegroundColor: Colors.grey[500],
+              disabledBackgroundColor: Colors.grey[300],
               padding: const EdgeInsets.symmetric(
                 horizontal: 16,
                 vertical: 12,

@@ -260,6 +260,24 @@ class _NewAreaPageState extends State<NewAreaPage> {
     });
   }
 
+  bool _isNextEnabled() {
+    switch (currentStep) {
+      case 'trigger-service':
+        return selectedService != null;
+      case 'trigger-action':
+        return selectedAction != null;
+      case 'reaction-service':
+        return selectedReactionService != null;
+      case 'reaction-action':
+        return selectedReaction != null;
+      case 'trigger-data':
+      case 'reaction-data':
+        return true;
+      default:
+        return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -304,6 +322,7 @@ class _NewAreaPageState extends State<NewAreaPage> {
               showNext: currentStep != 'name',
               submitting: submitting,
               onSubmit: handleSubmit,
+              isNextEnabled: _isNextEnabled(),
             ),
           ),
         ],
