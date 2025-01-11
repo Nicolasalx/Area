@@ -48,7 +48,7 @@ VALUES
     ('current_time', 'Current time in the monitored timezone'),
     ('is_daytime', 'It is currently daytime'),
     ('timezone', 'The timezone being monitored'),
-    ('day_of_week', 'Current day of the week')
+    ('day_of_week', 'Current day of the week'),
 -- newsapi
     ('headline', 'News headline text'),
     ('source', 'News source name'),
