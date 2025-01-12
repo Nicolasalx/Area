@@ -11,7 +11,7 @@ import { IServideOauth } from '../oauth/IServiceOauth';
 export class GithubService implements IServideOauth {
   constructor(private readonly httpService: HttpService) {}
 
-  async requestOAuthToken(code: string): Promise<string> {
+  async requestOAuthToken(code: string, _redirect_uri: string): Promise<string> {
     const url = 'https://github.com/login/oauth/access_token';
     const values = {
       code: code,

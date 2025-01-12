@@ -1,6 +1,7 @@
 import 'package:area/login.dart';
 import 'package:area/logout.dart';
 import 'package:area/nav_bar.dart';
+import 'package:area/oauth/google.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'globals.dart' as globals;
@@ -9,6 +10,7 @@ const routeHome = '/';
 const routeLogin = '/login';
 const routeLogout = '/logout';
 const routeMain = '/main';
+const routeOAuthGoogle = '/oauth/google';
 
 Future<void> main() async {
   await dotenv.load(fileName: "lib/.env");
@@ -66,6 +68,7 @@ Route<Widget> _onGenerateRoute(RouteSettings settings) {
     routeLogin => const LoginPage(),
     routeLogout => const LogoutPage(),
     routeMain => const NavBarPage(),
+    routeOAuthGoogle => const OAuthGooglePage(),
     _ => throw StateError('Unexpected route name: ${settings.name}!')
   };
   return MaterialPageRoute(

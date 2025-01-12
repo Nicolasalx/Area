@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:area/oauth/google.dart';
 import 'package:area/main.dart';
 import 'package:area/user.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -268,8 +269,9 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  print('form submited');
-                                },
+                                  globals.navigatorKey.currentState!.popUntil(ModalRoute.withName(routeOAuthGoogle));
+                                  globals.navigatorKey.currentState!.pushNamed(routeOAuthGoogle);
+                                }
                               ),
                             ),
                           ),
