@@ -6,20 +6,8 @@ import AnimatedBackground from "@/components/three/AnimatedBackground";
 import WorkflowVisualization from "@/components/three/WorkflowVisualization";
 import { useInView } from "@/hooks/useInView";
 import Image from "next/image";
-const PlayIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    className="h-5 w-5"
-  >
-    <path
-      fillRule="evenodd"
-      d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z"
-      clipRule="evenodd"
-    />
-  </svg>
-);
+import { DownloadIcon } from "lucide-react";
+import { useState } from "react";
 
 const GoogleIcon = () => (
   <svg className="h-full w-full" viewBox="0 0 24 24">
@@ -159,6 +147,38 @@ export default function LandingPage() {
   });
   const { ref: ctaRef, isInView: ctaInView } = useInView({ threshold: 0.5 });
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleDownload = async () => {
+    try {
+      setIsLoading(true);
+
+      const response = await fetch("/api/download/android");
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Download failed");
+      }
+
+      const blob = await response.blob();
+
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "area-android.apk";
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err: unknown) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -191,10 +211,11 @@ export default function LandingPage() {
                 </Button>
                 <Button
                   className="bg-white text-black focus-visible:ring-0"
-                  onClick={() => router.push("/workflows")}
-                  leftIcon={<PlayIcon />}
+                  onClick={handleDownload}
+                  leftIcon={<DownloadIcon />}
+                  isLoading={isLoading}
                 >
-                  See How It Works
+                  Get the Android App
                 </Button>
               </div>
             </div>
