@@ -15,18 +15,27 @@ export class OAuthService {
 
   async getServiceOAuthTokens(
     code: string,
+    redirect_uri: string,
     type: ConnectionType,
     service: IServideOauth,
   ) {
     try {
-      return await service.requestOAuthToken(code);
+      return await service.requestOAuthToken(code, redirect_uri);
     } catch (error) {
       console.error('ERROR get', type, 'OAuth tokens:', error);
-      this.logger.error('Failed to get ', type, ' OAuth tokens: ', error);
+      this.logger.error(
+        'Failed to get ' +
+          type +
+          ' OAuth tokens: ' +
+          error.response.data.error +
+          ' (' +
+          error.response.data.error_description +
+          ')',
+      );
       throw new HttpException(
         {
           status: HttpStatus.FORBIDDEN,
-          error: `Failed to get ${type} OAuth tokens`,
+          error: `Failed to get ${type} OAuth tokens: ` + error,
         },
         HttpStatus.FORBIDDEN,
         {
@@ -61,7 +70,15 @@ export class OAuthService {
       };
     } catch (error) {
       console.error('ERROR get', type, 'User:', error);
-      this.logger.error('ERROR get', type, ' User: ', error);
+      this.logger.error(
+        'ERROR get' +
+          type +
+          ' User: ' +
+          error.response.data.error +
+          ' (' +
+          error.response.data.error_description +
+          ')',
+      );
       throw new HttpException(
         {
           status: HttpStatus.FORBIDDEN,
@@ -77,41 +94,27 @@ export class OAuthService {
 
   async getServiceOAuth(
     code: string,
+    redirect_uri: string,
     type: ConnectionType,
     service: IServideOauth,
   ) {
-    try {
-      const access_token = await this.getServiceOAuthTokens(
-        code,
-        type,
-        service,
-      );
-      const user = await this.getServiceUser(access_token, type, service);
+    const access_token = await this.getServiceOAuthTokens(
+      code,
+      redirect_uri,
+      type,
+      service,
+    );
+    const user = await this.getServiceUser(access_token, type, service);
 
-      console.log('get User ', user);
-      const token = this.jwtService.sign({
-        sub: user.id,
-        email: user.email,
-      });
+    const token = this.jwtService.sign({
+      sub: user.id,
+      email: user.email,
+    });
 
-      const response = {
-        user: user,
-        token: token,
-      };
-      return response;
-    } catch (error) {
-      console.error('ERROR get', type, 'OAuth:', error);
-      this.logger.error('ERROR get', type, 'OAuth:', error);
-      throw new HttpException(
-        {
-          status: HttpStatus.FORBIDDEN,
-          error: `Failed to get ${type} OAuth`,
-        },
-        HttpStatus.FORBIDDEN,
-        {
-          cause: error,
-        },
-      );
-    }
+    const response = {
+      user: user,
+      token: token,
+    };
+    return response;
   }
 }

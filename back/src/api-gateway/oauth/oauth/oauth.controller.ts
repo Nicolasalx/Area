@@ -24,8 +24,10 @@ export class OAuthController {
   })
   @Get('google/callback')
   async getGoogleOAuth(@Query() query: any) {
+    this.logger.debug('OAuth with google');
     return await this.oauthService.getServiceOAuth(
       query.code,
+      query.redirect_uri,
       ConnectionType.GOOGLE,
       this.googleService,
     );
@@ -37,8 +39,10 @@ export class OAuthController {
   })
   @Get('github/callback')
   async getGithubOAuth(@Query() query: any) {
+    this.logger.debug('OAuth with github');
     return await this.oauthService.getServiceOAuth(
       query.code,
+      '',
       ConnectionType.GITHUB,
       this.githubService,
     );
@@ -50,8 +54,10 @@ export class OAuthController {
   })
   @Get('discord/callback')
   async getDiscordOAuth(@Query() query: any) {
+    this.logger.debug('OAuth with discord');
     return await this.oauthService.getServiceOAuth(
       query.code,
+      '',
       ConnectionType.DISCORD,
       this.discordSercice,
     );

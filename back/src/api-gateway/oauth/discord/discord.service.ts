@@ -10,13 +10,13 @@ import { IServideOauth } from '../oauth/IServiceOauth';
 export class DiscordService implements IServideOauth {
   constructor(private readonly httpService: HttpService) {}
 
-  async requestOAuthToken(code: string): Promise<string> {
+  async requestOAuthToken(code: string, redirect_uri: string): Promise<string> {
     const url = 'https://discord.com/api/oauth2/token';
     const body = new URLSearchParams({
       code: code,
       client_id: process.env.DISCORD_CLIENT_ID!,
       client_secret: process.env.DISCORD_CLIENT_SECRET!,
-      redirect_uri: process.env.DISCORD_REDIRECT_URI!,
+      redirect_uri: redirect_uri,
       grant_type: 'authorization_code',
       scope: ['identify', 'email'].join(' '),
     }).toString();
