@@ -90,7 +90,6 @@ export class OAuthService {
       );
       const user = await this.getServiceUser(access_token, type, service);
 
-      console.log('get User ', user);
       const token = this.jwtService.sign({
         sub: user.id,
         email: user.email,
