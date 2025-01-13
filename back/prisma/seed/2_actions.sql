@@ -62,8 +62,8 @@ VALUES
     ('new_music_played', 'Action triggered when a music is played on Spotify.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'spotify' LIMIT 1), '[]'),
     ('new_playlist_created_spotify', 'Action triggered when a track is added to a playlist on Spotify.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'spotify' LIMIT 1), '[]'),
 -- CoinGecko
-    ('check_price_increase', 'Action triggered when a price increase on the market, price is checked with CoinGecko.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'coingecko' LIMIT 1), '[{"field": "crypto", "description": "The crypto selectionned to check the price", "options": ["Bitcoin", "Ethereum", "Solana", "Cardano"]}, {"field": "price", "description": "Si le prix du marché dépasse le prix indiquer ici alors on déclenche l action"}]'),
-    ('check_price_decrease', 'Action triggered when a price decrease on the market, price is checked with CoinGecko.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'coingecko' LIMIT 1), '[{"field": "crypto", "description": "The crypto selectionned to check the price", "options": ["Bitcoin", "Ethereum", "Solana", "Cardano"]}, {"field": "price", "description": "Si le prix du marché passe en dessous du prix indiquer ici alors on déclenche l action"}]'),
+    ('check_price_increase', 'Action triggered when a price increase on the market, price is checked with CoinGecko.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'coingecko' LIMIT 1), '[{"field": "crypto", "description": "The crypto selectionned to check the price", "options": ["Bitcoin", "Ethereum", "Solana", "Cardano"]}, {"field": "price", "description": "If the market price exceeds the price indicated here, the action is triggered."}]'),
+    ('check_price_decrease', 'Action triggered when a price decrease on the market, price is checked with CoinGecko.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'coingecko' LIMIT 1), '[{"field": "crypto", "description": "The crypto selectionned to check the price", "options": ["Bitcoin", "Ethereum", "Solana", "Cardano"]}, {"field": "price", "description": "If the market price falls below the price indicated here, the action is triggered."}]'),
 -- Worldtime
     ('check_timezone', 'Monitor time in specific timezone',
         true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'worldtime' LIMIT 1),
@@ -74,4 +74,9 @@ VALUES
     '[{"field": "timezone", "description": "Timezone to monitor", "required": true}]'),
 -- Newsapi
     ('monitor_breaking_news', 'Trigger on any new headline',
-        true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'newsapi' LIMIT 1), '[]');
+        true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'newsapi' LIMIT 1), '[]'),
+-- FuelPrice
+    ('check_fuel_price_increase', 'Action triggered when fuel price increase.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'fuelprice' LIMIT 1), '[{"field": "fuelType", "description": "The fuelType selectionned to check the price", "options": ["Gazole", "SP95", "SP98"]}, {"field": "price", "description": "If the fuel price exceeds the price indicated here, the action is triggered."}]'),
+    ('check_fuel_price_decrease', 'Action triggered when fuel price decrease.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'fuelprice' LIMIT 1), '[{"field": "fuelType", "description": "The fuelType selectionned to check the price", "options": ["Gazole", "SP95", "SP98"]}, {"field": "price", "description": "If the fuel price falls below the price indicated here, the action is triggered."}]'),
+-- EarthQuake Alerts
+    ('check_earthquake_alerts', 'Action triggered when a earthquake is detected on the earth.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'earthquakealerts' LIMIT 1), '[]');
