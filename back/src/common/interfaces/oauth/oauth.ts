@@ -1,4 +1,4 @@
-export interface ServiceOauthResponse {
+export class ServiceOauthResponse {
   id: number;
   name: string;
   description: string;
