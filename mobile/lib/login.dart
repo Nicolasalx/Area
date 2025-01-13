@@ -276,6 +276,92 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                         ),
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 20.0, left: 10, right: 10, bottom: 20),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 1,
+                                  color:
+                                      const Color.fromARGB(255, 119, 119, 119),
+                                ),
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              width: double.infinity,
+                              child: ElevatedButton.icon(
+                                label: const Text(
+                                  'Sign in with Github',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 22),
+                                ),
+                                icon: Image.asset(
+                                  'assets/github.png',
+                                  width: 40,
+                                  height: 40,
+                                ),
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      WidgetStateProperty.all(Colors.black),
+                                  padding: WidgetStateProperty.all(
+                                      const EdgeInsets.all(20)),
+                                  textStyle: WidgetStateProperty.all(
+                                    const TextStyle(
+                                        fontSize: 14, color: Colors.white),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  globals.navigatorKey.currentState!.popUntil(ModalRoute.withName(routeOAuthGithub));
+                                  globals.navigatorKey.currentState!.pushNamed(routeOAuthGithub);
+                                }
+                              ),
+                            ),
+                          ),
+                        ),
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 20.0, left: 10, right: 10, bottom: 20),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 1,
+                                  color:
+                                      const Color.fromARGB(255, 119, 119, 119),
+                                ),
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              width: double.infinity,
+                              child: ElevatedButton.icon(
+                                label: const Text(
+                                  'Sign in with Discord',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 22),
+                                ),
+                                icon: Image.asset(
+                                  'assets/discord.png',
+                                  width: 40,
+                                  height: 40,
+                                ),
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      WidgetStateProperty.all(Colors.deepPurpleAccent),
+                                  padding: WidgetStateProperty.all(
+                                      const EdgeInsets.all(20)),
+                                  textStyle: WidgetStateProperty.all(
+                                    const TextStyle(
+                                        fontSize: 14, color: Colors.white),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  globals.navigatorKey.currentState!.popUntil(ModalRoute.withName(routeOAuthDiscord));
+                                  globals.navigatorKey.currentState!.pushNamed(routeOAuthDiscord);
+                                }
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),

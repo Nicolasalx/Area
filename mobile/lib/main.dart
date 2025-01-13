@@ -1,6 +1,8 @@
 import 'package:area/login.dart';
 import 'package:area/logout.dart';
 import 'package:area/nav_bar.dart';
+import 'package:area/oauth/discord.dart';
+import 'package:area/oauth/github.dart';
 import 'package:area/oauth/google.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -11,6 +13,8 @@ const routeLogin = '/login';
 const routeLogout = '/logout';
 const routeMain = '/main';
 const routeOAuthGoogle = '/oauth/google';
+const routeOAuthGithub = '/oauth/github';
+const routeOAuthDiscord = '/oauth/discord';
 
 Future<void> main() async {
   await dotenv.load(fileName: "lib/.env");
@@ -69,6 +73,8 @@ Route<Widget> _onGenerateRoute(RouteSettings settings) {
     routeLogout => const LogoutPage(),
     routeMain => const NavBarPage(),
     routeOAuthGoogle => const OAuthGooglePage(),
+    routeOAuthGithub => const OAuthGithubPage(),
+    routeOAuthDiscord => const OAuthDiscordPage(),
     _ => throw StateError('Unexpected route name: ${settings.name}!')
   };
   return MaterialPageRoute(
