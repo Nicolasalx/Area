@@ -12,6 +12,7 @@ const routeMain = '/main';
 
 Future<void> main() async {
   await dotenv.load(fileName: "lib/.env");
+  await globals.storage.write(key: 'server', value: '10.0.2.2:8080');
   runApp(const MyApp());
 }
 
