@@ -1,10 +1,8 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 import 'package:area/main.dart';
-import 'package:area/user.dart';
 import 'package:http/http.dart' as http;
 import '../globals.dart' as globals;
 
@@ -25,6 +23,8 @@ class AuthGoogle {
             .write(key: 'name', value: responseData["user"]["name"]);
         await globals.storage
             .write(key: 'id', value: responseData["user"]["id"]);
+        await globals.storage
+            .write(key: 'picture', value: responseData["user"]["picture"]);
         globals.navigatorKey.currentState!
             .popUntil(ModalRoute.withName(routeHome));
         globals.navigatorKey.currentState!.pushNamed(routeHome);
@@ -68,7 +68,7 @@ class OAuthGooglePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Flutter Simple Example')),
+      appBar: AppBar(title: const Text('Connection Oauth Google')),
       body: WebViewWidget(controller: WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0x00000000))
