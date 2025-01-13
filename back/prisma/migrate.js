@@ -14,7 +14,7 @@ async function executeSqlFile(filePath) {
   let sql = fs.readFileSync(filePath, 'utf8');
 
   if (filePath.includes('users.sql')) {
-    const hashedPassword = await generateHash('password123');
+    const hashedPassword = "$2b$10$lGpGJ6RStzLtDFsAG/Ngle7no9IZA5SmJSctzL66kLJK/PB2SJqeu"; // password: 'password123'
     sql = sql.replace(/__HASHED_PASSWORD__/g, hashedPassword);
   }
 

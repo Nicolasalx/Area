@@ -11,7 +11,7 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "@prismaDb/*": ["prismaDb/*"],
+      "@prisma/*": ["prisma/*"],
       "@userService/*": ["src/microservices/user-service/*"],
       "@prismaService/*": ["src/microservices/prisma-service/*"],
       "@action-service/*": ["src/microservices/action-service/*"],
