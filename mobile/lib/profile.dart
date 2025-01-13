@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'confirmation.dart' as confirmation;
 import 'globals.dart' as globals;
 import 'package:http/http.dart' as http;
@@ -7,7 +8,7 @@ const routeHome = '/';
 const routeProfile = "profile";
 const routeSettings = "Settings";
 
-Future<bool> deleteAccount() async {
+Future<int> deleteAccount() async {
   try {
     final id = await globals.storage.read(key: "id");
     final token = await globals.storage.read(key: "token");
@@ -19,12 +20,10 @@ Future<bool> deleteAccount() async {
         'Authorization': 'Bearer $token',
       },
     );
-    if (response.statusCode != 200) {
-      return false;
-    }
-    return true;
+
+    return response.statusCode;
   } catch (error) {
-    return false;
+    return 400;
   }
 }
 
@@ -236,15 +235,50 @@ class ProfilePageSettings extends StatelessWidget {
                     () {
                       final delete = deleteAccount();
                       delete.then((onValue) {
-                        if (onValue) {
-                          globals.storage.delete(key: 'name');
-                          globals.storage.delete(key: 'email');
-                          globals.storage.delete(key: 'token');
-                          globals.isLoggedIn = false;
-                          globals.navigatorKey.currentState!
-                              .popUntil(ModalRoute.withName(routeHome));
-                          globals.navigatorKey.currentState!
-                              .pushNamed(routeHome);
+                        switch (onValue) {
+                          case 200:
+                            globals.storage.delete(key: 'name');
+                            globals.storage.delete(key: 'email');
+                            globals.storage.delete(key: 'token');
+                            globals.isLoggedIn = false;
+                            globals.navigatorKey.currentState!
+                                .popUntil(ModalRoute.withName(routeHome));
+                            globals.navigatorKey.currentState!
+                                .pushNamed(routeHome);
+                            break;
+                          case 401:
+                            Fluttertoast.showToast(
+                              msg: "Invalid or missing authentication token",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              textColor: Colors.white,
+                              backgroundColor: Colors.red,
+                              fontSize: 18.0,
+                            );
+                            break;
+                          case 404:
+                            Fluttertoast.showToast(
+                              msg: "User not found",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              textColor: Colors.white,
+                              backgroundColor: Colors.red,
+                              fontSize: 18.0,
+                            );
+                            break;
+                          default:
+                            Fluttertoast.showToast(
+                              msg: "Server not found",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              textColor: Colors.white,
+                              backgroundColor: Colors.red,
+                              fontSize: 18.0,
+                            );
+                            break;
                         }
                       });
                     },

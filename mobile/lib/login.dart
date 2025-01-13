@@ -104,7 +104,7 @@ class Auth {
       }
       return response.statusCode;
     } catch (error) {
-      return 404;
+      return 400;
     }
   }
 }
