@@ -23,7 +23,15 @@ export class OAuthService {
       return await service.requestOAuthToken(code, redirect_uri);
     } catch (error) {
       console.error('ERROR get', type, 'OAuth tokens:', error);
-      this.logger.error('Failed to get ' + type + ' OAuth tokens: ' + error.response.data.error + ' (' + error.response.data.error_description + ')');
+      this.logger.error(
+        'Failed to get ' +
+          type +
+          ' OAuth tokens: ' +
+          error.response.data.error +
+          ' (' +
+          error.response.data.error_description +
+          ')',
+      );
       throw new HttpException(
         {
           status: HttpStatus.FORBIDDEN,
@@ -62,7 +70,15 @@ export class OAuthService {
       };
     } catch (error) {
       console.error('ERROR get', type, 'User:', error);
-      this.logger.error('ERROR get' + type + ' User: ' + error.response.data.error + ' (' + error.response.data.error_description + ')');
+      this.logger.error(
+        'ERROR get' +
+          type +
+          ' User: ' +
+          error.response.data.error +
+          ' (' +
+          error.response.data.error_description +
+          ')',
+      );
       throw new HttpException(
         {
           status: HttpStatus.FORBIDDEN,
@@ -82,23 +98,23 @@ export class OAuthService {
     type: ConnectionType,
     service: IServideOauth,
   ) {
-      const access_token = await this.getServiceOAuthTokens(
-        code,
-        redirect_uri,
-        type,
-        service,
-      );
-      const user = await this.getServiceUser(access_token, type, service);
+    const access_token = await this.getServiceOAuthTokens(
+      code,
+      redirect_uri,
+      type,
+      service,
+    );
+    const user = await this.getServiceUser(access_token, type, service);
 
-      const token = this.jwtService.sign({
-        sub: user.id,
-        email: user.email,
-      });
+    const token = this.jwtService.sign({
+      sub: user.id,
+      email: user.email,
+    });
 
-      const response = {
-        user: user,
-        token: token,
-      };
-      return response;
+    const response = {
+      user: user,
+      token: token,
+    };
+    return response;
   }
 }
