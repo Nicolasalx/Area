@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:area/main.dart';
 import 'package:area/user.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:http/http.dart' as http;
 import 'globals.dart' as globals;
@@ -73,7 +74,7 @@ class OAuthButton extends StatelessWidget {
 }
 
 class Auth {
-  static Future<bool> login(
+  static Future<int> login(
       String email, String passwd, BuildContext context) async {
     try {
       final server = await globals.storage.read(key: 'server');
@@ -101,9 +102,9 @@ class Auth {
             .popUntil(ModalRoute.withName(routeHome));
         globals.navigatorKey.currentState!.pushNamed(routeHome);
       }
-      return true;
+      return response.statusCode;
     } catch (error) {
-      return false;
+      return 404;
     }
   }
 }
@@ -276,8 +277,41 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                                     onPressed: () {
                                       if (formkey.currentState!.validate()) {
-                                        Auth.login(
+                                        final response = Auth.login(
                                             email.text, passwd.text, context);
+                                        response.then(
+                                          (onValue) {
+                                            switch (onValue) {
+                                              case 200:
+                                                break;
+                                              case 401:
+                                                Fluttertoast.showToast(
+                                                  msg: "Invalid credentials",
+                                                  toastLength:
+                                                      Toast.LENGTH_SHORT,
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  timeInSecForIosWeb: 1,
+                                                  textColor: Colors.white,
+                                                  backgroundColor: Colors.red,
+                                                  fontSize: 18.0,
+                                                );
+                                                break;
+                                              default:
+                                                Fluttertoast.showToast(
+                                                  msg:
+                                                      "Can't connect with the server",
+                                                  toastLength:
+                                                      Toast.LENGTH_SHORT,
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  timeInSecForIosWeb: 1,
+                                                  textColor: Colors.white,
+                                                  backgroundColor: Colors.red,
+                                                  fontSize: 16.0,
+                                                );
+                                                break;
+                                            }
+                                          },
+                                        );
                                       }
                                     },
                                     child: const Text(
@@ -425,8 +459,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ],
-          //   )
-          // ],
         ),
       ),
     );

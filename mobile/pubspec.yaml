@@ -37,6 +37,7 @@ dependencies:
   flutter_dotenv: ^5.2.1
   flutter_secure_storage: ^9.2.3
   flutter_svg: any
+  fluttertoast: ^8.2.10
 
 
   # The following adds the Cupertino Icons font to your application.
