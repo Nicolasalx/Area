@@ -17,6 +17,7 @@ import { SpotifyActionHandler } from '@trigger-service/handler/spotify.handler';
 import { CoinGeckoActionHandler } from '@trigger-service/handler/coingecko.handler';
 import { WorldTimeActionHandler } from '@trigger-service/handler/worldtime.handler';
 import { NewsActionHandler } from '@trigger-service/handler/news.handler';
+import { FuelPriceActionHandler } from '@trigger-service/handler/fuel-price.handler';
 
 @Injectable()
 export class TriggerService implements OnModuleInit {
@@ -36,6 +37,7 @@ export class TriggerService implements OnModuleInit {
     private readonly coinGeckoHandler: CoinGeckoActionHandler,
     private readonly worldtimeHandler: WorldTimeActionHandler,
     private readonly newsHandler: NewsActionHandler,
+    private readonly fuelPriceHandler: FuelPriceActionHandler,
   ) {
     this.handlers = [
       githubHandler,
@@ -50,6 +52,7 @@ export class TriggerService implements OnModuleInit {
       coinGeckoHandler,
       worldtimeHandler,
       newsHandler,
+      fuelPriceHandler,
     ];
   }
 

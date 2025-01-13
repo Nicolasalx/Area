@@ -72,72 +72,6 @@ class OAuthButton extends StatelessWidget {
   }
 }
 
-class OAuthButton extends StatelessWidget {
-  final Color boxColor;
-  final Color textColor;
-  final Function onPressed;
-  final String serviceName;
-  final Image serviceIcon;
-  const OAuthButton({
-    super.key,
-    required this.boxColor,
-    required this.textColor,
-    required this.onPressed,
-    required this.serviceName,
-    required this.serviceIcon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.only(
-          top: 5.0,
-          left: 10,
-          right: 10,
-          bottom: 5,
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              width: 0.5,
-              color: const Color.fromARGB(
-                255,
-                119,
-                119,
-                119,
-              ),
-            ),
-            borderRadius: BorderRadius.circular(
-              50,
-            ),
-          ),
-          width: double.infinity,
-          child: ElevatedButton.icon(
-            style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.all(
-                boxColor,
-              ),
-              padding: WidgetStateProperty.all(const EdgeInsets.all(15)),
-            ),
-            onPressed: () {
-              onPressed();
-            },
-            label: Text(
-              'Sign in with $serviceName',
-              style: TextStyle(
-                color: textColor,
-                fontSize: 18,
-              ),
-            ),
-            icon: serviceIcon,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class Auth {
   static Future<bool> login(
       String email, String passwd, BuildContext context) async {
@@ -382,8 +316,6 @@ class _LoginPageState extends State<LoginPage> {
                                 },
                                 serviceIcon: Image.asset(
                                   'assets/google.png',
-                                  width: 30,
-                                  height: 30,
                                   width: 30,
                                   height: 30,
                                 ),
