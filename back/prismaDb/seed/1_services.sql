@@ -13,4 +13,5 @@ VALUES
     ('spotify', 'Music service.', true, NOW()),
     ('worldtime', 'World Time monitoring service.', true, NOW()),
     ('newsapi', 'Monitor breaking news.', true, NOW()),
-    ('coingecko', 'Check crypto price on the market with CoinGecko.', true, NOW());
+    ('coingecko', 'Check crypto price on the market with CoinGecko.', true, NOW()),
+    ('fuelprice', 'Check fuel price on Ile-de-France.', true, NOW());

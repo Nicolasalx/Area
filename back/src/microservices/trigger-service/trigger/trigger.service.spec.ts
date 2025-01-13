@@ -30,6 +30,8 @@ import { NewsActionService } from '@action-service/news/news.service';
 import { NewsActionHandler } from '@trigger-service/handler/news.handler';
 import { CoingeckoActionService } from '@action-service/coingecko/coingecko.service';
 import { CoinGeckoActionHandler } from '@trigger-service/handler/coingecko.handler';
+import { FuelPriceActionService } from '@action-service/fuel-price/fuel-price.service';
+import { FuelPriceActionHandler } from '@trigger-service/handler/fuel-price.handler';
 
 describe('TriggerService', () => {
   let service: TriggerService;
@@ -95,6 +97,10 @@ describe('TriggerService', () => {
           provide: CoingeckoActionService,
           useValue: {},
         },
+        {
+          provide: FuelPriceActionService,
+          useValue: {},
+        },
 
         GithubActionHandler,
         GoogleActionHandler,
@@ -108,6 +114,7 @@ describe('TriggerService', () => {
         WorldTimeActionHandler,
         NewsActionHandler,
         CoinGeckoActionHandler,
+        FuelPriceActionHandler,
 
         {
           provide: SchedulerRegistry,
