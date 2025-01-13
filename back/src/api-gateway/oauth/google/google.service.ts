@@ -10,13 +10,13 @@ import { IServideOauth } from '../oauth/IServiceOauth';
 export class GoogleService implements IServideOauth {
   constructor(private readonly httpService: HttpService) {}
 
-  async requestOAuthToken(code: string): Promise<string> {
+  async requestOAuthToken(code: string, redirect_uri: string): Promise<string> {
     const url = 'https://oauth2.googleapis.com/token';
     const values = {
       code,
       client_id: process.env.GOOGLE_CLIENT_ID!,
       client_secret: process.env.GOOGLE_CLIENT_SECRET!,
-      redirect_uri: process.env.GOOGLE_REDIRECT_URI_AUTH!,
+      redirect_uri: redirect_uri,
       grant_type: 'authorization_code',
     };
     const response = await this.httpService.axiosRef.post(url, values);

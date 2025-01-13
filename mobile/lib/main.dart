@@ -1,6 +1,9 @@
 import 'package:area/login.dart';
 import 'package:area/logout.dart';
 import 'package:area/nav_bar.dart';
+import 'package:area/oauth/discord.dart';
+import 'package:area/oauth/github.dart';
+import 'package:area/oauth/google.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'globals.dart' as globals;
@@ -9,9 +12,13 @@ const routeHome = '/';
 const routeLogin = '/login';
 const routeLogout = '/logout';
 const routeMain = '/main';
+const routeOAuthGoogle = '/oauth/google';
+const routeOAuthGithub = '/oauth/github';
+const routeOAuthDiscord = '/oauth/discord';
 
 Future<void> main() async {
   await dotenv.load(fileName: "lib/.env");
+  await globals.storage.write(key: 'server', value: '10.0.2.2:8080');
   runApp(const MyApp());
 }
 
@@ -52,31 +59,6 @@ class _MyHomePageState extends State<MyHomePage> {
           style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 30),
         ),
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text('Drawer Header'),
-            ),
-            ListTile(
-              title: const Text('Item 1'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Item 2'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
       body: Navigator(
         key: globals.navigatorKey,
         onGenerateRoute: _onGenerateRoute,
@@ -91,6 +73,9 @@ Route<Widget> _onGenerateRoute(RouteSettings settings) {
     routeLogin => const LoginPage(),
     routeLogout => const LogoutPage(),
     routeMain => const NavBarPage(),
+    routeOAuthGoogle => const OAuthGooglePage(),
+    routeOAuthGithub => const OAuthGithubPage(),
+    routeOAuthDiscord => const OAuthDiscordPage(),
     _ => throw StateError('Unexpected route name: ${settings.name}!')
   };
   return MaterialPageRoute(
