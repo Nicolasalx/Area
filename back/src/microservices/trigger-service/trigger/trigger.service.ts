@@ -18,6 +18,7 @@ import { CoinGeckoActionHandler } from '@trigger-service/handler/coingecko.handl
 import { WorldTimeActionHandler } from '@trigger-service/handler/worldtime.handler';
 import { NewsActionHandler } from '@trigger-service/handler/news.handler';
 import { FuelPriceActionHandler } from '@trigger-service/handler/fuel-price.handler';
+import { EarthquakeAlertsActionHandler } from '@trigger-service/handler/earthquake.handler';
 
 @Injectable()
 export class TriggerService implements OnModuleInit {
@@ -38,6 +39,7 @@ export class TriggerService implements OnModuleInit {
     private readonly worldtimeHandler: WorldTimeActionHandler,
     private readonly newsHandler: NewsActionHandler,
     private readonly fuelPriceHandler: FuelPriceActionHandler,
+    private readonly earthquakeAlertsHandler: EarthquakeAlertsActionHandler,
   ) {
     this.handlers = [
       githubHandler,
@@ -53,6 +55,7 @@ export class TriggerService implements OnModuleInit {
       worldtimeHandler,
       newsHandler,
       fuelPriceHandler,
+      earthquakeAlertsHandler,
     ];
   }
 
