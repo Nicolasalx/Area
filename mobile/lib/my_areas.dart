@@ -3,7 +3,6 @@ import 'confirmation.dart' as confirmation;
 import 'package:area/svg_services.dart';
 import 'package:area/workflow.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'globals.dart' as globals;
@@ -12,10 +11,10 @@ import 'string_extension.dart';
 class AreaActions {
   static Future<bool> setActive(bool newState, String workflowId) async {
     try {
-      var token = await globals.storage.read(key: "token");
+      final token = await globals.storage.read(key: "token");
+      final server = await globals.storage.read(key: 'server');
       final response = await http.patch(
-        Uri.parse(
-            '${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/workflow/$workflowId/toggle'),
+        Uri.parse('http://$server/workflow/$workflowId/toggle'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -33,10 +32,10 @@ class AreaActions {
 
   static Future<bool> deleteArea(String workflowId) async {
     try {
-      var token = await globals.storage.read(key: "token");
+      final token = await globals.storage.read(key: "token");
+      final server = await globals.storage.read(key: 'server');
       final response = await http.delete(
-        Uri.parse(
-            '${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/workflow/$workflowId'),
+        Uri.parse('http://$server/workflow/$workflowId'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -54,10 +53,11 @@ class AreaActions {
 
 Future<List<Widget>> getWorkflow(
     Function? callback, BuildContext context) async {
-  var id = await globals.storage.read(key: "id");
-  var token = await globals.storage.read(key: "token");
-  var response = await http.get(
-    Uri.parse('${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/workflow/$id'),
+  final id = await globals.storage.read(key: "id");
+  final token = await globals.storage.read(key: "token");
+  final server = await globals.storage.read(key: 'server');
+  final response = await http.get(
+    Uri.parse('http://$server/workflow/$id'),
     headers: {
       'Authorization': 'Bearer $token',
     },

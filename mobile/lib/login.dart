@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:area/main.dart';
 import 'package:area/user.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:http/http.dart' as http;
@@ -77,8 +76,9 @@ class Auth {
   static Future<bool> login(
       String email, String passwd, BuildContext context) async {
     try {
+      final server = await globals.storage.read(key: 'server');
       final response = await http.post(
-        Uri.parse('${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/auth/login'),
+        Uri.parse('http://$server/auth/login'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -121,7 +121,10 @@ class _LoginPageState extends State<LoginPage> {
   final formkey = GlobalKey<FormState>();
   final email = TextEditingController();
   final passwd = TextEditingController();
-  final server = TextEditingController();
+
+  void setServer(String newAdress) async {
+    await globals.storage.write(key: 'server', value: newAdress);
+  }
 
   void _toggle() {
     setState(() {
@@ -306,8 +309,10 @@ class _LoginPageState extends State<LoginPage> {
                                 boxColor: Colors.white,
                                 textColor: Colors.black,
                                 onPressed: () {
-                                  globals.navigatorKey.currentState!.popUntil(ModalRoute.withName(routeOAuthGoogle));
-                                  globals.navigatorKey.currentState!.pushNamed(routeOAuthGoogle);
+                                  globals.navigatorKey.currentState!.popUntil(
+                                      ModalRoute.withName(routeOAuthGoogle));
+                                  globals.navigatorKey.currentState!
+                                      .pushNamed(routeOAuthGoogle);
                                 },
                                 serviceIcon: Image.asset(
                                   'assets/google.png',
@@ -321,8 +326,10 @@ class _LoginPageState extends State<LoginPage> {
                               boxColor: Colors.black,
                               textColor: Colors.white,
                               onPressed: () {
-                                globals.navigatorKey.currentState!.popUntil(ModalRoute.withName(routeOAuthGithub));
-                                globals.navigatorKey.currentState!.pushNamed(routeOAuthGithub);
+                                globals.navigatorKey.currentState!.popUntil(
+                                    ModalRoute.withName(routeOAuthGithub));
+                                globals.navigatorKey.currentState!
+                                    .pushNamed(routeOAuthGithub);
                               },
                               serviceIcon: Image.asset(
                                 'assets/github.png',
@@ -335,8 +342,10 @@ class _LoginPageState extends State<LoginPage> {
                               boxColor: const Color.fromARGB(255, 108, 40, 217),
                               textColor: Colors.white,
                               onPressed: () {
-                                globals.navigatorKey.currentState!.popUntil(ModalRoute.withName(routeOAuthDiscord));
-                                globals.navigatorKey.currentState!.pushNamed(routeOAuthDiscord);
+                                globals.navigatorKey.currentState!.popUntil(
+                                    ModalRoute.withName(routeOAuthDiscord));
+                                globals.navigatorKey.currentState!
+                                    .pushNamed(routeOAuthDiscord);
                               },
                               serviceIcon: Image.asset(
                                 'assets/discord.png',
@@ -354,44 +363,64 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(
+              padding: EdgeInsets.only(
                 top: 15,
+                left: 10,
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Flexible(
-                    child: Text(
-                      "Server: ",
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Color.fromARGB(255, 119, 119, 119),
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    child: TextFormField(
-                      controller: server,
-                      validator: MultiValidator([
-                        RequiredValidator(errorText: 'Email is required'),
-                      ]).call,
-                      decoration: const InputDecoration(
-                        hintText: 'X.X.X.X:XXXX',
-                        // prefixIcon: Icon(
-                        //   Icons.alternate_email,
-                        //   color: Color.fromARGB(255, 119, 119, 119),
-                        // ),
-                        errorStyle: TextStyle(fontSize: 18.0),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.red),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(9.0),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: 2,
+                        ),
+                        child: Text(
+                          "Server adress: ",
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Color.fromARGB(255, 119, 119, 119),
                           ),
                         ),
                       ),
-                    ),
+                      Flexible(
+                        flex: 1,
+                        child: Padding(
+                          padding: EdgeInsets.only(right: 90),
+                          child: SizedBox(
+                            height: 30,
+                            child: TextFormField(
+                              onChanged: (String newAdress) {
+                                setServer(newAdress);
+                              },
+                              initialValue: '10.0.2.2:8080',
+                              decoration: const InputDecoration(
+                                hintText: 'X.X.X.X:XXXX',
+                                hintStyle: TextStyle(
+                                  fontSize: 13,
+                                ),
+                                errorStyle: TextStyle(
+                                  fontSize: 13.0,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.red,
+                                  ),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(
+                                      9.0,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  const Spacer(),
                 ],
               ),
             ),
