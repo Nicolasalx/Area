@@ -72,6 +72,72 @@ class OAuthButton extends StatelessWidget {
   }
 }
 
+class OAuthButton extends StatelessWidget {
+  final Color boxColor;
+  final Color textColor;
+  final Function onPressed;
+  final String serviceName;
+  final Image serviceIcon;
+  const OAuthButton({
+    super.key,
+    required this.boxColor,
+    required this.textColor,
+    required this.onPressed,
+    required this.serviceName,
+    required this.serviceIcon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.only(
+          top: 5.0,
+          left: 10,
+          right: 10,
+          bottom: 5,
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              width: 0.5,
+              color: const Color.fromARGB(
+                255,
+                119,
+                119,
+                119,
+              ),
+            ),
+            borderRadius: BorderRadius.circular(
+              50,
+            ),
+          ),
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            style: ButtonStyle(
+              backgroundColor: WidgetStateProperty.all(
+                boxColor,
+              ),
+              padding: WidgetStateProperty.all(const EdgeInsets.all(15)),
+            ),
+            onPressed: () {
+              onPressed();
+            },
+            label: Text(
+              'Sign in with $serviceName',
+              style: TextStyle(
+                color: textColor,
+                fontSize: 18,
+              ),
+            ),
+            icon: serviceIcon,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class Auth {
   static Future<bool> login(
       String email, String passwd, BuildContext context) async {
@@ -121,10 +187,7 @@ class _LoginPageState extends State<LoginPage> {
   final formkey = GlobalKey<FormState>();
   final email = TextEditingController();
   final passwd = TextEditingController();
-
-  void setServer(String newAdress) async {
-    await globals.storage.write(key: 'server', value: newAdress);
-  }
+  final server = TextEditingController();
 
   void _toggle() {
     setState(() {
@@ -309,13 +372,13 @@ class _LoginPageState extends State<LoginPage> {
                                 boxColor: Colors.white,
                                 textColor: Colors.black,
                                 onPressed: () {
-                                  globals.navigatorKey.currentState!.popUntil(
-                                      ModalRoute.withName(routeOAuthGoogle));
-                                  globals.navigatorKey.currentState!
-                                      .pushNamed(routeOAuthGoogle);
+                                  globals.navigatorKey.currentState!.popUntil(ModalRoute.withName(routeOAuthGoogle));
+                                  globals.navigatorKey.currentState!.pushNamed(routeOAuthGoogle);
                                 },
                                 serviceIcon: Image.asset(
                                   'assets/google.png',
+                                  width: 30,
+                                  height: 30,
                                   width: 30,
                                   height: 30,
                                 ),
@@ -326,10 +389,8 @@ class _LoginPageState extends State<LoginPage> {
                               boxColor: Colors.black,
                               textColor: Colors.white,
                               onPressed: () {
-                                globals.navigatorKey.currentState!.popUntil(
-                                    ModalRoute.withName(routeOAuthGithub));
-                                globals.navigatorKey.currentState!
-                                    .pushNamed(routeOAuthGithub);
+                                globals.navigatorKey.currentState!.popUntil(ModalRoute.withName(routeOAuthGithub));
+                                globals.navigatorKey.currentState!.pushNamed(routeOAuthGithub);
                               },
                               serviceIcon: Image.asset(
                                 'assets/github.png',
@@ -342,10 +403,8 @@ class _LoginPageState extends State<LoginPage> {
                               boxColor: const Color.fromARGB(255, 108, 40, 217),
                               textColor: Colors.white,
                               onPressed: () {
-                                globals.navigatorKey.currentState!.popUntil(
-                                    ModalRoute.withName(routeOAuthDiscord));
-                                globals.navigatorKey.currentState!
-                                    .pushNamed(routeOAuthDiscord);
+                                globals.navigatorKey.currentState!.popUntil(ModalRoute.withName(routeOAuthDiscord));
+                                globals.navigatorKey.currentState!.pushNamed(routeOAuthDiscord);
                               },
                               serviceIcon: Image.asset(
                                 'assets/discord.png',
@@ -363,64 +422,44 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                 top: 15,
-                left: 10,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: 2,
-                        ),
-                        child: Text(
-                          "Server adress: ",
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Color.fromARGB(255, 119, 119, 119),
-                          ),
-                        ),
+                  const Flexible(
+                    child: Text(
+                      "Server: ",
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Color.fromARGB(255, 119, 119, 119),
                       ),
-                      Flexible(
-                        flex: 1,
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 90),
-                          child: SizedBox(
-                            height: 30,
-                            child: TextFormField(
-                              onChanged: (String newAdress) {
-                                setServer(newAdress);
-                              },
-                              initialValue: '10.0.2.2:8080',
-                              decoration: const InputDecoration(
-                                hintText: 'X.X.X.X:XXXX',
-                                hintStyle: TextStyle(
-                                  fontSize: 13,
-                                ),
-                                errorStyle: TextStyle(
-                                  fontSize: 13.0,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.red,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(
-                                      9.0,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
+                  Flexible(
+                    child: TextFormField(
+                      controller: server,
+                      validator: MultiValidator([
+                        RequiredValidator(errorText: 'Email is required'),
+                      ]).call,
+                      decoration: const InputDecoration(
+                        hintText: 'X.X.X.X:XXXX',
+                        // prefixIcon: Icon(
+                        //   Icons.alternate_email,
+                        //   color: Color.fromARGB(255, 119, 119, 119),
+                        // ),
+                        errorStyle: TextStyle(fontSize: 18.0),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(9.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
                 ],
               ),
             ),
