@@ -31,6 +31,8 @@ import { WorldTimeActionService } from '@action-service/worldtime/worldtime.serv
 import { WorldTimeActionHandler } from './handler/worldtime.handler';
 import { NewsActionService } from '@action-service/news/news.service';
 import { NewsActionHandler } from './handler/news.handler';
+import { FuelPriceActionService } from '@action-service/fuel-price/fuel-price.service';
+import { FuelPriceActionHandler } from './handler/fuel-price.handler';
 
 @Module({
   imports: [PrismaServiceModule, ScheduleModule.forRoot()],
@@ -51,6 +53,7 @@ import { NewsActionHandler } from './handler/news.handler';
     CoingeckoActionService,
     WorldTimeActionService,
     NewsActionService,
+    FuelPriceActionService,
 
     GithubActionHandler,
     GoogleActionHandler,
@@ -64,6 +67,7 @@ import { NewsActionHandler } from './handler/news.handler';
     CoinGeckoActionHandler,
     WorldTimeActionHandler,
     NewsActionHandler,
+    FuelPriceActionHandler,
   ],
   controllers: [TriggerController],
 })

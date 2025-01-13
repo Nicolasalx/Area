@@ -53,7 +53,10 @@ VALUES
     ('headline', 'News headline text'),
     ('source', 'News source name'),
     ('news_url', 'URL to full article'),
-    ('news_description', 'Article description')
+    ('news_description', 'Article description'),
+-- fuelPrice
+    ('fuel_type', 'Type of the fuel like gazole or sp95'),
+    ('actual_fuel_price', 'Price of the actual fuel')
 RETURNING "id";
 
 INSERT INTO "ActionsIngredients" ("actionId", "ingredientId")
@@ -164,11 +167,12 @@ VALUES
     ((SELECT id FROM "Actions" WHERE "name" = 'check_daynight' LIMIT 1),
         (SELECT id FROM "Ingredients" WHERE "name" = 'day_of_week' LIMIT 1)),
 -- Newsapi
-    ((SELECT id FROM "Actions" WHERE "name" = 'check_headline' LIMIT 1),
-        (SELECT id FROM "Ingredients" WHERE "name" = 'headline' LIMIT 1)),
-    ((SELECT id FROM "Actions" WHERE "name" = 'check_headline' LIMIT 1),
-        (SELECT id FROM "Ingredients" WHERE "name" = 'source' LIMIT 1)),
-    ((SELECT id FROM "Actions" WHERE "name" = 'check_headline' LIMIT 1),
-        (SELECT id FROM "Ingredients" WHERE "name" = 'news_url' LIMIT 1)),
-    ((SELECT id FROM "Actions" WHERE "name" = 'check_headline' LIMIT 1),
-        (SELECT id FROM "Ingredients" WHERE "name" = 'news_description' LIMIT 1));
+    ((SELECT id FROM "Actions" WHERE "name" = 'monitor_breaking_news' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'headline' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'monitor_breaking_news' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'source' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'monitor_breaking_news' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'news_url' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'monitor_breaking_news' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'news_description' LIMIT 1)),
+-- FuelPrice
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_fuel_price_increase' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'fuel_type' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_fuel_price_increase' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'actual_fuel_price' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_fuel_price_decrease' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'fuel_type' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_fuel_price_decrease' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'actual_fuel_price' LIMIT 1));
