@@ -33,6 +33,8 @@ import { NewsActionService } from '@action-service/news/news.service';
 import { NewsActionHandler } from './handler/news.handler';
 import { FuelPriceActionService } from '@action-service/fuel-price/fuel-price.service';
 import { FuelPriceActionHandler } from './handler/fuel-price.handler';
+import { EarthquakeAlertsActionService } from '@action-service/earthquake-alerts/earthquake-alerts.service';
+import { EarthquakeAlertsActionHandler } from './handler/earthquake.handler';
 
 @Module({
   imports: [PrismaServiceModule, ScheduleModule.forRoot()],
@@ -54,6 +56,7 @@ import { FuelPriceActionHandler } from './handler/fuel-price.handler';
     WorldTimeActionService,
     NewsActionService,
     FuelPriceActionService,
+    EarthquakeAlertsActionService,
 
     GithubActionHandler,
     GoogleActionHandler,
@@ -68,6 +71,7 @@ import { FuelPriceActionHandler } from './handler/fuel-price.handler';
     WorldTimeActionHandler,
     NewsActionHandler,
     FuelPriceActionHandler,
+    EarthquakeAlertsActionHandler,
   ],
   controllers: [TriggerController],
 })

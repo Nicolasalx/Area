@@ -32,6 +32,8 @@ import { CoingeckoActionService } from '@action-service/coingecko/coingecko.serv
 import { CoinGeckoActionHandler } from '@trigger-service/handler/coingecko.handler';
 import { FuelPriceActionService } from '@action-service/fuel-price/fuel-price.service';
 import { FuelPriceActionHandler } from '@trigger-service/handler/fuel-price.handler';
+import { EarthquakeAlertsActionService } from '@action-service/earthquake-alerts/earthquake-alerts.service';
+import { EarthquakeAlertsActionHandler } from '@trigger-service/handler/earthquake.handler';
 
 describe('TriggerService', () => {
   let service: TriggerService;
@@ -101,6 +103,10 @@ describe('TriggerService', () => {
           provide: FuelPriceActionService,
           useValue: {},
         },
+        {
+          provide: EarthquakeAlertsActionService,
+          useValue: {},
+        },
 
         GithubActionHandler,
         GoogleActionHandler,
@@ -115,6 +121,7 @@ describe('TriggerService', () => {
         NewsActionHandler,
         CoinGeckoActionHandler,
         FuelPriceActionHandler,
+        EarthquakeAlertsActionHandler,
 
         {
           provide: SchedulerRegistry,
