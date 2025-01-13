@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:area/main.dart';
 import 'package:area/user.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:http/http.dart' as http;
@@ -69,7 +70,7 @@ class OAuthButton extends StatelessWidget {
 }
 
 class Auth {
-  static Future<bool> login(
+  static Future<int> login(
       String email, String passwd, BuildContext context) async {
     try {
       final server = await globals.storage.read(key: 'server');
@@ -97,9 +98,9 @@ class Auth {
             .popUntil(ModalRoute.withName(routeHome));
         globals.navigatorKey.currentState!.pushNamed(routeHome);
       }
-      return true;
+      return response.statusCode;
     } catch (error) {
-      return false;
+      return 400;
     }
   }
 
@@ -119,7 +120,7 @@ class Auth {
       );
 
       if (response.statusCode == 201) {
-        return login(email, password, context);
+        return (await login(email, password, context)) == 200;
       }
       return false;
     } catch (error) {
@@ -237,13 +238,19 @@ class _LoginPageState extends State<LoginPage> {
                                 hintText: 'Enter your password',
                                 prefixIcon: const Icon(Icons.lock_outline),
                                 suffixIcon: IconButton(
-                                  icon: Icon(_passwordObscure
-                                      ? Icons.visibility_off
-                                      : Icons.visibility),
-                                  onPressed: _toggle,
+                                  icon: _passwordObscure
+                                      ? const Icon(Icons.visibility_off)
+                                      : const Icon(Icons.visibility),
+                                  onPressed: () {
+                                    _toggle();
+                                  },
                                 ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                errorStyle: const TextStyle(fontSize: 18.0),
+                                border: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.red),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(9.0),
+                                  ),
                                 ),
                               ),
                             ),
@@ -286,10 +293,38 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 onPressed: () {
                                   if (formkey.currentState!.validate()) {
-                                    Auth.login(
-                                      email.text,
-                                      passwd.text,
-                                      context,
+                                    final response = Auth.login(
+                                        email.text, passwd.text, context);
+                                    response.then(
+                                      (onValue) {
+                                        switch (onValue) {
+                                          case 200:
+                                            break;
+                                          case 401:
+                                            Fluttertoast.showToast(
+                                              msg: "Invalid credentials",
+                                              toastLength: Toast.LENGTH_SHORT,
+                                              gravity: ToastGravity.BOTTOM,
+                                              timeInSecForIosWeb: 1,
+                                              textColor: Colors.white,
+                                              backgroundColor: Colors.red,
+                                              fontSize: 18.0,
+                                            );
+                                            break;
+                                          default:
+                                            Fluttertoast.showToast(
+                                              msg:
+                                                  "Can't connect with the server",
+                                              toastLength: Toast.LENGTH_SHORT,
+                                              gravity: ToastGravity.BOTTOM,
+                                              timeInSecForIosWeb: 1,
+                                              textColor: Colors.white,
+                                              backgroundColor: Colors.red,
+                                              fontSize: 16.0,
+                                            );
+                                            break;
+                                        }
+                                      },
                                     );
                                   }
                                 },

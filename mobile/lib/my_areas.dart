@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
+
 import 'confirmation.dart' as confirmation;
 import 'package:area/svg_services.dart';
 import 'package:area/workflow.dart';
@@ -9,7 +11,7 @@ import 'globals.dart' as globals;
 import 'string_extension.dart';
 
 class AreaActions {
-  static Future<bool> setActive(bool newState, String workflowId) async {
+  static Future<int> setActive(bool newState, String workflowId) async {
     try {
       final token = await globals.storage.read(key: "token");
       final server = await globals.storage.read(key: 'server');
@@ -21,16 +23,13 @@ class AreaActions {
         },
         body: json.encode({'isActive': newState}),
       );
-      if (response.statusCode != 200) {
-        return false;
-      }
-      return true;
+      return response.statusCode;
     } catch (error) {
-      return false;
+      return 400;
     }
   }
 
-  static Future<bool> deleteArea(String workflowId) async {
+  static Future<int> deleteArea(String workflowId) async {
     try {
       final token = await globals.storage.read(key: "token");
       final server = await globals.storage.read(key: 'server');
@@ -41,12 +40,9 @@ class AreaActions {
           'Authorization': 'Bearer $token',
         },
       );
-      if (response.statusCode != 200) {
-        return false;
-      }
-      return true;
+      return response.statusCode;
     } catch (error) {
-      return false;
+      return 400;
     }
   }
 }
@@ -176,8 +172,32 @@ Future<List<Widget>> getWorkflow(
                             AreaActions.setActive(!item.isActive, item.id);
                         newStatus.then(
                           (onValue) {
-                            if (onValue) {
-                              callback!();
+                            switch (onValue) {
+                              case 200:
+                                callback!();
+                                break;
+                              case 404:
+                                Fluttertoast.showToast(
+                                  msg: "Workflow not found",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  textColor: Colors.white,
+                                  backgroundColor: Colors.red,
+                                  fontSize: 18.0,
+                                );
+                                break;
+                              default:
+                                Fluttertoast.showToast(
+                                  msg: "Server not found",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  textColor: Colors.white,
+                                  backgroundColor: Colors.red,
+                                  fontSize: 18.0,
+                                );
+                                break;
                             }
                           },
                         );
@@ -197,8 +217,42 @@ Future<List<Widget>> getWorkflow(
                             final deleted = AreaActions.deleteArea(item.id);
                             deleted.then(
                               (onValue) {
-                                if (onValue) {
-                                  callback!();
+                                switch (onValue) {
+                                  case 200:
+                                    callback!();
+                                    break;
+                                  case 404:
+                                    Fluttertoast.showToast(
+                                      msg: "Workflow not found",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM,
+                                      timeInSecForIosWeb: 1,
+                                      textColor: Colors.white,
+                                      backgroundColor: Colors.red,
+                                      fontSize: 18.0,
+                                    );
+                                    break;
+                                  case 500:
+                                    Fluttertoast.showToast(
+                                      msg: "Internal server error",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM,
+                                      timeInSecForIosWeb: 1,
+                                      textColor: Colors.white,
+                                      backgroundColor: Colors.red,
+                                      fontSize: 18.0,
+                                    );
+                                    break;
+                                  default:
+                                    Fluttertoast.showToast(
+                                      msg: "Server not found",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM,
+                                      timeInSecForIosWeb: 1,
+                                      textColor: Colors.white,
+                                      backgroundColor: Colors.red,
+                                      fontSize: 18.0,
+                                    );
                                 }
                               },
                             );
