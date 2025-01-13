@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import {
@@ -11,7 +12,7 @@ import { IServideOauth } from '../oauth/IServiceOauth';
 export class GithubService implements IServideOauth {
   constructor(private readonly httpService: HttpService) {}
 
-  async requestOAuthToken(code: string): Promise<string> {
+  async requestOAuthToken(code: string, _: string): Promise<string> {
     const url = 'https://github.com/login/oauth/access_token';
     const values = {
       code: code,

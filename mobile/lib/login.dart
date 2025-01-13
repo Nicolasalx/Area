@@ -304,11 +304,16 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(top: 5),
+                              padding: const EdgeInsets.only(top: 5),
                               child: OAuthButton(
                                 boxColor: Colors.white,
                                 textColor: Colors.black,
-                                onPressed: () {},
+                                onPressed: () {
+                                  globals.navigatorKey.currentState!.popUntil(
+                                      ModalRoute.withName(routeOAuthGoogle));
+                                  globals.navigatorKey.currentState!
+                                      .pushNamed(routeOAuthGoogle);
+                                },
                                 serviceIcon: Image.asset(
                                   'assets/google.png',
                                   width: 30,
@@ -320,20 +325,30 @@ class _LoginPageState extends State<LoginPage> {
                             OAuthButton(
                               boxColor: Colors.black,
                               textColor: Colors.white,
-                              onPressed: () {},
+                              onPressed: () {
+                                globals.navigatorKey.currentState!.popUntil(
+                                    ModalRoute.withName(routeOAuthGithub));
+                                globals.navigatorKey.currentState!
+                                    .pushNamed(routeOAuthGithub);
+                              },
                               serviceIcon: Image.asset(
-                                'assets/google.png',
+                                'assets/github.png',
                                 width: 30,
                                 height: 30,
                               ),
                               serviceName: 'Github',
                             ),
                             OAuthButton(
-                              boxColor: Color.fromARGB(255, 108, 40, 217),
+                              boxColor: const Color.fromARGB(255, 108, 40, 217),
                               textColor: Colors.white,
-                              onPressed: () {},
+                              onPressed: () {
+                                globals.navigatorKey.currentState!.popUntil(
+                                    ModalRoute.withName(routeOAuthDiscord));
+                                globals.navigatorKey.currentState!
+                                    .pushNamed(routeOAuthDiscord);
+                              },
                               serviceIcon: Image.asset(
-                                'assets/google.png',
+                                'assets/discord.png',
                                 width: 30,
                                 height: 30,
                               ),
@@ -410,6 +425,8 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ],
+          //   )
+          // ],
         ),
       ),
     );
