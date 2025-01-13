@@ -1,18 +1,80 @@
 import 'dart:convert';
 import 'package:area/main.dart';
 import 'package:area/user.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:http/http.dart' as http;
 import 'globals.dart' as globals;
+
+class OAuthButton extends StatelessWidget {
+  final Color boxColor;
+  final Color textColor;
+  final Function onPressed;
+  final String serviceName;
+  final Image serviceIcon;
+  const OAuthButton({
+    super.key,
+    required this.boxColor,
+    required this.textColor,
+    required this.onPressed,
+    required this.serviceName,
+    required this.serviceIcon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.only(
+          top: 5.0,
+          left: 10,
+          right: 10,
+          bottom: 5,
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              width: 0.5,
+              color: Colors.grey,
+            ),
+            borderRadius: BorderRadius.circular(
+              50,
+            ),
+          ),
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            style: ButtonStyle(
+              backgroundColor: WidgetStateProperty.all(
+                boxColor,
+              ),
+              padding: WidgetStateProperty.all(const EdgeInsets.all(15)),
+            ),
+            onPressed: () {
+              onPressed();
+            },
+            label: Text(
+              'Sign in with $serviceName',
+              style: TextStyle(
+                color: textColor,
+                fontSize: 18,
+              ),
+            ),
+            icon: serviceIcon,
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class Auth {
   static Future<bool> login(
       String email, String passwd, BuildContext context) async {
     try {
+      final server = await globals.storage.read(key: 'server');
       final response = await http.post(
-        Uri.parse('${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/auth/login'),
+        Uri.parse('http://$server/auth/login'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -79,6 +141,10 @@ class _LoginPageState extends State<LoginPage> {
   final passwd = TextEditingController();
   bool _passwordObscure = true;
 
+  void setServer(String newAdress) async {
+    await globals.storage.write(key: 'server', value: newAdress);
+  }
+
   void _toggle() {
     setState(() {
       _passwordObscure = !_passwordObscure;
@@ -92,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 100.0, left: 20, right: 20),
+              padding: const EdgeInsets.only(top: 20.0, left: 20, right: 20),
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
@@ -102,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   children: [
                     const Padding(
-                      padding: EdgeInsets.only(top: 30.0),
+                      padding: EdgeInsets.only(top: 20.0),
                       child: Text(
                         'Welcome',
                         style: TextStyle(
@@ -122,7 +188,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.all(16.0),
                       child: Form(
                         key: formkey,
                         child: Column(
@@ -152,7 +218,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 16),
                             const Text(
                               'Password',
                               style: TextStyle(
@@ -181,7 +247,33 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 30),
+                            const SizedBox(height: 16),
+                            const Text(
+                              "Server address",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            SizedBox(
+                              width: double.infinity,
+                              child: TextFormField(
+                                onChanged: setServer,
+                                initialValue: '10.0.2.2:8080',
+                                textAlign: TextAlign.center,
+                                decoration: InputDecoration(
+                                  hintText: 'X.X.X.X:XXXX',
+                                  hintStyle: const TextStyle(fontSize: 13),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 5),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
                             SizedBox(
                               width: double.infinity,
                               height: 50,
@@ -210,38 +302,79 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 20),
-                            const Center(
-                              child: Text(
-                                'Or continue with',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            OutlinedButton.icon(
-                              style: OutlinedButton.styleFrom(
-                                minimumSize: const Size(double.infinity, 50),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(32),
+                            Column(
+                              children: [
+                                const SizedBox(height: 16),
+                                const Text(
+                                  'Or continue with',
+                                  style: TextStyle(color: Colors.grey),
                                 ),
-                              ),
-                              onPressed: () {
-                                // ! to replace later with Google sign in
-                                print('Sign in with Google');
-                              },
-                              icon: Image.asset(
-                                'assets/google.png',
-                                height: 24,
-                              ),
-                              label: const Text(
-                                'Sign in with Google',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16,
+                                const SizedBox(height: 4),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(),
+                                  child: OAuthButton(
+                                    boxColor: Colors.white,
+                                    textColor: Colors.black,
+                                    onPressed: () {
+                                      globals.navigatorKey.currentState!
+                                          .popUntil(ModalRoute.withName(
+                                              routeOAuthGoogle));
+                                      globals.navigatorKey.currentState!
+                                          .pushNamed(routeOAuthGoogle);
+                                    },
+                                    serviceIcon: Image.asset(
+                                      'assets/google.png',
+                                      width: 24,
+                                      height: 24,
+                                    ),
+                                    serviceName: 'Google',
+                                  ),
                                 ),
-                              ),
+                                const SizedBox(height: 4),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(),
+                                  child: OAuthButton(
+                                    boxColor: Colors.black,
+                                    textColor: Colors.white,
+                                    onPressed: () {
+                                      globals.navigatorKey.currentState!
+                                          .popUntil(ModalRoute.withName(
+                                              routeOAuthGithub));
+                                      globals.navigatorKey.currentState!
+                                          .pushNamed(routeOAuthGithub);
+                                    },
+                                    serviceIcon: Image.asset(
+                                      'assets/github.png',
+                                      width: 24,
+                                      height: 24,
+                                    ),
+                                    serviceName: 'Github',
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(),
+                                  child: OAuthButton(
+                                    boxColor:
+                                        const Color.fromARGB(255, 108, 40, 217),
+                                    textColor: Colors.white,
+                                    onPressed: () {
+                                      globals.navigatorKey.currentState!
+                                          .popUntil(ModalRoute.withName(
+                                              routeOAuthDiscord));
+                                      globals.navigatorKey.currentState!
+                                          .pushNamed(routeOAuthDiscord);
+                                    },
+                                    serviceIcon: Image.asset(
+                                      'assets/discord.png',
+                                      width: 24,
+                                      height: 24,
+                                    ),
+                                    serviceName: 'Discord',
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 20),
                           ],
                         ),
                       ),

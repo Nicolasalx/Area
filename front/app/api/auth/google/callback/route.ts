@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 export async function GET(request: Request) {
   const searchParams = new URL(request.url).searchParams;
   const code = searchParams.get("code");
+  const redirect_uri = process.env.GOOGLE_REDIRECT_URI;
 
   if (!code) {
     throw new Error("No code provided");
@@ -13,7 +14,7 @@ export async function GET(request: Request) {
   // Get user info and token
   return axios
     .get(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/google/callback/?code=${code}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/google/callback/?code=${code}&redirect_uri=${redirect_uri}`,
     )
     .then((res) => res.data)
     .then(async (data) => {
