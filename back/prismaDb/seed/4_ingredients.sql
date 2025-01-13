@@ -56,7 +56,10 @@ VALUES
     ('news_description', 'Article description'),
 -- fuelPrice
     ('fuel_type', 'Type of the fuel like gazole or sp95'),
-    ('actual_fuel_price', 'Price of the actual fuel')
+    ('actual_fuel_price', 'Price of the actual fuel'),
+-- EarthQuakeAlerts
+    ('magnitude', 'Magnitude of the earthquake'),
+    ('location', 'Location of the earthquake')
 RETURNING "id";
 
 INSERT INTO "ActionsIngredients" ("actionId", "ingredientId")
@@ -175,4 +178,7 @@ VALUES
     ((SELECT id FROM "Actions" WHERE "name" = 'check_fuel_price_increase' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'fuel_type' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'check_fuel_price_increase' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'actual_fuel_price' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'check_fuel_price_decrease' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'fuel_type' LIMIT 1)),
-    ((SELECT id FROM "Actions" WHERE "name" = 'check_fuel_price_decrease' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'actual_fuel_price' LIMIT 1));
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_fuel_price_decrease' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'actual_fuel_price' LIMIT 1)),
+-- Earthquake
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_earthquake_alerts' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'magnitude' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_earthquake_alerts' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'location' LIMIT 1));

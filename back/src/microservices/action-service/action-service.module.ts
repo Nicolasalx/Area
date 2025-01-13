@@ -21,6 +21,7 @@ import { SpotifyActionService } from './spotify/spotify.service';
 import { SpotifyReactionService } from '@reaction-service/spotify/spotify.service';
 import { CoingeckoActionService } from './coingecko/coingecko.service';
 import { FuelPriceActionService } from './fuel-price/fuel-price.service';
+import { EarthquakeAlertsActionService } from './earthquake-alerts/earthquake-alerts.service';
 
 @Module({
   imports: [PrismaServiceModule, SharedAuthModule],
@@ -44,6 +45,7 @@ import { FuelPriceActionService } from './fuel-price/fuel-price.service';
     SpotifyReactionService,
     CoingeckoActionService,
     FuelPriceActionService,
+    EarthquakeAlertsActionService,
   ],
   controllers: [ActionController],
 })
