@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:area/main.dart';
 import 'package:area/user.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:http/http.dart' as http;
 import 'globals.dart' as globals;
@@ -35,12 +37,7 @@ class OAuthButton extends StatelessWidget {
           decoration: BoxDecoration(
             border: Border.all(
               width: 0.5,
-              color: const Color.fromARGB(
-                255,
-                119,
-                119,
-                119,
-              ),
+              color: Colors.grey,
             ),
             borderRadius: BorderRadius.circular(
               50,
@@ -73,7 +70,7 @@ class OAuthButton extends StatelessWidget {
 }
 
 class Auth {
-  static Future<bool> login(
+  static Future<int> login(
       String email, String passwd, BuildContext context) async {
     try {
       final server = await globals.storage.read(key: 'server');
@@ -101,7 +98,31 @@ class Auth {
             .popUntil(ModalRoute.withName(routeHome));
         globals.navigatorKey.currentState!.pushNamed(routeHome);
       }
-      return true;
+      return response.statusCode;
+    } catch (error) {
+      return 400;
+    }
+  }
+
+  static Future<bool> register(
+      String email, String password, String name, BuildContext context) async {
+    try {
+      final response = await http.post(
+        Uri.parse('${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/users'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'email': email,
+          'password': password,
+          'username': name,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        return (await login(email, password, context)) == 200;
+      }
+      return false;
     } catch (error) {
       return false;
     }
@@ -116,11 +137,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  bool _passwordObscure = true;
-
   final formkey = GlobalKey<FormState>();
   final email = TextEditingController();
   final passwd = TextEditingController();
+  bool _passwordObscure = true;
 
   void setServer(String newAdress) async {
     await globals.storage.write(key: 'server', value: newAdress);
@@ -139,220 +159,256 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 25.0, left: 20, right: 20),
+              padding: const EdgeInsets.only(top: 20.0, left: 20, right: 20),
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: const Color.fromARGB(255, 255, 255, 255),
-                  border: Border.all(
-                    color: const Color.fromARGB(255, 185, 185, 185),
-                  ),
+                  color: Colors.white,
+                  border: Border.all(color: Colors.grey[300]!),
                 ),
                 child: Column(
-                  children: <Widget>[
+                  children: [
                     const Padding(
-                      padding: EdgeInsets.only(top: 30.0),
-                      child: Center(
-                        child: Text(
-                          'Welcome',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 30,
-                          ),
+                      padding: EdgeInsets.only(top: 20.0),
+                      child: Text(
+                        'Welcome',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 30,
                         ),
                       ),
                     ),
                     const Padding(
                       padding: EdgeInsets.only(top: 5.0),
-                      child: Center(
-                        child: Text(
-                          'Sign in to your account',
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Color.fromARGB(255, 119, 119, 119),
-                          ),
+                      child: Text(
+                        'Sign in to your account',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.grey,
                         ),
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(12.0),
+                      padding: const EdgeInsets.all(16.0),
                       child: Form(
                         key: formkey,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            const Padding(
-                              padding: EdgeInsets.only(left: 15),
-                              child: Text(
-                                'Email',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 15,
+                          children: [
+                            const Text(
+                              'Email',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            TextFormField(
+                              controller: email,
+                              validator: MultiValidator([
+                                RequiredValidator(
+                                    errorText: 'Email is required'),
+                                EmailValidator(
+                                    errorText: 'Invalid email address'),
+                              ]).call,
+                              decoration: InputDecoration(
+                                hintText: 'Enter your email',
+                                prefixIcon: const Icon(Icons.alternate_email),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: TextFormField(
-                                controller: email,
-                                validator: MultiValidator([
-                                  RequiredValidator(
-                                      errorText: 'Email is required'),
-                                  EmailValidator(
-                                      errorText: 'Invalid email address'),
-                                ]).call,
-                                decoration: const InputDecoration(
-                                  hintText: 'Enter your email',
-                                  prefixIcon: Icon(
-                                    Icons.alternate_email,
-                                    color: Color.fromARGB(255, 119, 119, 119),
+                            const SizedBox(height: 16),
+                            const Text(
+                              'Password',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            TextFormField(
+                              controller: passwd,
+                              obscureText: _passwordObscure,
+                              validator: RequiredValidator(
+                                      errorText: 'Password is required')
+                                  .call,
+                              decoration: InputDecoration(
+                                hintText: 'Enter your password',
+                                prefixIcon: const Icon(Icons.lock_outline),
+                                suffixIcon: IconButton(
+                                  icon: _passwordObscure
+                                      ? const Icon(Icons.visibility_off)
+                                      : const Icon(Icons.visibility),
+                                  onPressed: () {
+                                    _toggle();
+                                  },
+                                ),
+                                errorStyle: const TextStyle(fontSize: 18.0),
+                                border: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.red),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(9.0),
                                   ),
-                                  errorStyle: TextStyle(fontSize: 18.0),
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.red),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(9.0),
-                                    ),
-                                  ),
                                 ),
                               ),
                             ),
-                            const Padding(
-                              padding: EdgeInsets.only(left: 15),
-                              child: Text(
-                                'Password',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 15,
-                                ),
+                            const SizedBox(height: 16),
+                            const Text(
+                              "Server address",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(12.0),
+                            const SizedBox(height: 8),
+                            SizedBox(
+                              width: double.infinity,
                               child: TextFormField(
-                                controller: passwd,
+                                onChanged: setServer,
+                                initialValue: '10.0.2.2:8080',
+                                textAlign: TextAlign.center,
                                 decoration: InputDecoration(
-                                  hintText: 'Enter your password',
-                                  prefixIcon: const Icon(
-                                    Icons.lock,
-                                    color: Color.fromARGB(255, 119, 119, 119),
-                                  ),
-                                  suffixIcon: IconButton(
-                                    icon: _passwordObscure
-                                        ? const Icon(Icons.visibility_off)
-                                        : const Icon(Icons.visibility),
-                                    onPressed: () {
-                                      _toggle();
-                                    },
-                                  ),
-                                  errorStyle: const TextStyle(fontSize: 18.0),
-                                  border: const OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.red),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(9.0),
-                                    ),
-                                  ),
-                                ),
-                                obscureText: _passwordObscure,
-                              ),
-                            ),
-                            Center(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 10.0, left: 10, right: 10),
-                                child: SizedBox(
-                                  width: double.infinity,
-                                  child: ElevatedButton(
-                                    style: ButtonStyle(
-                                      backgroundColor:
-                                          WidgetStateProperty.all(Colors.green),
-                                      padding: WidgetStateProperty.all(
-                                        const EdgeInsets.all(15),
-                                      ),
-                                      textStyle: WidgetStateProperty.all(
-                                        const TextStyle(
-                                            fontSize: 14, color: Colors.white),
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      if (formkey.currentState!.validate()) {
-                                        Auth.login(
-                                            email.text, passwd.text, context);
-                                      }
-                                    },
-                                    child: const Text(
-                                      'Sign in',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 18),
-                                    ),
+                                  hintText: 'X.X.X.X:XXXX',
+                                  hintStyle: const TextStyle(fontSize: 13),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 5),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
                                 ),
                               ),
                             ),
-                            const Center(
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 15.0),
-                                child: Center(
-                                  child: Text(
-                                    'Or continue with',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: Color.fromARGB(255, 119, 119, 119),
-                                    ),
+                            const SizedBox(height: 20),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 50,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.black,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(32),
                                   ),
                                 ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 5),
-                              child: OAuthButton(
-                                boxColor: Colors.white,
-                                textColor: Colors.black,
                                 onPressed: () {
-                                  globals.navigatorKey.currentState!.popUntil(
-                                      ModalRoute.withName(routeOAuthGoogle));
-                                  globals.navigatorKey.currentState!
-                                      .pushNamed(routeOAuthGoogle);
+                                  if (formkey.currentState!.validate()) {
+                                    final response = Auth.login(
+                                        email.text, passwd.text, context);
+                                    response.then(
+                                      (onValue) {
+                                        switch (onValue) {
+                                          case 200:
+                                            break;
+                                          case 401:
+                                            Fluttertoast.showToast(
+                                              msg: "Invalid credentials",
+                                              toastLength: Toast.LENGTH_SHORT,
+                                              gravity: ToastGravity.BOTTOM,
+                                              timeInSecForIosWeb: 1,
+                                              textColor: Colors.white,
+                                              backgroundColor: Colors.red,
+                                              fontSize: 18.0,
+                                            );
+                                            break;
+                                          default:
+                                            Fluttertoast.showToast(
+                                              msg:
+                                                  "Can't connect with the server",
+                                              toastLength: Toast.LENGTH_SHORT,
+                                              gravity: ToastGravity.BOTTOM,
+                                              timeInSecForIosWeb: 1,
+                                              textColor: Colors.white,
+                                              backgroundColor: Colors.red,
+                                              fontSize: 16.0,
+                                            );
+                                            break;
+                                        }
+                                      },
+                                    );
+                                  }
                                 },
-                                serviceIcon: Image.asset(
-                                  'assets/google.png',
-                                  width: 30,
-                                  height: 30,
+                                child: const Text(
+                                  'Sign In',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                                serviceName: 'Google',
                               ),
                             ),
-                            OAuthButton(
-                              boxColor: Colors.black,
-                              textColor: Colors.white,
-                              onPressed: () {
-                                globals.navigatorKey.currentState!.popUntil(
-                                    ModalRoute.withName(routeOAuthGithub));
-                                globals.navigatorKey.currentState!
-                                    .pushNamed(routeOAuthGithub);
-                              },
-                              serviceIcon: Image.asset(
-                                'assets/github.png',
-                                width: 30,
-                                height: 30,
-                              ),
-                              serviceName: 'Github',
-                            ),
-                            OAuthButton(
-                              boxColor: const Color.fromARGB(255, 108, 40, 217),
-                              textColor: Colors.white,
-                              onPressed: () {
-                                globals.navigatorKey.currentState!.popUntil(
-                                    ModalRoute.withName(routeOAuthDiscord));
-                                globals.navigatorKey.currentState!
-                                    .pushNamed(routeOAuthDiscord);
-                              },
-                              serviceIcon: Image.asset(
-                                'assets/discord.png',
-                                width: 30,
-                                height: 30,
-                              ),
-                              serviceName: 'Discord',
+                            Column(
+                              children: [
+                                const SizedBox(height: 16),
+                                const Text(
+                                  'Or continue with',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                                const SizedBox(height: 4),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(),
+                                  child: OAuthButton(
+                                    boxColor: Colors.white,
+                                    textColor: Colors.black,
+                                    onPressed: () {
+                                      globals.navigatorKey.currentState!
+                                          .popUntil(ModalRoute.withName(
+                                              routeOAuthGoogle));
+                                      globals.navigatorKey.currentState!
+                                          .pushNamed(routeOAuthGoogle);
+                                    },
+                                    serviceIcon: Image.asset(
+                                      'assets/google.png',
+                                      width: 24,
+                                      height: 24,
+                                    ),
+                                    serviceName: 'Google',
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(),
+                                  child: OAuthButton(
+                                    boxColor: Colors.black,
+                                    textColor: Colors.white,
+                                    onPressed: () {
+                                      globals.navigatorKey.currentState!
+                                          .popUntil(ModalRoute.withName(
+                                              routeOAuthGithub));
+                                      globals.navigatorKey.currentState!
+                                          .pushNamed(routeOAuthGithub);
+                                    },
+                                    serviceIcon: Image.asset(
+                                      'assets/github.png',
+                                      width: 24,
+                                      height: 24,
+                                    ),
+                                    serviceName: 'Github',
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(),
+                                  child: OAuthButton(
+                                    boxColor:
+                                        const Color.fromARGB(255, 108, 40, 217),
+                                    textColor: Colors.white,
+                                    onPressed: () {
+                                      globals.navigatorKey.currentState!
+                                          .popUntil(ModalRoute.withName(
+                                              routeOAuthDiscord));
+                                      globals.navigatorKey.currentState!
+                                          .pushNamed(routeOAuthDiscord);
+                                    },
+                                    serviceIcon: Image.asset(
+                                      'assets/discord.png',
+                                      width: 24,
+                                      height: 24,
+                                    ),
+                                    serviceName: 'Discord',
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -363,70 +419,31 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(
-                top: 15,
-                left: 10,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: 2,
-                        ),
-                        child: Text(
-                          "Server adress: ",
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Color.fromARGB(255, 119, 119, 119),
-                          ),
-                        ),
+                  const Text(
+                    'Don\'t have an account?   ',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/register');
+                    },
+                    child: const Text(
+                      'Create an account',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
                       ),
-                      Flexible(
-                        flex: 1,
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 90),
-                          child: SizedBox(
-                            height: 30,
-                            child: TextFormField(
-                              onChanged: (String newAdress) {
-                                setServer(newAdress);
-                              },
-                              initialValue: '10.0.2.2:8080',
-                              decoration: const InputDecoration(
-                                hintText: 'X.X.X.X:XXXX',
-                                hintStyle: TextStyle(
-                                  fontSize: 13,
-                                ),
-                                errorStyle: TextStyle(
-                                  fontSize: 13.0,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.red,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(
-                                      9.0,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ],
               ),
             ),
           ],
-          //   )
-          // ],
         ),
       ),
     );

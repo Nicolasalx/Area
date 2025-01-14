@@ -6,4 +6,5 @@ export abstract class IServideOauth {
     redirect_uri: string,
   ): Promise<string>;
   abstract requestUserInfo(access_token: string): Promise<UserOAuthResponse>;
+  abstract revokeAccessToken(access_token: string): Promise<any>;
 }

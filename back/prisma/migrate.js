@@ -1,20 +1,15 @@
 const { PrismaClient } = require('@prisma/client');
 const fs = require('fs');
 const path = require('path');
-const bcrypt = require('bcrypt');
 
 const prisma = new PrismaClient();
-
-async function generateHash(password) {
-  const saltRounds = 10;
-  return bcrypt.hash(password, saltRounds);
-}
 
 async function executeSqlFile(filePath) {
   let sql = fs.readFileSync(filePath, 'utf8');
 
   if (filePath.includes('users.sql')) {
-    const hashedPassword = await generateHash('password123');
+    const hashedPassword =
+      '$2b$10$lGpGJ6RStzLtDFsAG/Ngle7no9IZA5SmJSctzL66kLJK/PB2SJqeu'; // password: 'password123'
     sql = sql.replace(/__HASHED_PASSWORD__/g, hashedPassword);
   }
 

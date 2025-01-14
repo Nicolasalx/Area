@@ -4,12 +4,15 @@ import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { UnauthorizedException, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { OAuthService } from '../../oauth/oauth/oauth.service';
 
 jest.mock('bcrypt');
 
 describe('AuthService', () => {
   let service: AuthService;
   let prismaService: jest.Mocked<PrismaService>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let oauthService: jest.Mocked<OAuthService>;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let jwtService: jest.Mocked<JwtService>;
 
@@ -29,9 +32,6 @@ describe('AuthService', () => {
             workflows: {
               deleteMany: jest.fn(),
             },
-            serviceTokens: {
-              deleteMany: jest.fn(),
-            },
             activeAction: {
               deleteMany: jest.fn(),
             },
@@ -49,14 +49,17 @@ describe('AuthService', () => {
                 workflows: {
                   deleteMany: jest.fn().mockResolvedValue({ count: 1 }),
                 },
-                serviceTokens: {
-                  deleteMany: jest.fn().mockResolvedValue({ count: 1 }),
-                },
                 users: {
                   delete: jest.fn().mockResolvedValue({ id: 'user-id' }),
                 },
               }),
             ),
+          },
+        },
+        {
+          provide: OAuthService,
+          useValue: {
+            deleteAllServiceToken: jest.fn(),
           },
         },
         {
@@ -70,6 +73,7 @@ describe('AuthService', () => {
 
     service = module.get<AuthService>(AuthService);
     prismaService = module.get(PrismaService);
+    oauthService = module.get(OAuthService);
     jwtService = module.get(JwtService);
   });
 

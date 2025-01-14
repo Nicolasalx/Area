@@ -33,10 +33,11 @@ dependencies:
   form_field_validator: any
   http: ^1.2.2
   webview_flutter: ^4.9.0
-  uni_links: ^0.5.1
+  app_links: ^6.3.3
   flutter_dotenv: ^5.2.1
-  flutter_secure_storage: ^9.2.3
+  flutter_secure_storage: ^9.2.4
   flutter_svg: any
+  fluttertoast: ^8.2.10
 
 
   # The following adds the Cupertino Icons font to your application.

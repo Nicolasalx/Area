@@ -37,6 +37,21 @@ export class UserService {
     });
   }
 
+  async getServiceIdConnection(type: ConnectionType): Promise<number> {
+    const serviceId = await this.prisma.services.findFirst({
+      where: {
+        name: {
+          equals: type,
+          mode: 'insensitive',
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+    return serviceId.id;
+  }
+
   async createUser(
     name: string,
     email: string,
@@ -72,22 +87,12 @@ export class UserService {
         },
       });
       if (type != ConnectionType.CLASSIC) {
-        const serviceId = await this.prisma.services.findFirst({
-          where: {
-            name: {
-              equals: type,
-              mode: 'insensitive',
-            },
-          },
-          select: {
-            id: true,
-          },
-        });
+        const serviceId = await this.getServiceIdConnection(type);
         await this.prisma.serviceTokens.create({
           data: {
             token: password,
             userId: user.id,
-            serviceId: serviceId.id,
+            serviceId: serviceId,
           },
         });
       }
