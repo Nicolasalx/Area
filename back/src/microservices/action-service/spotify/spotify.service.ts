@@ -4,17 +4,17 @@ import { getTriggerDate } from '@trigger-service/handler/get-trigger-date';
 import axios from 'axios';
 
 /* Get token (to set in env at SPOTIFY_TOKEN)
-1) https://accounts.spotify.com/authorize?response_type=code&client_id=fca2d65b4f744cb6916bb40bcc2758fd&scope=user-library-read%20playlist-read-private%20user-top-read%20user-read-playback-state%20playlist-modify-private%20playlist-modify-public&redirect_uri=http://localhost:8000/
+1) https://accounts.spotify.com/authorize?response_type=code&client_id=fca2d65b4f744cb6916bb40bcc2758fd&scope=user-library-read%20playlist-read-private%20user-top-read%20user-read-playback-state%20playlist-modify-private%20playlist-modify-public&redirect_uri=http://localhost:8081/
 
 After we are redirected in this page:
-2) http://localhost:8000/?code=AQBNypG11rJ9Xu9vrqoPN8zV8eIRLUslTtVqOju-L-_qodvdl4TyJAhI7Aq3PEa15a5PDkLuMzZPmW2oTQ42kPaU6131WR5MN2fBBCI3vquWPFIyxdQ0E7wYcK0b3rRxx0G69ZuCb4zf7TO6ma8mSHjgKfyALN9ypuTsh7nEgw3wIl__ziD4pkMZlGoj4UzenMo5dcQ7zrM2xi607TBDgBlXB8tI6PL4pURMEzr3MwYTo-w
+2) http://localhost:8081/?code=AQBNypG11rJ9Xu9vrqoPN8zV8eIRLUslTtVqOju-L-_qodvdl4TyJAhI7Aq3PEa15a5PDkLuMzZPmW2oTQ42kPaU6131WR5MN2fBBCI3vquWPFIyxdQ0E7wYcK0b3rRxx0G69ZuCb4zf7TO6ma8mSHjgKfyALN9ypuTsh7nEgw3wIl__ziD4pkMZlGoj4UzenMo5dcQ7zrM2xi607TBDgBlXB8tI6PL4pURMEzr3MwYTo-w
 
 3) Make a curl:
 curl -X POST https://accounts.spotify.com/api/token \
   -H "Authorization: Basic ZmNhMmQ2NWI0Zjc0NGNiNjkxNmJiNDBiY2MyNzU4ZmQ6MGI3MzRhZTg0M2ExNGU3Zjg1NWE5ZGJmYjYxYTQzYjE=" \
   -d "grant_type=authorization_code" \
   -d "code=CODE_GET_IN_STEP_2" \
-  -d "redirect_uri=http://localhost:8000/"
+  -d "redirect_uri=http://localhost:8081/"
 */
 
 @Injectable()
