@@ -1,0 +1,18 @@
+INSERT INTO "Services" ("name", "description", "isActive", "createdAt")
+VALUES
+    ('google', 'Google services like Gmail, Calendar, Drive, etc.', true, NOW()),
+    ('github', 'Github services for developpers.', true, NOW()),
+    ('discord', 'Discord webhook.', true, NOW()),
+    ('time', 'Time with cron and timer.', true, NOW()),
+    ('rss', 'RSS feed monitoring.', true, NOW()),
+    ('slack', 'Slack bot.', true, NOW()),
+    ('trello', 'Managing board and card in Trello.', true, NOW()),
+    ('todoist', 'Todoist task management.', true, NOW()),
+    ('twilio', 'Twilio SMS / Phone / E-mail sending.', true, NOW()),
+    ('openweather', 'Weather monitoring.', true, NOW()),
+    ('spotify', 'Music service.', true, NOW()),
+    ('worldtime', 'World Time monitoring service.', true, NOW()),
+    ('newsapi', 'Monitor breaking news.', true, NOW()),
+    ('coingecko', 'Check crypto price on the market with CoinGecko.', true, NOW()),
+    ('fuelprice', 'Check fuel price on Ile-de-France.', true, NOW()),
+    ('earthquakealerts', 'Check Earthquake alerts in all over the world.', true, NOW());
