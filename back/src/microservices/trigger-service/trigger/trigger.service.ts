@@ -19,6 +19,7 @@ import { WorldTimeActionHandler } from '@trigger-service/handler/worldtime.handl
 import { NewsActionHandler } from '@trigger-service/handler/news.handler';
 import { FuelPriceActionHandler } from '@trigger-service/handler/fuel-price.handler';
 import { EarthquakeAlertsActionHandler } from '@trigger-service/handler/earthquake.handler';
+import { OpenSkyActionHandler } from '@trigger-service/handler/opensky.handler';
 
 @Injectable()
 export class TriggerService implements OnModuleInit {
@@ -40,6 +41,7 @@ export class TriggerService implements OnModuleInit {
     private readonly newsHandler: NewsActionHandler,
     private readonly fuelPriceHandler: FuelPriceActionHandler,
     private readonly earthquakeAlertsHandler: EarthquakeAlertsActionHandler,
+    private readonly openSkyHandler: OpenSkyActionHandler,
   ) {
     this.handlers = [
       githubHandler,
@@ -56,6 +58,7 @@ export class TriggerService implements OnModuleInit {
       newsHandler,
       fuelPriceHandler,
       earthquakeAlertsHandler,
+      openSkyHandler,
     ];
   }
 

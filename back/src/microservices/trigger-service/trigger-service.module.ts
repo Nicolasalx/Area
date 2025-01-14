@@ -35,6 +35,8 @@ import { FuelPriceActionService } from '@action-service/fuel-price/fuel-price.se
 import { FuelPriceActionHandler } from './handler/fuel-price.handler';
 import { EarthquakeAlertsActionService } from '@action-service/earthquake-alerts/earthquake-alerts.service';
 import { EarthquakeAlertsActionHandler } from './handler/earthquake.handler';
+import { OpenskyActionService } from '@action-service/opensky/opensky.service';
+import { OpenSkyActionHandler } from './handler/opensky.handler';
 
 @Module({
   imports: [PrismaServiceModule, ScheduleModule.forRoot()],
@@ -57,6 +59,7 @@ import { EarthquakeAlertsActionHandler } from './handler/earthquake.handler';
     NewsActionService,
     FuelPriceActionService,
     EarthquakeAlertsActionService,
+    OpenskyActionService,
 
     GithubActionHandler,
     GoogleActionHandler,
@@ -72,6 +75,7 @@ import { EarthquakeAlertsActionHandler } from './handler/earthquake.handler';
     NewsActionHandler,
     FuelPriceActionHandler,
     EarthquakeAlertsActionHandler,
+    OpenSkyActionHandler,
   ],
   controllers: [TriggerController],
 })

@@ -34,6 +34,8 @@ import { FuelPriceActionService } from '@action-service/fuel-price/fuel-price.se
 import { FuelPriceActionHandler } from '@trigger-service/handler/fuel-price.handler';
 import { EarthquakeAlertsActionService } from '@action-service/earthquake-alerts/earthquake-alerts.service';
 import { EarthquakeAlertsActionHandler } from '@trigger-service/handler/earthquake.handler';
+import { OpenskyActionService } from '@action-service/opensky/opensky.service';
+import { OpenSkyActionHandler } from '@trigger-service/handler/opensky.handler';
 
 describe('TriggerService', () => {
   let service: TriggerService;
@@ -107,6 +109,10 @@ describe('TriggerService', () => {
           provide: EarthquakeAlertsActionService,
           useValue: {},
         },
+        {
+          provide: OpenskyActionService,
+          useValue: {},
+        },
 
         GithubActionHandler,
         GoogleActionHandler,
@@ -122,6 +128,7 @@ describe('TriggerService', () => {
         CoinGeckoActionHandler,
         FuelPriceActionHandler,
         EarthquakeAlertsActionHandler,
+        OpenSkyActionHandler,
 
         {
           provide: SchedulerRegistry,
