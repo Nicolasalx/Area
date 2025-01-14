@@ -1,6 +1,6 @@
 import { UserOAuthResponse } from '@common/interfaces/user/user';
 
-export abstract class IServideOauth {
+export abstract class IServiceOauth {
   abstract requestOAuthToken(
     code: string,
     redirect_uri: string,

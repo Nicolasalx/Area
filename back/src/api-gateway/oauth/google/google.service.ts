@@ -4,10 +4,10 @@ import {
   UserGoogleResponse,
   UserOAuthResponse,
 } from '@common/interfaces/user/user';
-import { IServideOauth } from '../oauth/IServiceOauth';
+import { IServiceOauth } from '../oauth/IServiceOauth';
 
 @Injectable()
-export class GoogleService implements IServideOauth {
+export class GoogleService implements IServiceOauth {
   constructor(private readonly httpService: HttpService) {}
 
   async requestOAuthToken(code: string, redirect_uri: string): Promise<string> {

@@ -402,6 +402,10 @@ export default function LandingPage() {
       <section
         ref={ctaRef}
         className="relative overflow-hidden bg-black py-16 text-white sm:py-32"
+        style={{
+          background:
+            "radial-gradient(circle at center, #0f172a 0%, #020617 40%)",
+        }}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div
