@@ -9,16 +9,12 @@ import {
   Param,
   Query,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GithubService } from '../github/github.service';
 import { GoogleService } from '../google/google.service';
 import { OAuthService } from './oauth.service';
 import { ConnectionType } from '@prisma/client';
 import { DiscordService } from '../discord/discord.service';
-import { Message } from 'twilio/lib/twiml/MessagingResponse';
-import { ServiceOauthResponse } from '@common/interfaces/oauth/oauth';
-import { HttpStatusCode } from 'axios';
-import { isSet } from 'util/types';
 
 class PreciseServiceToken {
   userId: string;
@@ -56,23 +52,25 @@ export class OAuthController {
     content: {
       'application/json': {
         examples: {
-          Area: { value: [
-            {
-              id: 1,
-              name: "Google",
-              description: "Google service like Gmail, Calendar, ...",
-              isSet: false,
-            },
-            {
-              id: 2,
-              name: "Github",
-              description: "Github service.",
-              isSet: true,
-            },
-          ]},
+          Area: {
+            value: [
+              {
+                id: 1,
+                name: 'Google',
+                description: 'Google service like Gmail, Calendar, ...',
+                isSet: false,
+              },
+              {
+                id: 2,
+                name: 'Github',
+                description: 'Github service.',
+                isSet: true,
+              },
+            ],
+          },
         },
       },
-    }
+    },
   })
   @ApiResponse({
     status: 404,
@@ -125,11 +123,8 @@ export class OAuthController {
   @Delete('sercice/delete')
   async deleteServiceToken(@Body() body: PreciseServiceToken) {
     try {
-      await this.oauthService.deleteServiceToken(
-        body.userId,
-        body.serviceId,
-      );
-      return { message: "Service well removed." }
+      await this.oauthService.deleteServiceToken(body.userId, body.serviceId);
+      return { message: 'Service well removed.' };
     } catch (err) {
       throw err;
     }
@@ -145,12 +140,15 @@ export class OAuthController {
     schema: {
       properties: {
         token: { type: 'string', example: '12345721' },
-        user: { type: 'json', example: {
-          id: '1',
-          email: 'someone@gmail.com',
-          name: 'someone',
-          picture: 'link',
-        }},
+        user: {
+          type: 'json',
+          example: {
+            id: '1',
+            email: 'someone@gmail.com',
+            name: 'someone',
+            picture: 'link',
+          },
+        },
       },
     },
   })
@@ -167,12 +165,13 @@ export class OAuthController {
   async getGoogleOAuth(@Query() query: any) {
     try {
       this.logger.debug('OAuth with google');
-      const response : LoginOAuthResponse = await this.oauthService.getServiceOAuth(
-        query.code,
-        query.redirect_uri,
-        ConnectionType.GOOGLE,
-        this.googleService,
-      );
+      const response: LoginOAuthResponse =
+        await this.oauthService.getServiceOAuth(
+          query.code,
+          query.redirect_uri,
+          ConnectionType.GOOGLE,
+          this.googleService,
+        );
       return response;
     } catch (err) {
       throw err;
@@ -189,12 +188,15 @@ export class OAuthController {
     schema: {
       properties: {
         token: { type: 'string', example: '12345721' },
-        user: { type: 'json', example: {
-          id: '1',
-          email: 'someone@gmail.com',
-          name: 'someone',
-          picture: 'link',
-        }},
+        user: {
+          type: 'json',
+          example: {
+            id: '1',
+            email: 'someone@gmail.com',
+            name: 'someone',
+            picture: 'link',
+          },
+        },
       },
     },
   })
@@ -211,12 +213,13 @@ export class OAuthController {
   async getGithubOAuth(@Query() query: any) {
     try {
       this.logger.debug('OAuth with github');
-      const response : LoginOAuthResponse = await this.oauthService.getServiceOAuth(
-        query.code,
-        query.redirect_uri,
-        ConnectionType.GITHUB,
-        this.githubService,
-      );
+      const response: LoginOAuthResponse =
+        await this.oauthService.getServiceOAuth(
+          query.code,
+          query.redirect_uri,
+          ConnectionType.GITHUB,
+          this.githubService,
+        );
       return response;
     } catch (err) {
       throw err;
@@ -233,12 +236,15 @@ export class OAuthController {
     schema: {
       properties: {
         token: { type: 'string', example: '12345721' },
-        user: { type: 'json', example: {
-          id: '1',
-          email: 'someone@gmail.com',
-          name: 'someone',
-          picture: 'link',
-        }},
+        user: {
+          type: 'json',
+          example: {
+            id: '1',
+            email: 'someone@gmail.com',
+            name: 'someone',
+            picture: 'link',
+          },
+        },
       },
     },
   })
@@ -256,12 +262,13 @@ export class OAuthController {
   async getDiscordOAuth(@Query() query: any) {
     try {
       this.logger.debug('OAuth with discord');
-      const response : LoginOAuthResponse = await this.oauthService.getServiceOAuth(
-        query.code,
-        query.redirect_uri,
-        ConnectionType.DISCORD,
-        this.discordSercice,
-      );
+      const response: LoginOAuthResponse =
+        await this.oauthService.getServiceOAuth(
+          query.code,
+          query.redirect_uri,
+          ConnectionType.DISCORD,
+          this.discordSercice,
+        );
       return response;
     } catch (err) {
       throw err;
