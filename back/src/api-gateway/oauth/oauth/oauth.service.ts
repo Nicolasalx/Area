@@ -2,7 +2,7 @@ import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
 import { UserService } from '@userService/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConnectionType } from '@prisma/client';
-import { IServideOauth } from './IServiceOauth';
+import { IServiceOauth } from './IServiceOauth';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
 import { ServiceOauthResponse } from '@common/interfaces/oauth/oauth';
 import { GoogleService } from '../google/google.service';
@@ -24,7 +24,7 @@ export class OAuthService {
 
   private readonly serviceOAuthList: {
     name: string;
-    service: IServideOauth;
+    service: IServiceOauth;
   }[] = [
     { name: 'google', service: this.googleService },
     { name: 'github', service: this.githubService },
@@ -128,7 +128,7 @@ export class OAuthService {
     code: string,
     redirect_uri: string,
     type: ConnectionType,
-    service: IServideOauth,
+    service: IServiceOauth,
   ) {
     try {
       return await service.requestOAuthToken(code, redirect_uri);
@@ -159,7 +159,7 @@ export class OAuthService {
   async getServiceUser(
     access_token: string,
     type: ConnectionType,
-    service: IServideOauth,
+    service: IServiceOauth,
   ) {
     try {
       const response = await service.requestUserInfo(access_token);
@@ -207,7 +207,8 @@ export class OAuthService {
     code: string,
     redirect_uri: string,
     type: ConnectionType,
-    service: IServideOauth,
+    service: IServiceOauth,
+    state?: string,
   ) {
     const access_token = await this.getServiceOAuthTokens(
       code,
@@ -215,17 +216,142 @@ export class OAuthService {
       type,
       service,
     );
-    const user = await this.getServiceUser(access_token, type, service);
+
+    if (
+      state &&
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+        state,
+      )
+    ) {
+      const existingUser = await this.prisma.users.findUnique({
+        where: { id: state },
+      });
+
+      if (existingUser) {
+        const serviceId = await this.prisma.services.findFirst({
+          where: {
+            name: {
+              equals: type.toLowerCase(),
+              mode: 'insensitive',
+            },
+          },
+          select: {
+            id: true,
+          },
+        });
+
+        if (serviceId) {
+          await this.prisma.serviceTokens.upsert({
+            where: {
+              userId_serviceId: {
+                userId: existingUser.id,
+                serviceId: serviceId.id,
+              },
+            },
+            create: {
+              userId: existingUser.id,
+              serviceId: serviceId.id,
+              token: access_token,
+            },
+            update: {
+              token: access_token,
+            },
+          });
+        }
+
+        return {
+          user: existingUser,
+          token: this.jwtService.sign({
+            sub: existingUser.id,
+            email: existingUser.email,
+          }),
+        };
+      }
+    }
+
+    const userInfo = await service.requestUserInfo(access_token);
+
+    let user = await this.userService.getUserByServiceId(type, userInfo.email);
+
+    if (!user) {
+      user = await this.userService.createUser(
+        userInfo.name,
+        userInfo.email,
+        access_token,
+        type,
+        userInfo.picture,
+      );
+    }
 
     const token = this.jwtService.sign({
       sub: user.id,
       email: user.email,
     });
 
-    const response = {
-      user: user,
-      token: token,
+    return {
+      user,
+      token,
     };
-    return response;
+  }
+
+  async addServiceApiKey(
+    userId: string,
+    serviceId: number,
+    apiKey: string,
+  ): Promise<void> {
+    const user = await this.prisma.users.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const service = await this.prisma.services.findUnique({
+      where: { id: serviceId },
+    });
+
+    if (!service) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'Service not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    if (service.oauthNeed) {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'This service requires OAuth authentication',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    await this.prisma.serviceTokens.upsert({
+      where: {
+        userId_serviceId: {
+          userId: userId,
+          serviceId: serviceId,
+        },
+      },
+      create: {
+        userId: userId,
+        serviceId: serviceId,
+        token: apiKey,
+      },
+      update: {
+        token: apiKey,
+      },
+    });
   }
 }

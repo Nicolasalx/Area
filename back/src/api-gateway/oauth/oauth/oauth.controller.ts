@@ -8,17 +8,53 @@ import {
   Logger,
   Param,
   Query,
+  Post,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiProperty,
+  ApiBody,
+} from '@nestjs/swagger';
 import { GithubService } from '../github/github.service';
 import { GoogleService } from '../google/google.service';
 import { OAuthService } from './oauth.service';
 import { ConnectionType } from '@prisma/client';
 import { DiscordService } from '../discord/discord.service';
+import { IsUUID, IsNumber, IsString, MinLength } from 'class-validator';
 
 class PreciseServiceToken {
   userId: string;
   serviceId: number;
+}
+
+class ApiKeyServiceToken {
+  @ApiProperty({
+    description: 'The ID of the user to associate the API key with',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+    type: String,
+  })
+  @IsUUID('4')
+  userId: string;
+
+  @ApiProperty({
+    description: 'The ID of the service to add the API key for',
+    example: 1,
+    type: Number,
+  })
+  @IsNumber()
+  serviceId: number;
+
+  @ApiProperty({
+    description: 'The API key to store for the service',
+    example: 'sk_test_123456789',
+    type: String,
+    minLength: 8,
+  })
+  @IsString()
+  @MinLength(8)
+  apiKey: string;
 }
 
 class LoginOAuthResponse {
@@ -173,6 +209,7 @@ export class OAuthController {
           query.redirect_uri,
           ConnectionType.GOOGLE,
           this.googleService,
+          query.state,
         );
       return response;
     } catch (err) {
@@ -221,6 +258,7 @@ export class OAuthController {
           query.redirect_uri,
           ConnectionType.GITHUB,
           this.githubService,
+          query.state,
         );
       return response;
     } catch (err) {
@@ -270,8 +308,104 @@ export class OAuthController {
           query.redirect_uri,
           ConnectionType.DISCORD,
           this.discordService,
+          query.state,
         );
       return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @ApiOperation({
+    summary: 'Add API Key for a service',
+    description:
+      'Store an API key for a service that does not use OAuth authentication',
+  })
+  @ApiBody({
+    type: ApiKeyServiceToken,
+    description: 'The API key and associated user/service information',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'API key successfully added',
+    schema: {
+      properties: {
+        message: { type: 'string', example: 'API key successfully added' },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request - validation failed',
+    schema: {
+      properties: {
+        message: { type: 'string' },
+        error: { type: 'string', example: 'Bad Request' },
+        statusCode: { type: 'number', example: 400 },
+        errors: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              property: { type: 'string', example: 'apiKey' },
+              constraints: {
+                type: 'object',
+                example: {
+                  minLength: 'API key must be at least 8 characters long',
+                  isString: 'API key must be a string',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized or invalid token',
+    schema: {
+      properties: {
+        message: { type: 'string', example: 'Unauthorized' },
+        error: { type: 'string', example: 'Unauthorized' },
+        statusCode: { type: 'number', example: 401 },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - service requires OAuth',
+    schema: {
+      properties: {
+        message: {
+          type: 'string',
+          example: 'This service requires OAuth authentication',
+        },
+        error: { type: 'string', example: 'Forbidden' },
+        statusCode: { type: 'number', example: 403 },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User or service not found',
+    schema: {
+      properties: {
+        message: { type: 'string', example: 'User or service not found' },
+        error: { type: 'string', example: 'Not Found' },
+        statusCode: { type: 'number', example: 404 },
+      },
+    },
+  })
+  @Post('service/apikey')
+  async addServiceApiKey(@Body() body: ApiKeyServiceToken) {
+    try {
+      await this.oauthService.addServiceApiKey(
+        body.userId,
+        body.serviceId,
+        body.apiKey,
+      );
+      return { message: 'API key successfully added' };
     } catch (err) {
       throw err;
     }
