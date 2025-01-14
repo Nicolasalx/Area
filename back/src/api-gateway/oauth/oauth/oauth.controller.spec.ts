@@ -7,6 +7,7 @@ import { GithubService } from '../github/github.service';
 import { HttpService } from '@nestjs/axios';
 import { UserService } from '@userService/user/user.service';
 import { DiscordService } from '../discord/discord.service';
+import { PrismaService } from '@prismaService/prisma/prisma.service';
 
 describe('OAuthController', () => {
   let controller: OAuthController;
@@ -58,6 +59,13 @@ describe('OAuthController', () => {
         },
         {
           provide: DiscordService,
+          useValue: {
+            requestOAuthToken: jest.fn(),
+            requestUserInfo: jest.fn(),
+          },
+        },
+        {
+          provide: PrismaService,
           useValue: {
             requestOAuthToken: jest.fn(),
             requestUserInfo: jest.fn(),

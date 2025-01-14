@@ -61,4 +61,23 @@ export class GithubService implements IServideOauth {
       picture: response.data.avatar_url,
     };
   }
+
+  async revokeAccessToken(access_token: string): Promise<any> {
+    const url = `https://api.github.com/applications/${process.env.GITHUB_CLIENT_ID!}/token`;
+    const response = fetch(url, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization:
+          'Basic ' +
+          btoa(
+            `${process.env.GITHUB_CLIENT_ID!}:${process.env.GITHUB_CLIENT_SECRET!}`,
+          ),
+      },
+      body: `{"access_token": ${access_token}}`,
+    });
+    return response;
+  }
 }
