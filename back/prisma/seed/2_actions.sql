@@ -79,4 +79,8 @@ VALUES
     ('check_fuel_price_increase', 'Action triggered when fuel price increase.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'fuelprice' LIMIT 1), '[{"field": "fuelType", "description": "The fuelType selectionned to check the price", "options": ["Gazole", "SP95", "SP98"]}, {"field": "price", "description": "If the fuel price exceeds the price indicated here, the action is triggered."}]'),
     ('check_fuel_price_decrease', 'Action triggered when fuel price decrease.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'fuelprice' LIMIT 1), '[{"field": "fuelType", "description": "The fuelType selectionned to check the price", "options": ["Gazole", "SP95", "SP98"]}, {"field": "price", "description": "If the fuel price falls below the price indicated here, the action is triggered."}]'),
 -- EarthQuake Alerts
-    ('check_earthquake_alerts', 'Action triggered when a earthquake is detected on the earth.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'earthquakealerts' LIMIT 1), '[]');
+    ('check_earthquake_alerts', 'Action triggered when a earthquake is detected on the earth.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'earthquakealerts' LIMIT 1), '[]'),
+-- OpenSky
+    ('check_new_flight_in_france', 'Action triggered when a new flight entered in France.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'opensky' LIMIT 1), '[]'),
+    ('check_new_flight_in_england', 'Action triggered when a new flight entered in France.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'opensky' LIMIT 1), '[]'),
+    ('check_new_flight_in_spain', 'Action triggered when a new flight entered in France.', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'opensky' LIMIT 1), '[]');

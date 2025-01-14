@@ -59,7 +59,11 @@ VALUES
     ('actual_fuel_price', 'Price of the actual fuel'),
 -- EarthQuakeAlerts
     ('magnitude', 'Magnitude of the earthquake'),
-    ('location', 'Location of the earthquake')
+    ('location', 'Location of the earthquake'),
+-- OpenSky
+    ('flight_name', 'Location of the earthquake'),
+    ('flight_id', 'Location of the earthquake'),
+    ('flight_country', 'Location of the earthquake')
 RETURNING "id";
 
 INSERT INTO "ActionsIngredients" ("actionId", "ingredientId")
@@ -108,6 +112,7 @@ VALUES
     ((SELECT id FROM "Actions" WHERE "name" = 'new_card_moved' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'card_url' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'new_card_moved' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'from_list_id' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'new_card_moved' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'to_list_id' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'new_card_moved' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1)),
 
     ((SELECT id FROM "Actions" WHERE "name" = 'new_card_label' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'card_name' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'new_card_label' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'card_url' LIMIT 1)),
@@ -127,10 +132,15 @@ VALUES
         (SELECT id FROM "Ingredients" WHERE "name" = 'temperature' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'check_temperature'),
         (SELECT id FROM "Ingredients" WHERE "name" = 'city_name' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_temperature'),
+        (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1)),
+
     ((SELECT id FROM "Actions" WHERE "name" = 'check_weather_change'),
         (SELECT id FROM "Ingredients" WHERE "name" = 'weather_condition' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'check_weather_change'),
         (SELECT id FROM "Ingredients" WHERE "name" = 'city_name' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_weather_change'),
+        (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1)),
 
 -- spotify
     ((SELECT id FROM "Actions" WHERE "name" = 'new_music_played' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'song_name' LIMIT 1)),
@@ -160,6 +170,8 @@ VALUES
         (SELECT id FROM "Ingredients" WHERE "name" = 'timezone' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'check_timezone' LIMIT 1),
         (SELECT id FROM "Ingredients" WHERE "name" = 'day_of_week' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_timezone' LIMIT 1),
+        (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1)),
 
     ((SELECT id FROM "Actions" WHERE "name" = 'check_daynight' LIMIT 1),
         (SELECT id FROM "Ingredients" WHERE "name" = 'current_time' LIMIT 1)),
@@ -169,16 +181,35 @@ VALUES
         (SELECT id FROM "Ingredients" WHERE "name" = 'timezone' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'check_daynight' LIMIT 1),
         (SELECT id FROM "Ingredients" WHERE "name" = 'day_of_week' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_daynight' LIMIT 1),
+        (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1)),
 -- Newsapi
     ((SELECT id FROM "Actions" WHERE "name" = 'monitor_breaking_news' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'headline' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'monitor_breaking_news' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'source' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'monitor_breaking_news' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'news_url' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'monitor_breaking_news' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'news_description' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'monitor_breaking_news' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1)),
 -- FuelPrice
     ((SELECT id FROM "Actions" WHERE "name" = 'check_fuel_price_increase' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'fuel_type' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'check_fuel_price_increase' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'actual_fuel_price' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_fuel_price_increase' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'check_fuel_price_decrease' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'fuel_type' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'check_fuel_price_decrease' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'actual_fuel_price' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_fuel_price_decrease' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1)),
 -- Earthquake
     ((SELECT id FROM "Actions" WHERE "name" = 'check_earthquake_alerts' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'magnitude' LIMIT 1)),
-    ((SELECT id FROM "Actions" WHERE "name" = 'check_earthquake_alerts' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'location' LIMIT 1));
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_earthquake_alerts' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'location' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_earthquake_alerts' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1)),
+-- OpenSky
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_new_flight_in_france' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'flight_name' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_new_flight_in_france' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'flight_id' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_new_flight_in_france' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'flight_country' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_new_flight_in_france' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_new_flight_in_england' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'flight_name' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_new_flight_in_england' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'flight_id' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_new_flight_in_england' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'flight_country' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_new_flight_in_england' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_new_flight_in_spain' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'flight_name' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_new_flight_in_spain' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'flight_id' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_new_flight_in_spain' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'flight_country' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'check_new_flight_in_spain' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1));
