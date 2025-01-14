@@ -21,7 +21,7 @@
     "stop:postgresql": "sudo systemctl stop postgresql",
     "db:up": "docker-compose up -d",
     "db:down": "docker-compose down",
-    "db:migrate": "prisma generate && prisma migrate deploy",
+    "db:migrate": "prisma generate && npx prisma db push && node prisma/migrate.js prisma/seed",
     "db:reset": "npx prisma generate && npx prisma db push && node prisma/migrate.js prisma/reset/",
     "db:view": "npx prisma studio",
     "get:env": "doppler secrets download --project area-all --config dev_back --format env --no-file > .env"
