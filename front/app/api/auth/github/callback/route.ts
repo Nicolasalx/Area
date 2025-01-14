@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 export async function GET(request: Request) {
   const searchParams = new URL(request.url).searchParams;
   const code = searchParams.get("code");
-  const redirect_uri = "";
+  const redirect_uri = process.env.GITHUB_REDIRECT_URI;
 
   if (!code) {
     throw new Error("No code provided");
