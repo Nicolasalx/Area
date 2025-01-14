@@ -19,7 +19,7 @@ export class OAuthService {
     private prisma: PrismaService,
     private readonly googleService: GoogleService,
     private readonly githubService: GithubService,
-    private readonly discordSercice: DiscordService,
+    private readonly discordService: DiscordService,
   ) {}
 
   private readonly serviceOAuthList: {
@@ -28,7 +28,7 @@ export class OAuthService {
   }[] = [
     { name: 'google', service: this.googleService },
     { name: 'github', service: this.githubService },
-    { name: 'discord', service: this.discordSercice },
+    { name: 'discord', service: this.discordService },
   ];
 
   async deleteAllServiceToken(userId: string): Promise<any> {
@@ -103,14 +103,12 @@ export class OAuthService {
 
   async getServiceOAuthList(userId: string): Promise<ServiceOauthResponse[]> {
     const service_list = await this.prisma.services.findMany({
-      where: {
-        oauthNeed: true,
-      },
       select: {
         id: true,
         name: true,
         description: true,
         serviceTokens: true,
+        oauthNeed: true,
       },
     });
     const new_service = service_list.map((o) => {
@@ -118,6 +116,7 @@ export class OAuthService {
         id: o.id,
         name: o.name,
         description: o.description,
+        oauthNeed: o.oauthNeed,
         isSet:
           o.serviceTokens.filter((elem) => elem.userId == userId).length != 0,
       };

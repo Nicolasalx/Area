@@ -40,7 +40,7 @@ export class OAuthController {
     private readonly oauthService: OAuthService,
     private readonly googleService: GoogleService,
     private readonly githubService: GithubService,
-    private readonly discordSercice: DiscordService,
+    private readonly discordService: DiscordService,
   ) {}
 
   @ApiOperation({
@@ -58,12 +58,14 @@ export class OAuthController {
                 id: 1,
                 name: 'Google',
                 description: 'Google service like Gmail, Calendar, ...',
+                oauthNeed: true,
                 isSet: false,
               },
               {
                 id: 2,
                 name: 'Github',
                 description: 'Github service.',
+                oauthNeed: true,
                 isSet: true,
               },
             ],
@@ -120,7 +122,7 @@ export class OAuthController {
       },
     },
   })
-  @Delete('sercice/delete')
+  @Delete('service/delete')
   async deleteServiceToken(@Body() body: PreciseServiceToken) {
     try {
       await this.oauthService.deleteServiceToken(body.userId, body.serviceId);
@@ -267,7 +269,7 @@ export class OAuthController {
           query.code,
           query.redirect_uri,
           ConnectionType.DISCORD,
-          this.discordSercice,
+          this.discordService,
         );
       return response;
     } catch (err) {
