@@ -45,7 +45,6 @@ export default function NewWorkflowPage() {
   const [loadingActions, setLoadingActions] = useState(true);
   const [loadingReactions, setLoadingReactions] = useState(true);
 
-  // Handle browser navigation
   useEffect(() => {
     const handlePopState = () => {
       switch (currentStep) {
@@ -74,7 +73,6 @@ export default function NewWorkflowPage() {
           setCurrentStep("reaction-action");
           break;
         case "name":
-          // If coming from name, go back to reaction-action if no data form
           setCurrentStep(
             selectedReaction &&
               selectedReaction.body &&
