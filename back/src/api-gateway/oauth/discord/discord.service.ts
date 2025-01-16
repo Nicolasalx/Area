@@ -4,10 +4,10 @@ import {
   UserDiscordResponse,
   UserOAuthResponse,
 } from '@common/interfaces/user/user';
-import { IServideOauth } from '../oauth/IServiceOauth';
+import { IServiceOauth } from '../oauth/IServiceOauth';
 
 @Injectable()
-export class DiscordService implements IServideOauth {
+export class DiscordService implements IServiceOauth {
   constructor(private readonly httpService: HttpService) {}
 
   async requestOAuthToken(code: string, redirect_uri: string): Promise<string> {

@@ -6,10 +6,10 @@ import {
   UserGithubResponse,
   UserOAuthResponse,
 } from '@common/interfaces/user/user';
-import { IServideOauth } from '../oauth/IServiceOauth';
+import { IServiceOauth } from '../oauth/IServiceOauth';
 
 @Injectable()
-export class GithubService implements IServideOauth {
+export class GithubService implements IServiceOauth {
   constructor(private readonly httpService: HttpService) {}
 
   async requestOAuthToken(code: string, _: string): Promise<string> {

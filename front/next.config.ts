@@ -23,6 +23,14 @@ const config: NextConfig = {
       },
     ],
   },
+  env: {
+    DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
+    DISCORD_REDIRECT_URI: process.env.DISCORD_REDIRECT_URI,
+    GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
+    GITHUB_REDIRECT_URI: process.env.GITHUB_REDIRECT_URI,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI,
+  },
 };
 
 export default config;
