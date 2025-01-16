@@ -34,7 +34,7 @@ VALUES
 -- spotify
     ('song_name', 'Name of the song'),
     ('song_artists', 'Name of all the artists of the song'),
-    ('song_realease_date', 'Release date of the song'),
+    ('song_release_date', 'Release date of the song'),
 
     ('playlist_name', 'Name of the playlist'),
     ('playlist_owner_name', 'Name of the playlist owner'),
@@ -145,7 +145,7 @@ VALUES
 -- spotify
     ((SELECT id FROM "Actions" WHERE "name" = 'new_music_played' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'song_name' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'new_music_played' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'song_artists' LIMIT 1)),
-    ((SELECT id FROM "Actions" WHERE "name" = 'new_music_played' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'song_realease_date' LIMIT 1)),
+    ((SELECT id FROM "Actions" WHERE "name" = 'new_music_played' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'song_release_date' LIMIT 1)),
     ((SELECT id FROM "Actions" WHERE "name" = 'new_music_played' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'trigger_date' LIMIT 1)),
 
     ((SELECT id FROM "Actions" WHERE "name" = 'new_playlist_created_spotify' LIMIT 1), (SELECT id FROM "Ingredients" WHERE "name" = 'playlist_name' LIMIT 1)),

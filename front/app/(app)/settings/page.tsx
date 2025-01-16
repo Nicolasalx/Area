@@ -114,7 +114,6 @@ export default function ProfilePage() {
       try {
         const response = await getServices(userData.id);
         setServices(response.data);
-        console.log(response.data);
       } catch (error) {
         console.error("Error fetching services:", error);
       }

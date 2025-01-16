@@ -126,7 +126,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           (resolve, reject) => {
             const handleMessage = (event: MessageEvent) => {
               if (event.data?.type === "GOOGLE_LOGIN_SUCCESS") {
-                console.log("Received Google login success:", event.data);
                 window.removeEventListener("message", handleMessage);
                 resolve({
                   user: event.data.user,
@@ -151,7 +150,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           },
         );
 
-        console.log("Setting user data in context:", result.user);
         setUser(result.user);
         setToken(result.token);
         localStorage.setItem("user", JSON.stringify(result.user));
@@ -187,7 +185,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           (resolve, reject) => {
             const handleMessage = (event: MessageEvent) => {
               if (event.data?.type === "GITHUB_LOGIN_SUCCESS") {
-                console.log("Received Github login success:", event.data);
                 window.removeEventListener("message", handleMessage);
                 resolve({
                   user: event.data.user,
@@ -212,7 +209,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           },
         );
 
-        console.log("Setting user data in context:", result.user);
         setUser(result.user);
         setToken(result.token);
         localStorage.setItem("user", JSON.stringify(result.user));
@@ -248,7 +244,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           (resolve, reject) => {
             const handleMessage = (event: MessageEvent) => {
               if (event.data?.type === "DISCORD_LOGIN_SUCCESS") {
-                console.log("Received Discord login success:", event.data);
                 window.removeEventListener("message", handleMessage);
                 resolve({
                   user: event.data.user,
@@ -272,8 +267,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }, 1000);
           },
         );
-
-        console.log("Setting user data in context:", result.user);
         setUser(result.user);
         setToken(result.token);
         localStorage.setItem("user", JSON.stringify(result.user));
@@ -292,8 +285,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     Cookies.remove("auth-token", { path: "/" });
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    localStorage.clear();
+    sessionStorage.clear();
     setToken(null);
     setUser(null);
     setError(null);

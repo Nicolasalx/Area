@@ -222,7 +222,6 @@ export default function DataForm({
       return "emoji";
     }
 
-    // Default to text if no special case matches
     return field.type || "text";
   };
 
@@ -265,17 +264,19 @@ export default function DataForm({
             const inputType = determineInputType(field);
 
             return (
-              <div key={key} className="space-y-1">
-                {field.type === "select" && field.options ? (
-                  <div>
+              <div key={key}>
+                {field.options ? (
+                  <>
                     <label
                       htmlFor={key}
                       className="block text-sm font-medium text-gray-700"
                     >
                       {displayName}
-                      {field.required && (
-                        <span className="text-red-500">*</span>
-                      )}
+                      {
+                        /*field.required*/ true && (
+                          <span className="text-red-500">*</span>
+                        )
+                      }
                     </label>
                     <select
                       id={key}
@@ -283,7 +284,7 @@ export default function DataForm({
                       onChange={(e) => handleInputChange(field, e.target.value)}
                       className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
                     >
-                      <option value="">
+                      <option value={undefined}>
                         Select {displayName.toLowerCase()}
                       </option>
                       {field.options.map((option) => (
@@ -292,11 +293,11 @@ export default function DataForm({
                         </option>
                       ))}
                     </select>
-                  </div>
+                  </>
                 ) : inputType === "time" ? (
                   <TimeInput
                     label={displayName}
-                    required={field.required}
+                    required={/*field.required*/ true}
                     value={formData[key] || ""}
                     onChange={(e) => handleInputChange(field, e.target.value)}
                     error={errors[key]}
@@ -305,7 +306,7 @@ export default function DataForm({
                 ) : inputType === "date" ? (
                   <DateInput
                     label={displayName}
-                    required={field.required}
+                    required={/*field.required*/ true}
                     value={formData[key] || ""}
                     onChange={(date) => handleInputChange(field, date)}
                     error={errors[key]}
@@ -314,7 +315,7 @@ export default function DataForm({
                 ) : (
                   <ValidatedInput
                     label={displayName}
-                    required={field.required}
+                    required={/*field.required*/ true}
                     type={getInputType(field)}
                     placeholder={field.description}
                     value={formData[key] || ""}
