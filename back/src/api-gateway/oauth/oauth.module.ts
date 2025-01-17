@@ -17,7 +17,13 @@ import { SpotifyService } from './spotify/spotify.service';
     PrismaServiceModule,
     HttpModule,
   ],
-  providers: [GithubService, GoogleService, DiscordService, SpotifyService, OAuthService],
+  providers: [
+    GithubService,
+    GoogleService,
+    DiscordService,
+    SpotifyService,
+    OAuthService,
+  ],
   controllers: [OAuthController],
   exports: [OAuthService],
 })

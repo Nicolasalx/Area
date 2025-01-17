@@ -8,6 +8,7 @@ import { HttpService } from '@nestjs/axios';
 import { UserService } from '@userService/user/user.service';
 import { DiscordService } from '../discord/discord.service';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
+import { SpotifyService } from '../spotify/spotify.service';
 
 describe('OAuthController', () => {
   let controller: OAuthController;
@@ -21,6 +22,7 @@ describe('OAuthController', () => {
         GoogleService,
         GithubService,
         DiscordService,
+        SpotifyService,
         {
           provide: JwtService,
           useValue: {
@@ -59,6 +61,13 @@ describe('OAuthController', () => {
         },
         {
           provide: DiscordService,
+          useValue: {
+            requestOAuthToken: jest.fn(),
+            requestUserInfo: jest.fn(),
+          },
+        },
+        {
+          provide: SpotifyService,
           useValue: {
             requestOAuthToken: jest.fn(),
             requestUserInfo: jest.fn(),

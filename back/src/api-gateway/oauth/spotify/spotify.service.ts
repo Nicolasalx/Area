@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import {
-  UserOAuthResponse,
-} from '@common/interfaces/user/user';
+import { UserOAuthResponse } from '@common/interfaces/user/user';
 import { IServiceOauth } from '../oauth/IServiceOauth';
 
 @Injectable()
@@ -31,12 +29,11 @@ export class SpotifyService implements IServiceOauth {
 
   async requestUserInfo(access_token: string): Promise<UserOAuthResponse> {
     return {
-      name: "spotify_user",
-      email: "spotify_email",
-      picture: "spotify_picture",
+      name: 'spotify_user',
+      email: 'spotify_email',
+      picture: 'spotify_picture',
     };
   }
 
-  async revokeAccessToken(access_token: string): Promise<any> {
-  }
+  async revokeAccessToken(access_token: string): Promise<any> {}
 }
