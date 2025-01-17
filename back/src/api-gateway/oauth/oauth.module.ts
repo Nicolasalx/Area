@@ -8,6 +8,7 @@ import { UserServiceModule } from '@userService/user-service.module';
 import { JwtConfigModule } from 'src/shared/jwt/jwt-config.module';
 import { DiscordService } from './discord/discord.service';
 import { PrismaServiceModule } from '@prismaService/prisma-service.module';
+import { SpotifyService } from './spotify/spotify.service';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { PrismaServiceModule } from '@prismaService/prisma-service.module';
     PrismaServiceModule,
     HttpModule,
   ],
-  providers: [GithubService, GoogleService, DiscordService, OAuthService],
+  providers: [GithubService, GoogleService, DiscordService, SpotifyService, OAuthService],
   controllers: [OAuthController],
   exports: [OAuthService],
 })
