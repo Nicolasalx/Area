@@ -1,7 +1,7 @@
 INSERT INTO "Services" ("name", "description", "isActive", "oauthNeed", "createdAt")
 VALUES
     ('google', 'Google services like Gmail, Calendar, Drive, etc.', true, true, NOW()),
-    ('github', 'Github services for developpers.', true, true, NOW()),
+    ('github', 'Github services for developers.', true, true, NOW()),
     ('discord', 'Discord webhook.', true, true, NOW()),
     ('time', 'Time with cron and timer.', true, false, NOW()),
     ('rss', 'RSS feed monitoring.', true, false, NOW()),

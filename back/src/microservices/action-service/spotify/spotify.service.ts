@@ -67,7 +67,7 @@ export class SpotifyActionService {
               'No Artists',
           },
           {
-            field: 'song_realease_date',
+            field: 'song_release_date',
             value: trackData.item.album.release_date || 'No Release Date',
           },
           { field: 'trigger_date', value: getTriggerDate() },

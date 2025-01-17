@@ -100,7 +100,8 @@ Add a file in the handler folder to register the actions later.
 ![image](https://github.com/user-attachments/assets/aec872b5-eb73-4c7c-afa7-4a01dc18e2a3)
 
 A file like this:
-```ts
+
+``` ts
 import { Injectable } from '@nestjs/common';
 import { ActiveAction, ActiveReaction } from '@prisma/client';
 import { IActionHandler } from './base.handler';
@@ -231,7 +232,6 @@ VALUES
 When you call the function `executeReactions`, you must pass an array with all your ingredients, as shown here:
 
 ![image](https://github.com/user-attachments/assets/0986c455-03f8-4230-9d9d-51e99fa73d68)
-
 
 These will then allow you to modify the reaction fields using the ingredients of the action.
 

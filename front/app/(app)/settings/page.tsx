@@ -4,6 +4,12 @@ import Text from "@/components/ui/Text";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { config } from "@/config";
+import {
+  formatActionReactionName,
+  getServiceIcon,
+} from "@/app/(app)/workflows/utils/";
+import Button from "@/components/ui/Button";
+import { Dot } from "lucide-react";
 
 interface Service {
   id: number;
@@ -108,7 +114,6 @@ export default function ProfilePage() {
       try {
         const response = await getServices(userData.id);
         setServices(response.data);
-        console.log(response.data);
       } catch (error) {
         console.error("Error fetching services:", error);
       }
@@ -126,65 +131,87 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="space-y-4 p-4">
-      <Text className="mb-6 text-2xl font-bold">Services Configuration</Text>
-      {services.map((service) => (
-        <div key={service.id} className="rounded-lg bg-gray-100 p-6 shadow-md">
-          <div className="flex items-center justify-between">
-            <div>
-              <Text className="text-xl font-semibold">{service.name}</Text>
-              <Text className="mt-1 text-gray-600 dark:text-gray-400">
-                {service.description}
-              </Text>
-            </div>
-            <div className="flex items-center gap-4">
-              <Text
-                className={`${service.isSet ? "text-green-500" : "text-red-500"}`}
-              >
-                {service.isSet ? "Connected" : "Not Connected"}
-              </Text>
-              {service.isSet ? (
-                <button
-                  onClick={() => handleOAuthDisconnect(userData.id, service.id)}
-                  className="rounded-md bg-red-500 px-4 py-2 text-white transition-colors hover:bg-red-600"
-                >
-                  Disconnect
-                </button>
-              ) : service.oauthNeed ? (
-                <button
-                  onClick={() => handleOAuthConnect(service.name)}
-                  className="flex items-center gap-2 rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
-                >
-                  <span>Connect with {service.name}</span>
-                </button>
-              ) : (
-                <div className="flex gap-2">
-                  <input
-                    type="password"
-                    placeholder="Enter API Key"
-                    value={apiKeys[service.id] || ""}
-                    onChange={(e) =>
-                      setApiKeys({
-                        ...apiKeys,
-                        [service.id]: e.target.value,
-                      })
-                    }
-                    className="rounded-md border px-3 py-2 focus:border-blue-500 focus:outline-none"
-                  />
-                  <button
-                    onClick={() =>
-                      handleApiKeySubmit(service.id, apiKeys[service.id] || "")
-                    }
-                    className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+    <>
+      <Text className="mb-6 p-4 text-2xl font-bold">
+        Services Configuration
+      </Text>
+      <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3">
+        {services.map((service) => (
+          <div
+            key={service.id}
+            className="h-full w-full rounded-lg bg-white p-6 shadow-md shadow-gray-300/50"
+          >
+            <div className="flex h-full w-full grid-cols-2 flex-col items-center justify-between gap-4">
+              <div className="w-full">
+                <div className="flex flex-row justify-between gap-4">
+                  <Text className="flex flex-row gap-2 align-bottom text-xl font-semibold">
+                    {getServiceIcon(service.name, "h-7 w-7")}
+                    {formatActionReactionName(service.name)}
+                  </Text>
+                  <div
+                    className={`flex flex-row justify-center ${service.isSet ? "text-green-500" : "text-red-500"}`}
                   >
-                    Validate
-                  </button>
+                    <Dot className={service.isSet ? "animate-pulse" : ""} />
+                    <Text
+                      className={`inline-block ${service.isSet ? "text-green-500" : "text-red-500"}`}
+                    >
+                      {service.isSet ? "Connected" : "Not Connected"}
+                    </Text>
+                  </div>
                 </div>
-              )}
+                <Text className="mt-1 text-gray-600">
+                  {service.description}
+                </Text>
+              </div>
+              <div className="flex w-full flex-col items-center gap-4">
+                {service.isSet ? (
+                  <Button
+                    onClick={() =>
+                      handleOAuthDisconnect(userData.id, service.id)
+                    }
+                    className="w-full"
+                  >
+                    Disconnect
+                  </Button>
+                ) : service.oauthNeed ? (
+                  <Button
+                    onClick={() => handleOAuthConnect(service.name)}
+                    className="w-full"
+                  >
+                    <span>Connect with {service.name}</span>
+                  </Button>
+                ) : (
+                  <div className="flex w-full flex-col gap-2">
+                    <input
+                      type="password"
+                      placeholder="Enter API Key"
+                      value={apiKeys[service.id] || ""}
+                      onChange={(e) =>
+                        setApiKeys({
+                          ...apiKeys,
+                          [service.id]: e.target.value,
+                        })
+                      }
+                      className="rounded-md border px-3 py-2 focus:border-blue-500 focus:outline-none"
+                    />
+                    <Button
+                      onClick={() =>
+                        handleApiKeySubmit(
+                          service.id,
+                          apiKeys[service.id] || "",
+                        )
+                      }
+                      className="w-full"
+                    >
+                      Validate
+                    </Button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </>
   );
 }

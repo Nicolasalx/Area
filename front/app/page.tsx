@@ -328,7 +328,7 @@ export default function LandingPage() {
                   statsInView ? "animate-scaleIn" : "opacity-0"
                 }`}
               >
-                30+
+                20+
               </div>
               <div className="mt-2 text-center text-base text-gray-600">
                 Available Reactions
@@ -344,7 +344,7 @@ export default function LandingPage() {
                   statsInView ? "animate-scaleIn" : "opacity-0"
                 }`}
               >
-                25+
+                35+
               </div>
               <div className="mt-2 text-center text-base text-gray-600">
                 Available Actions
