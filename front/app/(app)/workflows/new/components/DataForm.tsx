@@ -204,6 +204,9 @@ export default function DataForm({
       field.field.toLowerCase().includes("hour") ||
       field.field.toLowerCase().includes("time")
     ) {
+      if (field.field.toLowerCase().includes("timezone")) {
+        return "text";
+      }
       return "time";
     }
     if (
