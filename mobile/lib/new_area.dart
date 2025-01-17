@@ -512,7 +512,7 @@ class _NewAreaPageState extends State<NewAreaPage> {
                 });
               },
             );
-          } else if (field['field'] == 'hour') {
+          } else if (field['field'] == 'hour' || field['field'] == 'time') {
             inputField = CustomTimeField(
               label: fieldName,
               helperText: field['description'] as String?,
