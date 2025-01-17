@@ -3,10 +3,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'confirmation.dart' as confirmation;
 import 'globals.dart' as globals;
 import 'package:http/http.dart' as http;
+import 'services_configuration.dart';
 
 const routeHome = '/';
 const routeProfile = "profile";
 const routeSettings = "Settings";
+const routeServicesConfig = "ServicesConfiguration";
 
 Future<int> deleteAccount() async {
   try {
@@ -145,6 +147,26 @@ class ProfilePageHome extends StatelessWidget {
           ),
           Column(
             children: [
+              Row(
+                children: [
+                  ProfileButton(
+                    text: Text(
+                      " Services Configuration",
+                      style: TextStyle(
+                        fontSize: 22,
+                      ),
+                    ),
+                    path: "",
+                    icon: Icon(
+                      Icons.key,
+                      size: 30,
+                    ),
+                    fun: () {
+                      callback(routeServicesConfig);
+                    },
+                  ),
+                ],
+              ),
               Row(
                 children: [
                   ProfileButton(
@@ -330,6 +352,9 @@ class _ProfilePageState extends State<ProfilePage> {
           callback: setPath,
         ),
       routeSettings => ProfilePageSettings(
+          callback: setPath,
+        ),
+      routeServicesConfig => ServicesConfigurationPage(
           callback: setPath,
         ),
       _ => throw StateError('Unexpected route name: $path!'),
