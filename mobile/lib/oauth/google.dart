@@ -25,7 +25,6 @@ class AuthGoogle {
             .write(key: 'id', value: responseData["user"]["id"]);
         await globals.storage
             .write(key: 'picture', value: responseData["user"]["picture"]);
-        print(responseData["user"]["picture"]);
         globals.navigatorKey.currentState!
             .popUntil(ModalRoute.withName(routeHome));
         globals.navigatorKey.currentState!.pushNamed(routeHome);
