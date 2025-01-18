@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-import type { PluginAPI } from 'tailwindcss/types/config';
+import type { PluginAPI } from "tailwindcss/types/config";
 
 export default {
   content: [
@@ -14,20 +14,20 @@ export default {
         foreground: "var(--foreground)",
       },
       keyframes: {
-        'infinite-scroll': {
-          '0%': { transform: 'translateX(0)' },
-          '100%': { transform: 'translateX(calc(-33.33333%))' }
-        }
+        "infinite-scroll": {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(calc(-33.33333%))" },
+        },
       },
       animation: {
-        'infinite-scroll': 'infinite-scroll 30s linear infinite'
-      }
+        "infinite-scroll": "infinite-scroll 30s linear infinite",
+      },
     },
   },
   plugins: [
-    function({ addVariant }: PluginAPI) {
-      addVariant('hover-group', '.hover-group &')
-      addVariant('hover-group-hover', '.hover-group:hover &')
+    function ({ addVariant }: PluginAPI) {
+      addVariant("hover-group", ".hover-group &");
+      addVariant("hover-group-hover", ".hover-group:hover &");
     },
   ],
   safelist: [

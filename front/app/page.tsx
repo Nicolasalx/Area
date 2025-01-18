@@ -59,7 +59,7 @@ const services = [
   { name: "GitHub", icon: <GitHubIcon /> },
   { name: "Discord", icon: <DiscordIcon /> },
   { name: "Slack", icon: <SlackIcon /> },
-  { name: "Spotify", icon: <SpotifyIcon /> }
+  { name: "Spotify", icon: <SpotifyIcon /> },
 ];
 
 const features = [
@@ -375,7 +375,7 @@ export default function LandingPage() {
             <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-32 bg-gradient-to-r from-gray-50" />
             <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-32 bg-gradient-to-l from-gray-50" />
             <div className="relative flex overflow-hidden">
-              <div className="flex animate-infinite-scroll my-4">
+              <div className="my-4 flex animate-infinite-scroll">
                 {/* First set of services */}
                 <div className="flex shrink-0 gap-4 pr-4">
                   {services.map((service, index) => (
@@ -383,15 +383,17 @@ export default function LandingPage() {
                       key={`first-${service.name}-${index}`}
                       className="group inline-flex min-w-[200px] flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white p-6 transition-all duration-300 hover:border-indigo-500 hover:shadow-lg"
                       onMouseEnter={(e) => {
-                        const parent = e.currentTarget.parentElement?.parentElement;
+                        const parent =
+                          e.currentTarget.parentElement?.parentElement;
                         if (parent) {
-                          parent.style.animationPlayState = 'paused';
+                          parent.style.animationPlayState = "paused";
                         }
                       }}
                       onMouseLeave={(e) => {
-                        const parent = e.currentTarget.parentElement?.parentElement;
+                        const parent =
+                          e.currentTarget.parentElement?.parentElement;
                         if (parent) {
-                          parent.style.animationPlayState = 'running';
+                          parent.style.animationPlayState = "running";
                         }
                       }}
                     >
@@ -411,15 +413,17 @@ export default function LandingPage() {
                       key={`second-${service.name}-${index}`}
                       className="group inline-flex min-w-[200px] flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white p-6 transition-all duration-300 hover:border-indigo-500 hover:shadow-lg"
                       onMouseEnter={(e) => {
-                        const parent = e.currentTarget.parentElement?.parentElement;
+                        const parent =
+                          e.currentTarget.parentElement?.parentElement;
                         if (parent) {
-                          parent.style.animationPlayState = 'paused';
+                          parent.style.animationPlayState = "paused";
                         }
                       }}
                       onMouseLeave={(e) => {
-                        const parent = e.currentTarget.parentElement?.parentElement;
+                        const parent =
+                          e.currentTarget.parentElement?.parentElement;
                         if (parent) {
-                          parent.style.animationPlayState = 'running';
+                          parent.style.animationPlayState = "running";
                         }
                       }}
                     >
@@ -439,15 +443,17 @@ export default function LandingPage() {
                       key={`third-${service.name}-${index}`}
                       className="group inline-flex min-w-[200px] flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white p-6 transition-all duration-300 hover:border-indigo-500 hover:shadow-lg"
                       onMouseEnter={(e) => {
-                        const parent = e.currentTarget.parentElement?.parentElement;
+                        const parent =
+                          e.currentTarget.parentElement?.parentElement;
                         if (parent) {
-                          parent.style.animationPlayState = 'paused';
+                          parent.style.animationPlayState = "paused";
                         }
                       }}
                       onMouseLeave={(e) => {
-                        const parent = e.currentTarget.parentElement?.parentElement;
+                        const parent =
+                          e.currentTarget.parentElement?.parentElement;
                         if (parent) {
-                          parent.style.animationPlayState = 'running';
+                          parent.style.animationPlayState = "running";
                         }
                       }}
                     >
