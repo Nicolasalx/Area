@@ -83,7 +83,7 @@ class _ServicesConfigurationPageState extends State<ServicesConfigurationPage> {
       }
     } catch (error) {
       Fluttertoast.showToast(
-        msg:'Failed to load services',
+        msg: 'Failed to load services',
         backgroundColor: Colors.red,
       );
       setState(() => isLoading = false);
@@ -91,23 +91,23 @@ class _ServicesConfigurationPageState extends State<ServicesConfigurationPage> {
   }
 
   Future<void> handleOAuthConnect(String serviceName) async {
-  switch (serviceName.toLowerCase()) {
-    case 'github':
-      globals.navigatorKey.currentState!.pushNamed('/oauth/github');
-      break;
-    case 'google':
-      globals.navigatorKey.currentState!.pushNamed('/oauth/google');
-      break;
-    case 'discord':
-      globals.navigatorKey.currentState!.pushNamed('/oauth/discord');
-      break;
-    default:
-      Fluttertoast.showToast(
-        msg: 'Unsupported OAuth service',
-        backgroundColor: Colors.red,
-      );
+    switch (serviceName.toLowerCase()) {
+      case 'github':
+        globals.navigatorKey.currentState!.pushNamed('/oauth/github');
+        break;
+      case 'google':
+        globals.navigatorKey.currentState!.pushNamed('/oauth/google');
+        break;
+      case 'discord':
+        globals.navigatorKey.currentState!.pushNamed('/oauth/discord');
+        break;
+      default:
+        Fluttertoast.showToast(
+          msg: 'Unsupported OAuth service',
+          backgroundColor: Colors.red,
+        );
+    }
   }
-}
 
   Future<void> handleOAuthDisconnect(int serviceId) async {
     try {
@@ -145,55 +145,65 @@ class _ServicesConfigurationPageState extends State<ServicesConfigurationPage> {
   }
 
   Future<void> handleApiKeySubmit(int serviceId, String apiKey) async {
-  try {
-    final userId = await globals.storage.read(key: 'id');
-    final token = await globals.storage.read(key: 'token');
-    final server = await globals.storage.read(key: 'server');
+    try {
+      final userId = await globals.storage.read(key: 'id');
+      final token = await globals.storage.read(key: 'token');
+      final server = await globals.storage.read(key: 'server');
 
-    if (apiKey.isEmpty) {
+      if (apiKey.isEmpty) {
+        Fluttertoast.showToast(
+          msg: 'API key cannot be empty',
+          backgroundColor: Colors.red,
+        );
+        return;
+      }
+
+      final response = await http.post(
+        Uri.parse('http://$server/auth/service/apikey'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'userId': userId,
+          'serviceId': serviceId,
+          'apiKey': apiKey,
+        }),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        await fetchServices();
+        Fluttertoast.showToast(
+          msg: 'API key set successfully',
+          backgroundColor: Colors.green,
+        );
+      } else {
+        final errorData = json.decode(response.body);
+        throw Exception(errorData['message'] ?? 'Failed to set API key');
+      }
+    } catch (error) {
       Fluttertoast.showToast(
-        msg: 'API key cannot be empty',
+        msg: error.toString(),
         backgroundColor: Colors.red,
       );
-      return;
     }
-
-    final response = await http.post(
-      Uri.parse('http://$server/auth/service/apikey'),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-      body: json.encode({
-        'userId': userId,
-        'serviceId': serviceId,
-        'apiKey': apiKey,
-      }),
-    );
-
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      await fetchServices();
-      Fluttertoast.showToast(
-        msg: 'API key set successfully',
-        backgroundColor: Colors.green,
-      );
-    } else {
-      final errorData = json.decode(response.body);
-      throw Exception(errorData['message'] ?? 'Failed to set API key');
-    }
-  } catch (error) {
-    Fluttertoast.showToast(
-      msg: error.toString(),
-      backgroundColor: Colors.red,
-    );
   }
-}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Services Configuration',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           Expanded(
             child: isLoading
                 ? const Center(child: CircularProgressIndicator())
@@ -205,7 +215,6 @@ class _ServicesConfigurationPageState extends State<ServicesConfigurationPage> {
                       if (!apiKeyControllers.containsKey(service.id)) {
                         apiKeyControllers[service.id] = TextEditingController();
                       }
-
                       return Card(
                         margin: const EdgeInsets.only(bottom: 16),
                         child: Padding(
@@ -213,28 +222,30 @@ class _ServicesConfigurationPageState extends State<ServicesConfigurationPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                service.name,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                service.description,
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
+                                  Text(
+                                    service.name.substring(0, 1).toUpperCase() +
+                                        service.name.substring(1),
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
                                     children: [
+                                      Icon(
+                                        service.isSet
+                                            ? Icons.circle
+                                            : Icons.circle_outlined,
+                                        size: 12,
+                                        color: service.isSet
+                                            ? Colors.green
+                                            : Colors.red,
+                                      ),
+                                      const SizedBox(width: 4),
                                       Text(
                                         service.isSet
                                             ? 'Connected'
@@ -246,76 +257,78 @@ class _ServicesConfigurationPageState extends State<ServicesConfigurationPage> {
                                           fontWeight: FontWeight.w500,
                                         ),
                                       ),
-                                      if (service.isSet)
-                                        ElevatedButton(
-                                          onPressed: () =>
-                                              handleOAuthDisconnect(service.id),
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.red,
-                                          ),
-                                          child: const Text(
-                                            'Disconnect',
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        )
-                                      else if (service.oauthNeed)
-                                        ElevatedButton(
-                                          onPressed: () =>
-                                              handleOAuthConnect(service.name),
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.black,
-                                          ),
-                                          child: Text(
-                                            'Connect with ${service.name}',
-                                            style: const TextStyle(
-                                                color: Colors.white),
-                                          ),
-                                        )
                                     ],
                                   ),
-                                  if (!service.isSet && !service.oauthNeed)
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                      children: [
-                                        TextField(
-                                          controller:
-                                              apiKeyControllers[service.id],
-                                          decoration: const InputDecoration(
-                                            hintText: 'Enter API Key',
-                                            border: OutlineInputBorder(),
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                              horizontal: 12,
-                                              vertical: 8,
-                                            ),
-                                          ),
-                                          obscureText: true,
-                                        ),
-                                        const SizedBox(height: 8),
-                                        Align(
-                                          alignment: Alignment.centerRight,
-                                          child: ElevatedButton(
-                                            onPressed: () => handleApiKeySubmit(
-                                              service.id,
-                                              apiKeyControllers[service.id]!
-                                                  .text,
-                                            ),
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.black,
-                                            ),
-                                            child: const Text(
-                                              'Validate',
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
                                 ],
-                              )
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                service.description,
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              if (service.isSet)
+                                ElevatedButton(
+                                  onPressed: () =>
+                                      handleOAuthDisconnect(service.id),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.black,
+                                    minimumSize: const Size.fromHeight(40),
+                                  ),
+                                  child: const Text(
+                                    'Disconnect',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                )
+                              else if (service.oauthNeed)
+                                ElevatedButton(
+                                  onPressed: () =>
+                                      handleOAuthConnect(service.name),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.black,
+                                    minimumSize: const Size.fromHeight(40),
+                                  ),
+                                  child: Text(
+                                    'Connect with ${service.name}',
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                )
+                              else
+                                Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    TextField(
+                                      controller: apiKeyControllers[service.id],
+                                      decoration: const InputDecoration(
+                                        hintText: 'Enter API Key',
+                                        border: OutlineInputBorder(),
+                                        contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 8,
+                                        ),
+                                      ),
+                                      obscureText: true,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    ElevatedButton(
+                                      onPressed: () => handleApiKeySubmit(
+                                        service.id,
+                                        apiKeyControllers[service.id]!.text,
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.black,
+                                        minimumSize: const Size.fromHeight(40),
+                                      ),
+                                      child: const Text(
+                                        'Validate',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                             ],
                           ),
                         ),
