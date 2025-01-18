@@ -63,7 +63,7 @@ const handleOAuthConnect = (service: string) => {
       authUrl = `https://accounts.spotify.com/authorize?client_id=${config.SPOTIFY_CLIENT_ID}&redirect_uri=${config.SPOTIFY_REDIRECT_URI}&response_type=code&scope=user-library-read playlist-read-private user-top-read user-read-playback-state playlist-modify-private playlist-modify-public&state=${state}`;
       break;
     case "trello":
-      authUrl = `https://api.trello.com/1/OAuthAuthorizeToken?&expiration=never&scope=read%2Cwrite&key=844acf0f349c2724c857bd80fb18183a&oauth_callback=${config.TRELLO_REDIRECT_URI}`;
+      authUrl = `https://api.trello.com/1/OAuthAuthorizeToken?&expiration=never&scope=read%2Cwrite&key=${config.TRELLO_API_KEY}&oauth_callback=${config.TRELLO_REDIRECT_URI}`;
       break;
     default:
       break;
@@ -204,7 +204,7 @@ export default function ProfilePage() {
                   >
                     <span>Connect with {service.name}</span>
                   </Button>
-                ) : service.name == "trello" ? (
+                ) : service.name === "trello" ? (
                   <Button
                     onClick={() => handleOAuthConnect(service.name)}
                     className="w-full"

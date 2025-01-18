@@ -13,9 +13,23 @@ export default function TrelloPage() {
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/trello/callback/?token=${token}&state=${state}`,
       )
       .then(() => {
+        window.opener.postMessage(
+          {
+            type: "TRELLO_LOGIN_SUCCESS",
+          },
+          "*",
+        );
         window.close();
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error("Trello callback error:", error);
+        window.opener.postMessage(
+          {
+            type: "TRELLO_LOGIN_ERROR",
+            error: "Authentication failed",
+          },
+          "*",
+        );
         window.close();
       });
   }, []);

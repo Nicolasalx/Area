@@ -9,4 +9,5 @@ export const config = {
   SPOTIFY_CLIENT_ID: process.env.SPOTIFY_CLIENT_ID,
   SPOTIFY_REDIRECT_URI: process.env.SPOTIFY_REDIRECT_URI,
   TRELLO_REDIRECT_URI: process.env.TRELLO_REDIRECT_URI,
+  TRELLO_API_KEY: process.env.TRELLO_API_KEY,
 } as const;
