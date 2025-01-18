@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'globals.dart' as globals;
 import 'package:http/http.dart' as http;
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:area/svg_services.dart';
 
 class Service {
   final int id;
@@ -226,12 +228,40 @@ class _ServicesConfigurationPageState extends State<ServicesConfigurationPage> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    service.name.substring(0, 1).toUpperCase() +
-                                        service.name.substring(1),
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 48,
+                                          height: 48,
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey[100],
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          child: Center(
+                                            child: SvgPicture.string(
+                                              getServiceSvg(service.name),
+                                              width: 32,
+                                              height: 32,
+                                              fit: BoxFit.contain,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Text(
+                                            service.name
+                                                    .substring(0, 1)
+                                                    .toUpperCase() +
+                                                service.name.substring(1),
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   Row(
