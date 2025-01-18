@@ -78,7 +78,6 @@ export class ActionService {
               },
             },
           );
-          console.log('SERVICE NAME: ', service.name);
           console.log('Axios response :', response.data);
         } catch (error) {
           console.error(
@@ -122,7 +121,6 @@ export class ActionService {
     this.updateToken();
 
     for (const reaction of reactions) {
-      // ! When the type PR will be finished, modify only field when it'a string type
       await this.modifyReactionData(ingredientsAction, reaction);
       try {
         const service = await this.prisma.services.findUnique({
@@ -138,7 +136,7 @@ export class ActionService {
 
         const refreshToken = await getToken(
           await getUserId(workflowId),
-          'google',
+          service.name,
         );
 
         try {
@@ -156,7 +154,6 @@ export class ActionService {
               },
             },
           );
-          console.log('SERVICE NAME: ', service.name);
           console.log('Axios response :', response.data);
         } catch (error) {
           console.error(

@@ -14,10 +14,6 @@ export class GoogleReactionService {
         return this.sendEmail(refreshToken, data);
       case 'set_calendar_event':
         return this.setCalendarEvent(refreshToken, data);
-      case 'create_task':
-        return this.createTask(refreshToken, data);
-      case 'create_drive_element':
-        return this.createElementInDrive(refreshToken, data);
       case 'create_youtube_playlist':
         return this.createYoutubePlaylist(refreshToken, data);
       default:
@@ -54,7 +50,7 @@ export class GoogleReactionService {
           description: description || '',
         },
         status: {
-          privacyStatus: privacyStatus, // In the request we can set to 'public', 'private' or 'unlisted'
+          privacyStatus: privacyStatus,
         },
       };
 
@@ -69,100 +65,6 @@ export class GoogleReactionService {
     } catch (error) {
       console.error('Error creating YouTube playlist:', error);
       return 'Error creating YouTube playlist!';
-    }
-  }
-
-  private async createElementInDrive(
-    refreshToken: string,
-    data: {
-      title: string;
-      elementType: string;
-    },
-  ): Promise<string> {
-    const { title, elementType } = data;
-    const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-    const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-    const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;
-
-    const elementTypeMapping: { [key: string]: string } = {
-      docs: 'application/vnd.google-apps.document',
-      sheets: 'application/vnd.google-apps.spreadsheet',
-      slides: 'application/vnd.google-apps.presentation',
-      forms: 'application/vnd.google-apps.form',
-      folder: 'application/vnd.google-apps.folder',
-    };
-
-    const mimeType = elementTypeMapping[elementType.toLowerCase()];
-    if (!mimeType) {
-      return 'Invalid element type provided! Supported types: docs, sheets, slides, forms.';
-    }
-
-    try {
-      const oAuth2Client = new google.auth.OAuth2(
-        CLIENT_ID,
-        CLIENT_SECRET,
-        REDIRECT_URI,
-      );
-      oAuth2Client.setCredentials({ refresh_token: refreshToken });
-
-      const drive = google.drive({ version: 'v3', auth: oAuth2Client });
-
-      const response = await drive.files.create({
-        requestBody: {
-          name: title,
-          mimeType,
-        },
-        fields: 'id',
-      });
-
-      console.log('Element created successfully:', response.data);
-      return `Element created successfully with ID: ${response.data.id}`;
-    } catch (error) {
-      console.error('Error creating element:', error);
-      return 'Error creating element!';
-    }
-  }
-
-  private async createTask(
-    refreshToken: string,
-    data: {
-      tasklist?: string;
-      title: string;
-      notes?: string;
-      due?: string;
-    },
-  ): Promise<string> {
-    const { tasklist, title, notes, due } = data;
-    const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-    const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-    const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;
-
-    try {
-      const oAuth2Client = new google.auth.OAuth2(
-        CLIENT_ID,
-        CLIENT_SECRET,
-        REDIRECT_URI,
-      );
-      oAuth2Client.setCredentials({ refresh_token: refreshToken });
-
-      const tasks = google.tasks({ version: 'v1', auth: oAuth2Client });
-
-      const task = {
-        title,
-        notes,
-        due,
-      };
-
-      const response = await tasks.tasks.insert({
-        tasklist: tasklist || '@default',
-        requestBody: task,
-      });
-
-      console.log('Task created successfully:', response.data);
-      return `Task created successfully with ID: ${response.data.id}`;
-    } catch (error) {
-      console.error('Error creating task:', error);
-      return 'Error creating task!';
     }
   }
 
