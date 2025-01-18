@@ -15,19 +15,20 @@ export default function TrelloPage() {
       .then(() => {
         window.opener.postMessage(
           {
-            type: 'TRELLO_LOGIN_SUCCESS'
+            type: "TRELLO_LOGIN_SUCCESS",
           },
-          '*'
+          "*",
         );
         window.close();
-      }).catch((error) => {
+      })
+      .catch((error) => {
         console.error("Trello callback error:", error);
         window.opener.postMessage(
           {
-            type: 'TRELLO_LOGIN_ERROR',
-            error: 'Authentication failed'
+            type: "TRELLO_LOGIN_ERROR",
+            error: "Authentication failed",
           },
-          '*'
+          "*",
         );
         window.close();
       });
