@@ -12,6 +12,7 @@ enum ConnectionType {
   GOOGLE
   DISCORD
   GITHUB
+  SPOTIFY
 }
 
 model Users {

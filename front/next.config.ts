@@ -30,6 +30,8 @@ const config: NextConfig = {
     GITHUB_REDIRECT_URI: process.env.GITHUB_REDIRECT_URI,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI,
+    SPOTIFY_CLIENT_ID: process.env.SPOTIFY_CLIENT_ID,
+    SPOTIFY_REDIRECT_URI: process.env.SPOTIFY_REDIRECT_URI,
   },
 };
 
