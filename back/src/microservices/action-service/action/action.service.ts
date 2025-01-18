@@ -1,7 +1,7 @@
 import { ActionDto } from '@common/dto/action.dto';
 import { IngredientsAction } from '@common/interfaces/ingredientsAction';
 import { getToken, getUserId } from '@common/utils/token.utils';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ActiveReaction } from '@prisma/client';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
 import axios from 'axios';
@@ -47,6 +47,28 @@ export class ActionService {
       serviceId: action.serviceId,
       service: action.service,
       body: action.body,
+    }));
+  }
+
+  async getActionIngredients(actionId: number) {
+    const action = await this.prisma.actions.findUnique({
+      where: { id: actionId },
+      include: {
+        ActionsIngredients: {
+          include: {
+            ingredient: true,
+          },
+        },
+      },
+    });
+
+    if (!action) {
+      throw new NotFoundException(`Action with ID ${actionId} not found`);
+    }
+
+    return action.ActionsIngredients.map((ai) => ({
+      field: ai.ingredient.name,
+      description: ai.ingredient.description,
     }));
   }
 
