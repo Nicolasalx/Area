@@ -8,4 +8,5 @@ export const config = {
   GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI,
   SPOTIFY_CLIENT_ID: process.env.SPOTIFY_CLIENT_ID,
   SPOTIFY_REDIRECT_URI: process.env.SPOTIFY_REDIRECT_URI,
+  TRELLO_REDIRECT_URI: process.env.TRELLO_REDIRECT_URI,
 } as const;
