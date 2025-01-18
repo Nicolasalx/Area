@@ -398,7 +398,7 @@ export class OAuthController {
     schema: {
       properties: {
         token: { type: 'string', example: '12345721' },
-        state: { type: 'string', example: 'userID' }
+        state: { type: 'string', example: 'userID' },
       },
     },
   })
