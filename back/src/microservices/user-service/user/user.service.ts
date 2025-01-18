@@ -62,7 +62,6 @@ export class UserService {
     try {
       this.logger.debug(`Creating user with email: ${email}`);
 
-      // Check if user already exists
       const existingUser = await this.prisma.users.findFirst({
         where: {
           email,

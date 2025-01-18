@@ -29,13 +29,16 @@ export class TwilioReactionService implements IReactionHandler {
     }
   }
 
-  private async sendSms(data: { message: string }): Promise<string> {
+  private async sendSms(data: {
+    message: string;
+    phone_number: string;
+  }): Promise<string> {
     try {
       const response = await axios.post(
         `https://api.twilio.com/2010-04-01/Accounts/${this.accountSid}/Messages.json`,
         new URLSearchParams({
           From: this.twilioPhoneNumber,
-          To: '+33783119455',
+          To: data.phone_number,
           Body: data.message,
         }),
         {
@@ -60,13 +63,14 @@ export class TwilioReactionService implements IReactionHandler {
   private async sendMms(data: {
     message: string;
     img_url: string;
+    phone_number: string;
   }): Promise<string> {
     try {
       const response = await axios.post(
         `https://api.twilio.com/2010-04-01/Accounts/${this.accountSid}/Messages.json`,
         new URLSearchParams({
           From: this.twilioPhoneNumber,
-          To: '+33783119455',
+          To: data.phone_number,
           Body: data.message,
           MediaUrl: data.img_url,
         }),

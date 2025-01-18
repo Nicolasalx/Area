@@ -1,31 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import { IReactionHandler } from '@reaction-service/handler/base.handler';
 import axios from 'axios';
 
 @Injectable()
-export class SpotifyReactionService implements IReactionHandler {
-  canHandle(service: string): boolean {
-    return service === 'spotify';
-  }
-
-  async handle(reaction: string, data: any): Promise<string> {
+export class SpotifyReactionService {
+  async manageReactionSpotify(
+    refreshToken: string,
+    reaction: string,
+    data: any,
+  ): Promise<string> {
     switch (reaction.toLowerCase()) {
       case 'create_spotify_playlist':
-        return this.createPlaylist(data);
+        return this.createPlaylist(refreshToken, data);
       case 'add_song_to_playlist':
-        return this.addSongToPlaylist(data);
+        return this.addSongToPlaylist(refreshToken, data);
       default:
         return 'Reaction not recognized for Spotify';
     }
   }
 
-  private async createPlaylist(data: {
-    playlist_name: string;
-    playlist_type: string;
-  }): Promise<string> {
-    const accessToken = process.env.SPOTIFY_ACCESS_TOKEN;
-
-    if (!accessToken) {
+  private async createPlaylist(
+    refreshToken: string,
+    data: {
+      playlist_name: string;
+      playlist_type: string;
+    },
+  ): Promise<string> {
+    if (!refreshToken) {
       console.log('Access token not available');
       return 'Access token not available';
     }
@@ -33,7 +33,7 @@ export class SpotifyReactionService implements IReactionHandler {
     try {
       const userResponse = await axios.get('https://api.spotify.com/v1/me', {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${refreshToken}`,
         },
       });
 
@@ -48,7 +48,7 @@ export class SpotifyReactionService implements IReactionHandler {
         },
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${refreshToken}`,
             'Content-Type': 'application/json',
           },
         },
@@ -65,13 +65,14 @@ export class SpotifyReactionService implements IReactionHandler {
     }
   }
 
-  private async addSongToPlaylist(data: {
-    playlist_name: string;
-    song_name: string;
-  }): Promise<string> {
-    const accessToken = process.env.SPOTIFY_ACCESS_TOKEN;
-
-    if (!accessToken) {
+  private async addSongToPlaylist(
+    refreshToken: string,
+    data: {
+      playlist_name: string;
+      song_name: string;
+    },
+  ): Promise<string> {
+    if (!refreshToken) {
       console.log('Access token not available');
       return 'Access token not available';
     }
@@ -81,7 +82,7 @@ export class SpotifyReactionService implements IReactionHandler {
         'https://api.spotify.com/v1/me/playlists',
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${refreshToken}`,
           },
         },
       );
@@ -111,7 +112,7 @@ export class SpotifyReactionService implements IReactionHandler {
             limit: 1,
           },
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${refreshToken}`,
           },
         },
       );
@@ -133,7 +134,7 @@ export class SpotifyReactionService implements IReactionHandler {
         },
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${refreshToken}`,
           },
         },
       );
