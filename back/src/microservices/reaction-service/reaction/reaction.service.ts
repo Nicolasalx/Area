@@ -27,7 +27,6 @@ export class ReactionService {
     this.handlers = [
       discordService,
       slackService,
-      trelloService,
       todoistService,
       twilioService,
     ];
@@ -84,6 +83,12 @@ export class ReactionService {
       );
     } else if (service == 'spotify') {
       return await this.spotifyService.manageReactionSpotify(
+        refreshToken,
+        reaction,
+        data,
+      );
+    } else if (service == 'trello') {
+      return await this.trelloService.manageReactionTrello(
         refreshToken,
         reaction,
         data,

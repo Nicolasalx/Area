@@ -1,4 +1,5 @@
 import { ActionService } from '@action-service/action/action.service';
+import { getToken, getUserId } from '@common/utils/token.utils';
 import { Injectable } from '@nestjs/common';
 import { getTriggerDate } from '@trigger-service/handler/get-trigger-date';
 import axios from 'axios';
@@ -12,6 +13,15 @@ export class TrelloActionService {
   constructor(private readonly actionService: ActionService) {}
 
   async newCardCreated(action: any, reaction: any[]): Promise<void> {
+    const { workflowId } = action;
+
+    const REFRESH_TOKEN = await getToken(await getUserId(workflowId), 'trello');
+
+    if (!REFRESH_TOKEN) {
+      console.error('Refresh token is missing !');
+      return;
+    }
+
     const board_short_link = action.data?.board_short_link;
 
     if (!board_short_link) {
@@ -20,7 +30,7 @@ export class TrelloActionService {
     }
 
     try {
-      const url = `https://api.trello.com/1/boards/${board_short_link}/cards?key=${process.env.TRELLO_API_KEY}&token=${process.env.TRELLO_TOKEN}`;
+      const url = `https://api.trello.com/1/boards/${board_short_link}/cards?key=${process.env.TRELLO_API_KEY}&token=${REFRESH_TOKEN}`;
       const response = await axios.get(url);
       const cards = response.data;
 
@@ -49,6 +59,15 @@ export class TrelloActionService {
   }
 
   async detectDeletedCards(action: any, reaction: any[]): Promise<void> {
+    const { workflowId } = action;
+
+    const REFRESH_TOKEN = await getToken(await getUserId(workflowId), 'trello');
+
+    if (!REFRESH_TOKEN) {
+      console.error('Refresh token is missing !');
+      return;
+    }
+
     const board_short_link = action.data?.board_short_link;
 
     if (!board_short_link) {
@@ -57,7 +76,7 @@ export class TrelloActionService {
     }
 
     try {
-      const url = `https://api.trello.com/1/boards/${board_short_link}/cards?key=${process.env.TRELLO_API_KEY}&token=${process.env.TRELLO_TOKEN}`;
+      const url = `https://api.trello.com/1/boards/${board_short_link}/cards?key=${process.env.TRELLO_API_KEY}&token=${REFRESH_TOKEN}`;
       const response = await axios.get(url);
       const cards = response.data;
 
@@ -85,6 +104,15 @@ export class TrelloActionService {
   }
 
   async detectModifiedCards(action: any, reaction: any[]): Promise<void> {
+    const { workflowId } = action;
+
+    const REFRESH_TOKEN = await getToken(await getUserId(workflowId), 'trello');
+
+    if (!REFRESH_TOKEN) {
+      console.error('Refresh token is missing !');
+      return;
+    }
+
     const board_short_link = action.data?.board_short_link;
 
     if (!board_short_link) {
@@ -93,7 +121,7 @@ export class TrelloActionService {
     }
 
     try {
-      const url = `https://api.trello.com/1/boards/${board_short_link}/cards?key=${process.env.TRELLO_API_KEY}&token=${process.env.TRELLO_TOKEN}`;
+      const url = `https://api.trello.com/1/boards/${board_short_link}/cards?key=${process.env.TRELLO_API_KEY}&token=${REFRESH_TOKEN}`;
       const response = await axios.get(url);
       const cards = response.data;
 
@@ -137,6 +165,15 @@ export class TrelloActionService {
   }
 
   async detectMovedCards(action: any, reaction: any[]): Promise<void> {
+    const { workflowId } = action;
+
+    const REFRESH_TOKEN = await getToken(await getUserId(workflowId), 'trello');
+
+    if (!REFRESH_TOKEN) {
+      console.error('Refresh token is missing !');
+      return;
+    }
+
     const board_short_link = action.data?.board_short_link;
 
     if (!board_short_link) {
@@ -145,7 +182,7 @@ export class TrelloActionService {
     }
 
     try {
-      const url = `https://api.trello.com/1/boards/${board_short_link}/cards?key=${process.env.TRELLO_API_KEY}&token=${process.env.TRELLO_TOKEN}`;
+      const url = `https://api.trello.com/1/boards/${board_short_link}/cards?key=${process.env.TRELLO_API_KEY}&token=${REFRESH_TOKEN}`;
       const response = await axios.get(url);
       const cards = response.data;
 
@@ -192,6 +229,15 @@ export class TrelloActionService {
   }
 
   async detectNewLabels(action: any, reaction: any[]): Promise<void> {
+    const { workflowId } = action;
+
+    const REFRESH_TOKEN = await getToken(await getUserId(workflowId), 'trello');
+
+    if (!REFRESH_TOKEN) {
+      console.error('Refresh token is missing !');
+      return;
+    }
+
     const board_short_link = action.data?.board_short_link;
 
     if (!board_short_link) {
@@ -200,7 +246,7 @@ export class TrelloActionService {
     }
 
     try {
-      const url = `https://api.trello.com/1/boards/${board_short_link}/cards?key=${process.env.TRELLO_API_KEY}&token=${process.env.TRELLO_TOKEN}`;
+      const url = `https://api.trello.com/1/boards/${board_short_link}/cards?key=${process.env.TRELLO_API_KEY}&token=${REFRESH_TOKEN}`;
       const response = await axios.get(url);
       const cards = response.data;
 
