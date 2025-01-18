@@ -25,6 +25,20 @@ interface UserData {
   name: string;
 }
 
+const BLACKLISTED_SERVICES = [
+  "opensky",
+  "earthquakealerts",
+  "time",
+  "fuelprice",
+  "discord",
+  "twilio",
+  "coingecko",
+  "openweather",
+  "newsapi",
+  "rss",
+  "worldtime",
+];
+
 const getServices = async (userId: string) => {
   const response = await axios.get(`${config.BACKEND_URL}/auth/${userId}`);
   return response;
@@ -117,7 +131,11 @@ export default function ProfilePage() {
       if (!userData?.id) return;
       try {
         const response = await getServices(userData.id);
-        setServices(response.data);
+        const filteredServices = response.data.filter(
+          (service: Service) =>
+            !BLACKLISTED_SERVICES.includes(service.name.toLowerCase()),
+        );
+        setServices(filteredServices);
       } catch (error) {
         console.error("Error fetching services:", error);
       }
