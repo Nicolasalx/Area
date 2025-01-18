@@ -44,6 +44,9 @@ export default function NewWorkflowPage() {
   const [submitting, setSubmitting] = useState(false);
   const [loadingActions, setLoadingActions] = useState(true);
   const [loadingReactions, setLoadingReactions] = useState(true);
+  const [actionIngredients, setActionIngredients] = useState<
+    Array<{ field: string; description: string }>
+  >([]);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -350,6 +353,31 @@ export default function NewWorkflowPage() {
     { key: "name", label: "Name" },
   ];
 
+  useEffect(() => {
+    const fetchActionIngredients = async () => {
+      if (!selectedAction) return;
+
+      try {
+        const response = await api.get(
+          `/actions/${selectedAction.id}/ingredients`,
+        );
+        setActionIngredients(response.data);
+      } catch (err) {
+        // Use error message if available, otherwise use a generic message
+        const errorMessage =
+          err instanceof Error ? err.message : "Unknown error occurred";
+        showToast(
+          `Failed to load action ingredients: ${errorMessage}`,
+          "error",
+        );
+      }
+    };
+
+    if (currentStep === "reaction-data") {
+      fetchActionIngredients();
+    }
+  }, [currentStep, selectedAction, showToast]);
+
   const renderStep = () => {
     switch (currentStep) {
       case "trigger-service":
@@ -418,6 +446,7 @@ export default function NewWorkflowPage() {
               handleNext();
             }}
             onBack={handleBack}
+            actionIngredients={actionIngredients}
           />
         );
       case "name":
