@@ -104,9 +104,34 @@ class ProfilePageHome extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    Icon(
-                      Icons.person,
-                      size: 50,
+                    FutureBuilder<bool>(
+                      future: globals.storage.containsKey(key: "picture"),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData && snapshot.data!) {
+                          return FutureBuilder(
+                            future: globals.storage.read(
+                              key: "picture",
+                            ),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return ClipRRect(
+                                  borderRadius: BorderRadius.circular(45.0),
+                                  child: Image.network(
+                                    snapshot.data!,
+                                  ),
+                                );
+                              } else {
+                                return CircularProgressIndicator();
+                              }
+                            },
+                          );
+                        } else {
+                          return Icon(
+                            Icons.person,
+                            size: 50,
+                          );
+                        }
+                      },
                     ),
                     FutureBuilder<String?>(
                       future: name,
