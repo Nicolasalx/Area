@@ -16,7 +16,6 @@ export async function GET(
   }
 
   try {
-    console.log(filePath);
     const fileBuffer = fs.readFileSync(filePath);
     const fileName = path.basename(filePath);
 

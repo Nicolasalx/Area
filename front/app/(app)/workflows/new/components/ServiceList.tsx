@@ -127,7 +127,6 @@ export default function ServiceList({
       </div>
     );
   }
-
   const filteredServices = services.filter((service) => {
     if (forTrigger) {
       return actionsByService?.get(service.id)?.length ?? 0 > 0;

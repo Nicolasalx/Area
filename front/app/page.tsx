@@ -59,12 +59,7 @@ const services = [
   { name: "GitHub", icon: <GitHubIcon /> },
   { name: "Discord", icon: <DiscordIcon /> },
   { name: "Slack", icon: <SlackIcon /> },
-  { name: "Spotify", icon: <SpotifyIcon /> },
-  { name: "Google", icon: <GoogleIcon /> },
-  { name: "GitHub", icon: <GitHubIcon /> },
-  { name: "Discord", icon: <DiscordIcon /> },
-  { name: "Slack", icon: <SlackIcon /> },
-  { name: "Spotify", icon: <SpotifyIcon /> },
+  { name: "Spotify", icon: <SpotifyIcon /> }
 ];
 
 const features = [
@@ -379,20 +374,93 @@ export default function LandingPage() {
           >
             <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-32 bg-gradient-to-r from-gray-50" />
             <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-32 bg-gradient-to-l from-gray-50" />
-            <div className="animate-scroll my-4 flex gap-8">
-              {services.map((service, index) => (
-                <div
-                  key={`${service.name}-${index}`}
-                  className="group flex min-w-[200px] flex-col items-center justify-center rounded-2xl border border-gray-200 p-6 transition-all duration-300 hover:border-indigo-500 hover:shadow-lg"
-                >
-                  <div className="mb-4 h-12 w-12 transition-transform duration-300 group-hover:scale-110">
-                    {service.icon}
-                  </div>
-                  <h3 className="text-center text-sm font-medium">
-                    {service.name}
-                  </h3>
+            <div className="relative flex overflow-hidden">
+              <div className="flex animate-infinite-scroll my-4">
+                {/* First set of services */}
+                <div className="flex shrink-0 gap-4 pr-4">
+                  {services.map((service, index) => (
+                    <div
+                      key={`first-${service.name}-${index}`}
+                      className="group inline-flex min-w-[200px] flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white p-6 transition-all duration-300 hover:border-indigo-500 hover:shadow-lg"
+                      onMouseEnter={(e) => {
+                        const parent = e.currentTarget.parentElement?.parentElement;
+                        if (parent) {
+                          parent.style.animationPlayState = 'paused';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        const parent = e.currentTarget.parentElement?.parentElement;
+                        if (parent) {
+                          parent.style.animationPlayState = 'running';
+                        }
+                      }}
+                    >
+                      <div className="mb-4 h-12 w-12 transition-transform duration-300 group-hover:scale-110">
+                        {service.icon}
+                      </div>
+                      <h3 className="text-center text-sm font-medium">
+                        {service.name}
+                      </h3>
+                    </div>
+                  ))}
                 </div>
-              ))}
+                {/* Second set of services */}
+                <div className="flex shrink-0 gap-4 pr-4">
+                  {services.map((service, index) => (
+                    <div
+                      key={`second-${service.name}-${index}`}
+                      className="group inline-flex min-w-[200px] flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white p-6 transition-all duration-300 hover:border-indigo-500 hover:shadow-lg"
+                      onMouseEnter={(e) => {
+                        const parent = e.currentTarget.parentElement?.parentElement;
+                        if (parent) {
+                          parent.style.animationPlayState = 'paused';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        const parent = e.currentTarget.parentElement?.parentElement;
+                        if (parent) {
+                          parent.style.animationPlayState = 'running';
+                        }
+                      }}
+                    >
+                      <div className="mb-4 h-12 w-12 transition-transform duration-300 group-hover:scale-110">
+                        {service.icon}
+                      </div>
+                      <h3 className="text-center text-sm font-medium">
+                        {service.name}
+                      </h3>
+                    </div>
+                  ))}
+                </div>
+                {/* Third set of services */}
+                <div className="flex shrink-0 gap-4 pr-4">
+                  {services.map((service, index) => (
+                    <div
+                      key={`third-${service.name}-${index}`}
+                      className="group inline-flex min-w-[200px] flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white p-6 transition-all duration-300 hover:border-indigo-500 hover:shadow-lg"
+                      onMouseEnter={(e) => {
+                        const parent = e.currentTarget.parentElement?.parentElement;
+                        if (parent) {
+                          parent.style.animationPlayState = 'paused';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        const parent = e.currentTarget.parentElement?.parentElement;
+                        if (parent) {
+                          parent.style.animationPlayState = 'running';
+                        }
+                      }}
+                    >
+                      <div className="mb-4 h-12 w-12 transition-transform duration-300 group-hover:scale-110">
+                        {service.icon}
+                      </div>
+                      <h3 className="text-center text-sm font-medium">
+                        {service.name}
+                      </h3>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>

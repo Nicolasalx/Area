@@ -1,4 +1,6 @@
 import type { Config } from "tailwindcss";
+import type { PluginAPI } from 'tailwindcss/types/config';
+
 export default {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -11,9 +13,35 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      keyframes: {
+        'infinite-scroll': {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(calc(-33.33333%))' }
+        }
+      },
+      animation: {
+        'infinite-scroll': 'infinite-scroll 30s linear infinite'
+      }
     },
   },
+  plugins: [
+    function({ addVariant }: PluginAPI) {
+      addVariant('hover-group', '.hover-group &')
+      addVariant('hover-group-hover', '.hover-group:hover &')
+    },
+  ],
   safelist: [
+    // Animation states
+    "animate-none",
+    "group-hover:animate-none",
+    "pause",
+    "running",
+    "hover:pause",
+    "[&:hover>*]:pause",
+    "hover-group",
+    "hover-group-hover:scale-110",
+    "[animation-play-state:paused]",
+    "[.hover-group:hover_&]:[animation-play-state:paused]",
     // Font sizes from variants
     "text-4xl",
     "text-3xl",
