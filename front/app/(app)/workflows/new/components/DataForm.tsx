@@ -20,6 +20,7 @@ import { ValidationRules } from "@/components/ui/useFormValidation";
 import TimeInput from "@/components/ui/TimeInput";
 import DateInput from "@/components/ui/DateInput";
 import { InputType, InputField } from "@/app/(app)/workflows/types";
+import Accordion from "@/components/ui/Accordion";
 
 type DataFormData = Record<string, string>;
 
@@ -29,6 +30,7 @@ interface DataFormProps {
   onSubmit: (data: DataFormData) => void;
   onBack: () => void;
   prefix?: string;
+  actionIngredients?: Array<{ field: string; description: string }>;
 }
 
 export default function DataForm({
@@ -37,6 +39,7 @@ export default function DataForm({
   onSubmit,
   onBack,
   prefix = "",
+  actionIngredients = [],
 }: DataFormProps) {
   const [formData, setFormData] = useState<DataFormData>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -254,7 +257,23 @@ export default function DataForm({
           {title}
         </Text>
       </Card.Header>
-      <Card.Body className="p-6">
+      <Card.Body className="space-y-4 p-6">
+        {actionIngredients.length > 0 && (
+          <Accordion title="Available Action Ingredients" defaultOpen={false}>
+            <div className="space-y-2">
+              {actionIngredients.map((ingredient) => (
+                <div key={ingredient.field} className="flex items-center gap-2">
+                  <code className="rounded bg-gray-200 px-2 py-1 text-sm">
+                    {`{{${ingredient.field}}}`}
+                  </code>
+                  <span className="text-sm text-gray-600">
+                    {ingredient.description}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </Accordion>
+        )}
         <form onSubmit={handleSubmit} className="space-y-4">
           {fields.map((field) => {
             const key = getFieldKey(field);
@@ -331,6 +350,7 @@ export default function DataForm({
               </div>
             );
           })}
+
           <div className="flex items-center justify-between pt-4">
             <Button
               type="button"
