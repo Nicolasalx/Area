@@ -76,7 +76,7 @@ const ValidatedInput = forwardRef<HTMLInputElement, ValidatedInputProps>(
         )}
         <div className="relative">
           {startIcon && (
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-800">
               {startIcon}
             </span>
           )}
@@ -94,7 +94,7 @@ const ValidatedInput = forwardRef<HTMLInputElement, ValidatedInputProps>(
             {...props}
           />
           {endIcon && (
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-800">
               {endIcon}
             </span>
           )}

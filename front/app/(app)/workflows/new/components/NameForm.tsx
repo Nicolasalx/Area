@@ -47,7 +47,7 @@ export default function NameForm({
         />
         {selectedAction && selectedReaction && (
           <div className="mt-6 space-y-4">
-            <Text variant="h6" className="mt-12 text-gray-500">
+            <Text variant="h6" as={"h4"} className="mt-12 text-gray-800">
               Workflow Configuration Summary:
             </Text>
             <div className="flex items-center gap-3 rounded-lg border border-gray-200 p-4">
@@ -58,13 +58,13 @@ export default function NameForm({
                 <Text className="font-medium">
                   {formatActionReactionName(selectedAction.name)}
                 </Text>
-                <Text variant="caption" className="text-gray-500">
+                <Text variant="caption" className="text-gray-800">
                   {selectedAction.service?.name}
                 </Text>
               </div>
             </div>
             <div className="flex justify-center">
-              <ArrowRight className="h-6 w-6 text-gray-400" />
+              <ArrowRight className="h-6 w-6 text-gray-700" />
             </div>
             <div className="flex items-center gap-3 rounded-lg border border-gray-200 p-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100">
@@ -77,7 +77,7 @@ export default function NameForm({
                 <Text className="font-medium">
                   {formatActionReactionName(selectedReaction.name)}
                 </Text>
-                <Text variant="caption" className="text-gray-500">
+                <Text variant="caption" className="text-gray-800">
                   {selectedReaction.service?.name}
                 </Text>
               </div>

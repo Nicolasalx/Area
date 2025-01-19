@@ -25,28 +25,28 @@ const DropdownItem = ({
   return href ? (
     <Link
       className={twMerge(
-        "focus-visible::outline-none flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-gray-700 duration-200 hover:rounded-md hover:bg-gray-100 focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2",
+        "focus-visible::outline-none flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-gray-800 duration-200 hover:rounded-md hover:bg-gray-100 focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2",
         hover,
         className,
       )}
       href={href}
     >
       {icon && (
-        <span className={textColor ? "text-gray-500" : textColor}>{icon}</span>
+        <span className={textColor ? "text-gray-800" : textColor}>{icon}</span>
       )}
       {children}
     </Link>
   ) : (
     <button
       className={twMerge(
-        "focus-visible::outline-none flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-gray-700 duration-200 hover:rounded-md hover:bg-gray-100 focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2",
+        "focus-visible::outline-none flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-gray-800 duration-200 hover:rounded-md hover:bg-gray-100 focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2",
         hover,
         className,
       )}
       onClick={onClick}
     >
       {icon && (
-        <span className={textColor ? "text-gray-500" : textColor}>{icon}</span>
+        <span className={textColor ? "text-gray-800" : textColor}>{icon}</span>
       )}
       {children}
     </button>

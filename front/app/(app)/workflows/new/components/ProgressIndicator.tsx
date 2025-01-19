@@ -35,7 +35,7 @@ export default function ProgressIndicator({
               className={`mb-2 text-sm ${
                 currentStep === step.key
                   ? `text-${activeColor}`
-                  : "text-gray-400"
+                  : "text-gray-700"
               }`}
             >
               {step.label}

@@ -67,7 +67,7 @@ const Text = ({
       case "small":
         return "text-sm";
       case "caption":
-        return "text-xs opacity-50";
+        return "text-xs opacity-75";
     }
   };
 

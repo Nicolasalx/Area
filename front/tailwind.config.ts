@@ -111,7 +111,7 @@ export default {
     "to-red-50",
     "to-green-50",
     "to-white",
-    "text-gray-600",
+    "text-gray-700",
     "text-indigo-500",
     "text-blue-500",
     "text-emerald-500",

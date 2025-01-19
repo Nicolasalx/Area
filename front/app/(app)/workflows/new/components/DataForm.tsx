@@ -266,7 +266,7 @@ export default function DataForm({
                   <code className="rounded bg-gray-200 px-2 py-1 text-sm">
                     {`{{${ingredient.field}}}`}
                   </code>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-gray-700">
                     {ingredient.description}
                   </span>
                 </div>
@@ -291,7 +291,7 @@ export default function DataForm({
                   <>
                     <label
                       htmlFor={key}
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-gray-800"
                     >
                       {displayName}
                       {
@@ -355,7 +355,7 @@ export default function DataForm({
             <Button
               type="button"
               onClick={onBack}
-              className="bg-gray-100 text-gray-700 hover:bg-gray-200"
+              className="bg-gray-100 text-gray-800 hover:bg-gray-200"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back

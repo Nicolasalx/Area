@@ -495,7 +495,7 @@ export default function NewWorkflowPage() {
           <div className="mx-auto flex w-full items-center justify-between">
             <Button
               onClick={handleBack}
-              className="bg-gray-100 text-gray-700 hover:bg-gray-200"
+              className="bg-gray-100 text-gray-800 hover:bg-gray-200"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back

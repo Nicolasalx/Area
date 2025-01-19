@@ -41,6 +41,8 @@ const MobileMenu = ({ isOpen, onClose, children }: MobileMenuProps) => {
         <div className="flex items-center justify-between border-b border-gray-200 p-4">
           <h2 className="text-lg font-semibold">Menu</h2>
           <button
+            aria-label="Close menu"
+            id="close-menu"
             onClick={onClose}
             className="focus::outline-none rounded-full p-1 duration-200 hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
           >
