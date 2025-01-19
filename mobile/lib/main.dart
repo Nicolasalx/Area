@@ -1,6 +1,8 @@
 import 'package:area/login.dart';
 import 'package:area/logout.dart';
 import 'package:area/nav_bar.dart';
+import 'package:area/oauth/spotify.dart';
+import 'package:area/oauth/trello.dart';
 import 'package:area/register.dart';
 import 'package:area/oauth/discord.dart';
 import 'package:area/oauth/github.dart';
@@ -17,6 +19,8 @@ const routeRegister = '/register';
 const routeOAuthGoogle = '/oauth/google';
 const routeOAuthGithub = '/oauth/github';
 const routeOAuthDiscord = '/oauth/discord';
+const routeOAuthSpotify = '/oauth/spotify';
+const routeOAuthTrello = '/oauth/trello';
 
 Future<void> main() async {
   await dotenv.load(fileName: "lib/.env");
@@ -79,6 +83,8 @@ Route<Widget> _onGenerateRoute(RouteSettings settings) {
     routeOAuthGoogle => const OAuthGooglePage(),
     routeOAuthGithub => const OAuthGithubPage(),
     routeOAuthDiscord => const OAuthDiscordPage(),
+    routeOAuthSpotify => const OAuthSpotifyPage(),
+    routeOAuthTrello => const OAuthTrelloPage(),
     _ => throw StateError('Unexpected route name: ${settings.name}!')
   };
   return MaterialPageRoute(
