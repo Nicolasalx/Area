@@ -127,7 +127,12 @@ export class ReactionController {
   async handleReaction(@Body() body: HandleReactionDto): Promise<string> {
     const { refreshToken, service, reaction, data } = body;
     try {
-      if (service == 'google' || service == 'spotify' || service == 'trello') {
+      if (
+        service == 'google' ||
+        service == 'spotify' ||
+        service == 'trello' ||
+        service == 'todoist'
+      ) {
         return await this.reactionService.redirectServiceTokens(
           service,
           refreshToken,

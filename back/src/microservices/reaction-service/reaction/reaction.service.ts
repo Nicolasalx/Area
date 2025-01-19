@@ -24,12 +24,7 @@ export class ReactionService {
     private readonly googleService: GoogleReactionService,
     private readonly spotifyService: SpotifyReactionService,
   ) {
-    this.handlers = [
-      discordService,
-      slackService,
-      todoistService,
-      twilioService,
-    ];
+    this.handlers = [discordService, slackService, twilioService];
   }
 
   async getReactions(): Promise<ReactionDto[]> {
@@ -89,6 +84,12 @@ export class ReactionService {
       );
     } else if (service == 'trello') {
       return await this.trelloService.manageReactionTrello(
+        refreshToken,
+        reaction,
+        data,
+      );
+    } else if (service == 'todoist') {
+      return await this.todoistService.manageReactionTodoist(
         refreshToken,
         reaction,
         data,
