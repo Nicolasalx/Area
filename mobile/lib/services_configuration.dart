@@ -103,6 +103,12 @@ class _ServicesConfigurationPageState extends State<ServicesConfigurationPage> {
       case 'discord':
         globals.navigatorKey.currentState!.pushNamed('/oauth/discord');
         break;
+      case 'spotify':
+        globals.navigatorKey.currentState!.pushNamed('/oauth/spotify');
+        break;
+      case 'trello':
+        globals.navigatorKey.currentState!.pushNamed('/oauth/trello');
+        break;
       default:
         Fluttertoast.showToast(
           msg: 'Unsupported OAuth service',
@@ -313,6 +319,19 @@ class _ServicesConfigurationPageState extends State<ServicesConfigurationPage> {
                                   ),
                                 )
                               else if (service.oauthNeed)
+                                ElevatedButton(
+                                  onPressed: () =>
+                                      handleOAuthConnect(service.name),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.black,
+                                    minimumSize: const Size.fromHeight(40),
+                                  ),
+                                  child: Text(
+                                    'Connect with ${service.name}',
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                )
+                              else if (service.name == "trello")
                                 ElevatedButton(
                                   onPressed: () =>
                                       handleOAuthConnect(service.name),

@@ -9,11 +9,12 @@ import '../globals.dart' as globals;
 class AuthDiscord {
   static Future<bool> login(String code) async {
     try {
+      var userId = await globals.storage.read(key: 'id');
       Uri uriBackDiscord = Uri.parse(
-          '${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/auth/discord/callback/?code=$code&redirect_uri=${dotenv.env['DISCORD_REDIRECT_URI']}');
+          '${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/auth/discord/callback/?code=$code&redirect_uri=${dotenv.env['DISCORD_REDIRECT_URI']}&state=$userId');
       final response = await http.get(uriBackDiscord);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && userId != null) {
         globals.isLoggedIn = true;
         var responseData = json.decode(response.body);
         await globals.storage.write(key: 'token', value: responseData["token"]);
@@ -25,10 +26,10 @@ class AuthDiscord {
             .write(key: 'id', value: responseData["user"]["id"]);
         await globals.storage
             .write(key: 'picture', value: responseData["user"]["picture"]);
-        globals.navigatorKey.currentState!
-            .popUntil(ModalRoute.withName(routeHome));
-        globals.navigatorKey.currentState!.pushNamed(routeHome);
       }
+      globals.navigatorKey.currentState!
+          .popUntil(ModalRoute.withName(routeHome));
+      globals.navigatorKey.currentState!.pushNamed(routeHome);
       return true;
     } catch (error) {
       print(" /!\\ ERROR : Login OAuth Failed");
