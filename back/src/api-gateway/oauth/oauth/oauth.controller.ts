@@ -23,6 +23,8 @@ import { OAuthService } from './oauth.service';
 import { ConnectionType } from '@prisma/client';
 import { DiscordService } from '../discord/discord.service';
 import { IsUUID, IsNumber, IsString, MinLength } from 'class-validator';
+import { SpotifyService } from '../spotify/spotify.service';
+import { PrismaService } from '@prismaService/prisma/prisma.service';
 
 class PreciseServiceToken {
   userId: string;
@@ -73,10 +75,12 @@ export class OAuthController {
   private readonly logger = new Logger(OAuthController.name);
 
   constructor(
+    private readonly prisma: PrismaService,
     private readonly oauthService: OAuthService,
     private readonly googleService: GoogleService,
     private readonly githubService: GithubService,
     private readonly discordService: DiscordService,
+    private readonly spotifyService: SpotifyService,
   ) {}
 
   @ApiOperation({
@@ -313,6 +317,134 @@ export class OAuthController {
       return response;
     } catch (err) {
       throw err;
+    }
+  }
+
+  @ApiOperation({
+    summary: 'Login user with Spotify',
+    description: 'Authenticate user with Spotify OAuth',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'User successfully logged in',
+    schema: {
+      properties: {
+        token: { type: 'string', example: '12345721' },
+        user: {
+          type: 'json',
+          example: {
+            id: '1',
+            email: 'someone@gmail.com',
+            name: 'someone',
+            picture: 'link',
+          },
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized or invalid token',
+    schema: {
+      properties: {
+        message: { type: 'string', example: 'Unauthorized' },
+      },
+    },
+  })
+  @HttpCode(HttpStatus.OK)
+  @Get('spotify/callback')
+  async getSpotifyOAuth(@Query() query: any) {
+    try {
+      this.logger.debug('OAuth with spotify');
+      const response: LoginOAuthResponse =
+        await this.oauthService.getServiceOAuth(
+          query.code,
+          query.redirect_uri,
+          ConnectionType.SPOTIFY,
+          this.spotifyService,
+          query.state,
+        );
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @ApiOperation({
+    summary: 'Login user with Trello',
+    description: 'Authenticate user with Trello OAuth',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'User successfully logged in',
+    schema: {
+      properties: {
+        token: { type: 'string', example: '12345721' },
+        user: {
+          type: 'json',
+          example: {
+            id: '1',
+            email: 'someone@gmail.com',
+            name: 'someone',
+            picture: 'link',
+          },
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized or invalid token',
+    schema: {
+      properties: {
+        token: { type: 'string', example: '12345721' },
+        state: { type: 'string', example: 'userID' },
+      },
+    },
+  })
+  @HttpCode(HttpStatus.OK)
+  @Get('trello/callback')
+  async getTrelloOAuth(@Query() query: any) {
+    try {
+      this.logger.debug('OAuth with trello');
+      const existingUser = await this.prisma.users.findUnique({
+        where: { id: query.state },
+      });
+
+      if (existingUser) {
+        const serviceId = await this.prisma.services.findFirst({
+          where: {
+            name: {
+              equals: 'trello',
+              mode: 'insensitive',
+            },
+          },
+          select: {
+            id: true,
+          },
+        });
+
+        if (serviceId) {
+          await this.prisma.serviceTokens.upsert({
+            where: {
+              userId_serviceId: {
+                userId: existingUser.id,
+                serviceId: serviceId.id,
+              },
+            },
+            create: {
+              userId: existingUser.id,
+              serviceId: serviceId.id,
+              token: query.token,
+            },
+            update: {
+              token: query.token,
+            },
+          });
+        }
+      }
+    } catch (err) {
+      this.logger.error(`OAuth with trello Failer: ${err.message}`);
     }
   }
 

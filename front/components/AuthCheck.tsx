@@ -23,7 +23,7 @@ export default function AuthCheck({ children }: AuthCheckProps) {
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
           <div className="border-primary h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
-          <p className="mt-2 text-gray-500">Loading...</p>
+          <p className="mt-2 text-gray-800">Loading...</p>
         </div>
       </div>
     );

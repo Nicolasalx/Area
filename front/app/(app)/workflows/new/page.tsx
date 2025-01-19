@@ -44,8 +44,10 @@ export default function NewWorkflowPage() {
   const [submitting, setSubmitting] = useState(false);
   const [loadingActions, setLoadingActions] = useState(true);
   const [loadingReactions, setLoadingReactions] = useState(true);
+  const [actionIngredients, setActionIngredients] = useState<
+    Array<{ field: string; description: string }>
+  >([]);
 
-  // Handle browser navigation
   useEffect(() => {
     const handlePopState = () => {
       switch (currentStep) {
@@ -74,7 +76,6 @@ export default function NewWorkflowPage() {
           setCurrentStep("reaction-action");
           break;
         case "name":
-          // If coming from name, go back to reaction-action if no data form
           setCurrentStep(
             selectedReaction &&
               selectedReaction.body &&
@@ -352,6 +353,31 @@ export default function NewWorkflowPage() {
     { key: "name", label: "Name" },
   ];
 
+  useEffect(() => {
+    const fetchActionIngredients = async () => {
+      if (!selectedAction) return;
+
+      try {
+        const response = await api.get(
+          `/actions/${selectedAction.id}/ingredients`,
+        );
+        setActionIngredients(response.data);
+      } catch (err) {
+        // Use error message if available, otherwise use a generic message
+        const errorMessage =
+          err instanceof Error ? err.message : "Unknown error occurred";
+        showToast(
+          `Failed to load action ingredients: ${errorMessage}`,
+          "error",
+        );
+      }
+    };
+
+    if (currentStep === "reaction-data") {
+      fetchActionIngredients();
+    }
+  }, [currentStep, selectedAction, showToast]);
+
   const renderStep = () => {
     switch (currentStep) {
       case "trigger-service":
@@ -420,6 +446,7 @@ export default function NewWorkflowPage() {
               handleNext();
             }}
             onBack={handleBack}
+            actionIngredients={actionIngredients}
           />
         );
       case "name":
@@ -468,7 +495,7 @@ export default function NewWorkflowPage() {
           <div className="mx-auto flex w-full items-center justify-between">
             <Button
               onClick={handleBack}
-              className="bg-gray-100 text-gray-700 hover:bg-gray-200"
+              className="bg-gray-100 text-gray-800 hover:bg-gray-200"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back

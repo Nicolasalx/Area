@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ApiGatewayModule } from './api-gateway/api-gateway.module';
 import { UserServiceModule } from './microservices/user-service/user-service.module';
 import { TriggerServiceModule } from './microservices/trigger-service/trigger-service.module';
@@ -26,7 +24,6 @@ import { AboutModule } from './microservices/about-service/about.module';
     ReactionServiceModule,
     AboutModule,
   ],
-  controllers: [AppController, PrismaController],
-  providers: [AppService],
+  controllers: [PrismaController],
 })
 export class AppModule {}

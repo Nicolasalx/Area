@@ -1,30 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import { IReactionHandler } from '@reaction-service/handler/base.handler';
 import axios from 'axios';
 
 @Injectable()
-export class TrelloReactionService implements IReactionHandler {
-  canHandle(service: string): boolean {
-    return service === 'trello';
-  }
-
-  async handle(reaction: string, data: any): Promise<string> {
+export class TrelloReactionService {
+  async manageReactionTrello(
+    refreshToken: string,
+    reaction: string,
+    data: any,
+  ): Promise<string> {
     switch (reaction.toLowerCase()) {
       case 'create_new_card':
-        return this.createNewCard(data);
+        return this.createNewCard(refreshToken, data);
       case 'create_new_list':
-        return this.createNewList(data);
+        return this.createNewList(refreshToken, data);
       case 'remove_card':
-        return this.deleteCardByName(data);
+        return this.deleteCardByName(refreshToken, data);
       default:
         return 'Reaction not recognized for Trello';
     }
   }
 
-  private async createNewCard(data: {
-    board_short_link: string;
-    card_name: string;
-  }): Promise<string> {
+  private async createNewCard(
+    refreshToken: string,
+    data: {
+      board_short_link: string;
+      card_name: string;
+    },
+  ): Promise<string> {
+    if (!refreshToken) {
+      console.log('Access token not available');
+      return 'Access token not available';
+    }
+
     const { board_short_link, card_name } = data;
 
     try {
@@ -32,7 +39,7 @@ export class TrelloReactionService implements IReactionHandler {
       const listsResponse = await axios.get(listsUrl, {
         params: {
           key: process.env.TRELLO_API_KEY,
-          token: process.env.TRELLO_TOKEN,
+          token: refreshToken,
         },
       });
 
@@ -50,15 +57,16 @@ export class TrelloReactionService implements IReactionHandler {
         idList: listId,
         name: card_name,
         key: process.env.TRELLO_API_KEY,
-        token: process.env.TRELLO_TOKEN,
+        token: refreshToken,
       };
 
-      const createCardResponse = await axios.post(createCardUrl, null, {
+      await axios.post(createCardUrl, null, {
         params: createCardParams,
       });
 
-      console.log('Card created:', createCardResponse.data);
-
+      console.log(
+        `Card "${card_name}" created in the list "${firstList.name}" of the board ${board_short_link}`,
+      );
       return `Card "${card_name}" created in the list "${firstList.name}" of the board ${board_short_link}`;
     } catch (error) {
       console.error(
@@ -69,17 +77,25 @@ export class TrelloReactionService implements IReactionHandler {
     }
   }
 
-  private async createNewList(data: {
-    board_short_link: string;
-    list_name: string;
-  }): Promise<string> {
+  private async createNewList(
+    refreshToken: string,
+    data: {
+      board_short_link: string;
+      list_name: string;
+    },
+  ): Promise<string> {
+    if (!refreshToken) {
+      console.log('Access token not available');
+      return 'Access token not available';
+    }
+
     const { board_short_link, list_name } = data;
 
     try {
       const resolveBoardUrl = `https://api.trello.com/1/boards/${board_short_link}`;
       const resolveBoardParams = {
         key: process.env.TRELLO_API_KEY,
-        token: process.env.TRELLO_TOKEN,
+        token: refreshToken,
       };
 
       const boardResponse = await axios.get(resolveBoardUrl, {
@@ -92,14 +108,16 @@ export class TrelloReactionService implements IReactionHandler {
         idBoard: resolvedBoardId,
         name: list_name,
         key: process.env.TRELLO_API_KEY,
-        token: process.env.TRELLO_TOKEN,
+        token: refreshToken,
       };
 
-      const createListResponse = await axios.post(createListUrl, null, {
+      await axios.post(createListUrl, null, {
         params: createListParams,
       });
 
-      console.log('List created:', createListResponse.data);
+      console.log(
+        `List "${list_name}" created in the board ${board_short_link}`,
+      );
 
       return `List "${list_name}" created in the board ${board_short_link}`;
     } catch (error) {
@@ -111,10 +129,18 @@ export class TrelloReactionService implements IReactionHandler {
     }
   }
 
-  private async deleteCardByName(data: {
-    board_short_link: string;
-    card_name: string;
-  }): Promise<string> {
+  private async deleteCardByName(
+    refreshToken: string,
+    data: {
+      board_short_link: string;
+      card_name: string;
+    },
+  ): Promise<string> {
+    if (!refreshToken) {
+      console.log('Access token not available');
+      return 'Access token not available';
+    }
+
     const { board_short_link, card_name } = data;
 
     try {
@@ -122,7 +148,7 @@ export class TrelloReactionService implements IReactionHandler {
       const listsResponse = await axios.get(listsUrl, {
         params: {
           key: process.env.TRELLO_API_KEY,
-          token: process.env.TRELLO_TOKEN,
+          token: refreshToken,
         },
       });
 
@@ -137,7 +163,7 @@ export class TrelloReactionService implements IReactionHandler {
         const cardsResponse = await axios.get(cardsUrl, {
           params: {
             key: process.env.TRELLO_API_KEY,
-            token: process.env.TRELLO_TOKEN,
+            token: refreshToken,
           },
         });
 
@@ -149,10 +175,13 @@ export class TrelloReactionService implements IReactionHandler {
           await axios.delete(deleteCardUrl, {
             params: {
               key: process.env.TRELLO_API_KEY,
-              token: process.env.TRELLO_TOKEN,
+              token: refreshToken,
             },
           });
 
+          console.log(
+            `Card "${card_name}" deleted from the board ${board_short_link}`,
+          );
           return `Card "${card_name}" deleted from the board ${board_short_link}`;
         }
       }

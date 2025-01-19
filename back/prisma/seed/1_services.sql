@@ -5,7 +5,7 @@ VALUES
     ('discord', 'Discord webhook.', true, true, NOW()),
     ('time', 'Time with cron and timer.', true, false, NOW()),
     ('rss', 'RSS feed monitoring.', true, false, NOW()),
-    ('slack', 'Slack bot.', true, true, NOW()),
+    ('slack', 'Slack bot.', true, false, NOW()),
     ('trello', 'Managing board and card in Trello.', true, false, NOW()),
     ('todoist', 'Todoist task management.', true, false, NOW()),
     ('twilio', 'Twilio SMS / Phone / E-mail sending.', true, false, NOW()),

@@ -36,10 +36,12 @@ Below is a list of available commands in this project, along with their descript
 ## Additional Information
 
 ### Tools Used
+
 - **Prisma**: Database management tool.
 - **Prettier**: Code formatter.
 - **ESLint**: Static code analysis tool.
 - **Jest**: Testing framework.
 
 ### Jest Configuration
+
 Tests are configured to target files matching the pattern `*.spec.ts` in the `src` directory.

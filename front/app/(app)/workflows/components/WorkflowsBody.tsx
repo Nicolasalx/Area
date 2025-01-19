@@ -132,7 +132,7 @@ const WorkflowCard = memo(
                 className={`rounded-full border-b-0 border-black p-2 duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 ${
                   workflow.isActive
                     ? "text-green-500 hover:text-green-600 focus-visible:text-green-600"
-                    : "text-gray-400 hover:text-gray-500 focus-visible:text-gray-500"
+                    : "text-gray-700 hover:text-gray-800 focus-visible:text-gray-800"
                 }`}
                 title={workflow.isActive ? "Deactivate area" : "Activate area"}
               >
@@ -140,7 +140,7 @@ const WorkflowCard = memo(
               </button>
               <button
                 onClick={() => handleDelete(workflow.id)}
-                className="rounded-full border-b-0 border-black p-2 text-gray-500 duration-200 hover:text-red-500 focus-visible:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+                className="rounded-full border-b-0 border-black p-2 text-gray-800 duration-200 hover:text-red-500 focus-visible:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
                 title="Delete area"
               >
                 <Trash2 className="h-5 w-5" />
@@ -152,7 +152,7 @@ const WorkflowCard = memo(
           <div className="space-y-6">
             <div>
               <Text variant="h4" className="mb-3 flex items-center gap-2">
-                <PlayCircle className="h-5 w-5 text-gray-500" />
+                <PlayCircle className="h-5 w-5 text-gray-800" />
                 Actions
               </Text>
               <ul className="ml-4 space-y-2 rounded-lg bg-gray-100 p-2">
@@ -160,7 +160,7 @@ const WorkflowCard = memo(
                   workflow.activeActions.map((action) => (
                     <li
                       key={action.id}
-                      className="flex items-center gap-2 text-gray-700"
+                      className="flex items-center gap-2 text-gray-800"
                     >
                       {getServiceIcon(action.service.name)}
                       <Text>{formatActionReactionName(action.name)}</Text>
@@ -168,8 +168,8 @@ const WorkflowCard = memo(
                     </li>
                   ))
                 ) : (
-                  <li className="flex items-center gap-2 text-gray-700">
-                    <Ghost className="h-4 w-4 text-gray-500" />
+                  <li className="flex items-center gap-2 text-gray-800">
+                    <Ghost className="h-4 w-4 text-gray-800" />
                     <Text variant="caption" color="red" className="opacity-75">
                       No actions have been added yet
                     </Text>
@@ -179,7 +179,7 @@ const WorkflowCard = memo(
             </div>
             <div>
               <Text variant="h4" className="mb-3 flex items-center gap-2">
-                <ArrowRight className="h-5 w-5 text-gray-500" />
+                <ArrowRight className="h-5 w-5 text-gray-800" />
                 Reactions
               </Text>
               <ul className="ml-4 space-y-2 rounded-lg bg-gray-100 p-2">
@@ -188,7 +188,7 @@ const WorkflowCard = memo(
                   workflow.activeReactions.map((reaction) => (
                     <li
                       key={reaction.id}
-                      className="flex items-center gap-2 text-gray-700"
+                      className="flex items-center gap-2 text-gray-800"
                     >
                       {getServiceIcon(reaction.service.name)}
                       <Text>{formatActionReactionName(reaction.name)}</Text>
@@ -196,8 +196,8 @@ const WorkflowCard = memo(
                     </li>
                   ))
                 ) : (
-                  <li className="flex items-center gap-2 text-gray-700">
-                    <Ghost className="h-4 w-4 text-gray-500" />
+                  <li className="flex items-center gap-2 text-gray-800">
+                    <Ghost className="h-4 w-4 text-gray-800" />
                     <Text variant="caption" color="red" className="opacity-75">
                       No reactions have been added yet
                     </Text>
@@ -223,7 +223,7 @@ export default function WorkflowsBody({
     return (
       <div className="flex min-h-[300px] items-center justify-center rounded-lg border border-gray-200 bg-white">
         <div className="text-center">
-          <Ghost className="mx-auto mb-4 h-12 w-12 text-gray-400" />
+          <Ghost className="mx-auto mb-4 h-12 w-12 text-gray-700" />
           <Text variant="h3" className="mb-2">
             No Areas Found
           </Text>

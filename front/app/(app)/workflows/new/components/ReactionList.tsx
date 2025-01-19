@@ -47,7 +47,7 @@ const ReactionCard = memo(
               {getServiceIcon(reaction.service?.name, "h-8 w-8")}
             </div>
             <div className="flex flex-col">
-              <Text variant="h5">
+              <Text variant="h5" as={"h4"}>
                 {formatActionReactionName(reaction.name)}
               </Text>
               {reaction.service && (

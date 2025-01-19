@@ -63,6 +63,8 @@ const Navbar = () => {
             {/* Mobile Menu Button */}
             <div className="flex items-center gap-4 md:hidden">
               <button
+                aria-label="Open menu"
+                id="mobile-menu-button"
                 onClick={() => setIsMobileMenuOpen(true)}
                 className="rounded-lg p-2 duration-200 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
               >
@@ -82,7 +84,7 @@ const Navbar = () => {
                 >
                   <div className="border-b border-gray-200 px-4 py-2">
                     <p className="text-sm font-medium">{user?.name}</p>
-                    <p className="text-xs text-gray-500">{user?.email}</p>
+                    <p className="text-xs text-gray-800">{user?.email}</p>
                   </div>
                   <div className="py-1">
                     <DropdownItem
@@ -139,20 +141,20 @@ const Navbar = () => {
                 <Avatar src={user?.image} size="lg" />
                 <div>
                   <p className="text-sm font-medium">{user?.name}</p>
-                  <p className="text-xs text-gray-500">{user?.email}</p>
+                  <p className="text-xs text-gray-800">{user?.email}</p>
                 </div>
               </div>
               <div className="flex flex-col space-y-2">
                 <Link
                   href="/profile"
-                  className="flex items-center gap-2 text-sm text-gray-700 duration-200 focus:outline-none focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+                  className="flex items-center gap-2 text-sm text-gray-800 duration-200 focus:outline-none focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
                 >
                   <User className="h-4 w-4" />
                   Profile
                 </Link>
                 <Link
                   href="/settings"
-                  className="flex items-center gap-2 text-sm text-gray-700 duration-200 focus:outline-none focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+                  className="flex items-center gap-2 text-sm text-gray-800 duration-200 focus:outline-none focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
                 >
                   <Settings className="h-4 w-4" />
                   Settings

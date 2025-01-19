@@ -1,7 +1,7 @@
 import { ActionDto } from '@common/dto/action.dto';
 import { IngredientsAction } from '@common/interfaces/ingredientsAction';
 import { getToken, getUserId } from '@common/utils/token.utils';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ActiveReaction } from '@prisma/client';
 import { PrismaService } from '@prismaService/prisma/prisma.service';
 import axios from 'axios';
@@ -50,49 +50,26 @@ export class ActionService {
     }));
   }
 
-  async executeReactionsBis(reactions: ActiveReaction[]): Promise<void> {
-    this.updateToken();
+  async getActionIngredients(actionId: number) {
+    const action = await this.prisma.actions.findUnique({
+      where: { id: actionId },
+      include: {
+        ActionsIngredients: {
+          include: {
+            ingredient: true,
+          },
+        },
+      },
+    });
 
-    for (const reaction of reactions) {
-      try {
-        const service = await this.prisma.services.findUnique({
-          where: { id: reaction.serviceId },
-        });
-
-        if (!service) {
-          console.log(`Service not found for ID: ${reaction.serviceId}`);
-          continue;
-        }
-
-        try {
-          const response = await axios.post(
-            'http://localhost:8080/reactions',
-            {
-              service: service.name,
-              reaction: reaction.name,
-              data: reaction.data,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${this.jwtToken}`,
-              },
-            },
-          );
-          console.log('SERVICE NAME: ', service.name);
-          console.log('Axios response :', response.data);
-        } catch (error) {
-          console.error(
-            'Erreur lors de la requête Axios :',
-            error.response?.data || error.message,
-          );
-        }
-      } catch (error) {
-        console.error(
-          `Error fetching service for ID: ${reaction.serviceId}`,
-          error,
-        );
-      }
+    if (!action) {
+      throw new NotFoundException(`Action with ID ${actionId} not found`);
     }
+
+    return action.ActionsIngredients.map((ai) => ({
+      field: ai.ingredient.name,
+      description: ai.ingredient.description,
+    }));
   }
 
   async modifyReactionData(
@@ -122,7 +99,6 @@ export class ActionService {
     this.updateToken();
 
     for (const reaction of reactions) {
-      // ! When the type PR will be finished, modify only field when it'a string type
       await this.modifyReactionData(ingredientsAction, reaction);
       try {
         const service = await this.prisma.services.findUnique({
@@ -138,7 +114,7 @@ export class ActionService {
 
         const refreshToken = await getToken(
           await getUserId(workflowId),
-          'google',
+          service.name,
         );
 
         try {
@@ -156,7 +132,6 @@ export class ActionService {
               },
             },
           );
-          console.log('SERVICE NAME: ', service.name);
           console.log('Axios response :', response.data);
         } catch (error) {
           console.error(

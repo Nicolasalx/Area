@@ -20,6 +20,7 @@ import { ValidationRules } from "@/components/ui/useFormValidation";
 import TimeInput from "@/components/ui/TimeInput";
 import DateInput from "@/components/ui/DateInput";
 import { InputType, InputField } from "@/app/(app)/workflows/types";
+import Accordion from "@/components/ui/Accordion";
 
 type DataFormData = Record<string, string>;
 
@@ -29,6 +30,7 @@ interface DataFormProps {
   onSubmit: (data: DataFormData) => void;
   onBack: () => void;
   prefix?: string;
+  actionIngredients?: Array<{ field: string; description: string }>;
 }
 
 export default function DataForm({
@@ -37,6 +39,7 @@ export default function DataForm({
   onSubmit,
   onBack,
   prefix = "",
+  actionIngredients = [],
 }: DataFormProps) {
   const [formData, setFormData] = useState<DataFormData>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -204,6 +207,9 @@ export default function DataForm({
       field.field.toLowerCase().includes("hour") ||
       field.field.toLowerCase().includes("time")
     ) {
+      if (field.field.toLowerCase().includes("timezone")) {
+        return "text";
+      }
       return "time";
     }
     if (
@@ -222,7 +228,6 @@ export default function DataForm({
       return "emoji";
     }
 
-    // Default to text if no special case matches
     return field.type || "text";
   };
 
@@ -252,7 +257,23 @@ export default function DataForm({
           {title}
         </Text>
       </Card.Header>
-      <Card.Body className="p-6">
+      <Card.Body className="space-y-4 p-6">
+        {actionIngredients.length > 0 && (
+          <Accordion title="Available Action Ingredients" defaultOpen={false}>
+            <div className="space-y-2">
+              {actionIngredients.map((ingredient) => (
+                <div key={ingredient.field} className="flex items-center gap-2">
+                  <code className="rounded bg-gray-200 px-2 py-1 text-sm">
+                    {`{{${ingredient.field}}}`}
+                  </code>
+                  <span className="text-sm text-gray-700">
+                    {ingredient.description}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </Accordion>
+        )}
         <form onSubmit={handleSubmit} className="space-y-4">
           {fields.map((field) => {
             const key = getFieldKey(field);
@@ -265,17 +286,19 @@ export default function DataForm({
             const inputType = determineInputType(field);
 
             return (
-              <div key={key} className="space-y-1">
-                {field.type === "select" && field.options ? (
-                  <div>
+              <div key={key}>
+                {field.options ? (
+                  <>
                     <label
                       htmlFor={key}
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-gray-800"
                     >
                       {displayName}
-                      {field.required && (
-                        <span className="text-red-500">*</span>
-                      )}
+                      {
+                        /*field.required*/ true && (
+                          <span className="text-red-500">*</span>
+                        )
+                      }
                     </label>
                     <select
                       id={key}
@@ -283,7 +306,7 @@ export default function DataForm({
                       onChange={(e) => handleInputChange(field, e.target.value)}
                       className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
                     >
-                      <option value="">
+                      <option value={undefined}>
                         Select {displayName.toLowerCase()}
                       </option>
                       {field.options.map((option) => (
@@ -292,11 +315,11 @@ export default function DataForm({
                         </option>
                       ))}
                     </select>
-                  </div>
+                  </>
                 ) : inputType === "time" ? (
                   <TimeInput
                     label={displayName}
-                    required={field.required}
+                    required={/*field.required*/ true}
                     value={formData[key] || ""}
                     onChange={(e) => handleInputChange(field, e.target.value)}
                     error={errors[key]}
@@ -305,7 +328,7 @@ export default function DataForm({
                 ) : inputType === "date" ? (
                   <DateInput
                     label={displayName}
-                    required={field.required}
+                    required={/*field.required*/ true}
                     value={formData[key] || ""}
                     onChange={(date) => handleInputChange(field, date)}
                     error={errors[key]}
@@ -314,7 +337,7 @@ export default function DataForm({
                 ) : (
                   <ValidatedInput
                     label={displayName}
-                    required={field.required}
+                    required={/*field.required*/ true}
                     type={getInputType(field)}
                     placeholder={field.description}
                     value={formData[key] || ""}
@@ -327,11 +350,12 @@ export default function DataForm({
               </div>
             );
           })}
+
           <div className="flex items-center justify-between pt-4">
             <Button
               type="button"
               onClick={onBack}
-              className="bg-gray-100 text-gray-700 hover:bg-gray-200"
+              className="bg-gray-100 text-gray-800 hover:bg-gray-200"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back

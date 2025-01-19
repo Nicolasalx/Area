@@ -1,3 +1,4 @@
+import 'package:area/ingredient.dart';
 import 'package:area/new_area/input_field.dart';
 import 'package:area/new_area/navigation_button.dart';
 import 'package:area/new_area/service_card.dart';
@@ -38,6 +39,9 @@ class _NewAreaPageState extends State<NewAreaPage> {
   List<dynamic> availableReactions = [];
 
   final Map<String, TextEditingController> _controllers = {};
+
+  Widget? _cachedActionForm;
+  Widget? _cachedReactionForm;
 
   String capitalizeFirst(String text) {
     if (text.isEmpty) return text;
@@ -191,6 +195,11 @@ class _NewAreaPageState extends State<NewAreaPage> {
           ?.pushNamedAndRemoveUntil('/main', (route) => false);
     } else {
       setState(() {
+        if (currentStep == 'trigger-data') {
+          _cachedActionForm = null;
+        } else if (currentStep == 'reaction-data') {
+          _cachedReactionForm = null;
+        }
         switch (currentStep) {
           case 'trigger-action':
             currentStep = 'trigger-service';
@@ -223,6 +232,11 @@ class _NewAreaPageState extends State<NewAreaPage> {
 
   void handleNext() {
     setState(() {
+      if (currentStep == 'trigger-action') {
+        _cachedActionForm = null;
+      } else if (currentStep == 'reaction-action') {
+        _cachedReactionForm = null;
+      }
       switch (currentStep) {
         case 'trigger-service':
           if (selectedService != null) {
@@ -341,14 +355,31 @@ class _NewAreaPageState extends State<NewAreaPage> {
       case 'trigger-action':
         return _buildActionList();
       case 'trigger-data':
-        return _buildDataForm(selectedAction!['body'], actionData, 'action_');
+        if (_cachedActionForm == null) {
+          _buildDataForm(selectedAction!['body'], actionData, 'action_')
+              .then((widget) {
+            if (mounted) {
+              setState(() => _cachedActionForm = widget);
+            }
+          });
+          return const Center(child: CircularProgressIndicator());
+        }
+        return _cachedActionForm!;
       case 'reaction-service':
         return _buildServiceList(false);
       case 'reaction-action':
         return _buildReactionList();
       case 'reaction-data':
-        return _buildDataForm(
-            selectedReaction!['body'], reactionData, 'reaction_');
+        if (_cachedReactionForm == null) {
+          _buildDataForm(selectedReaction!['body'], reactionData, 'reaction_')
+              .then((widget) {
+            if (mounted) {
+              setState(() => _cachedReactionForm = widget);
+            }
+          });
+          return const Center(child: CircularProgressIndicator());
+        }
+        return _cachedReactionForm!;
       case 'name':
         return _buildNameForm();
       default:
@@ -481,11 +512,48 @@ class _NewAreaPageState extends State<NewAreaPage> {
     );
   }
 
-  Widget _buildDataForm(
-      List<dynamic> fields, Map<String, String> data, String prefix) {
+  Future<Widget> _buildDataForm(
+      List<dynamic> fields, Map<String, String> data, String prefix) async {
+    final bool isReactionForm = prefix == 'reaction_';
+    final token = await globals.storage.read(key: 'token');
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (isReactionForm && selectedAction != null)
+          FutureBuilder<http.Response>(
+            future: http.get(
+              Uri.parse(
+                  '${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/actions/${selectedAction!['id']}/ingredients'),
+              headers: {'Authorization': 'Bearer $token'},
+            ),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (snapshot.hasError) {
+                return const Text('Error loading ingredients');
+              }
+
+              if (snapshot.hasData && snapshot.data!.statusCode == 200) {
+                final ingredients = (json.decode(snapshot.data!.body) as List)
+                    .map((i) => {
+                          'field': i['field'] as String,
+                          'description': i['description'] as String,
+                        })
+                    .toList();
+                if (ingredients.isNotEmpty) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: IngredientsAccordion(ingredients: ingredients),
+                  );
+                }
+              }
+
+              return const Text('No ingredients available');
+            },
+          ),
         ...fields.map((field) {
           if (field == null || field['field'] == null) {
             return const SizedBox.shrink();
@@ -512,7 +580,7 @@ class _NewAreaPageState extends State<NewAreaPage> {
                 });
               },
             );
-          } else if (field['field'] == 'hour') {
+          } else if (field['field'] == 'hour' || field['field'] == 'time') {
             inputField = CustomTimeField(
               label: fieldName,
               helperText: field['description'] as String?,

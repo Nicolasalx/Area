@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 export async function DELETE(_request: Request) {
   try {
     const cookieStore = await cookies();
-    const token = await cookieStore.get("auth-token")?.value;
+    const token = cookieStore.get("auth-token")?.value;
 
     if (!token) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });

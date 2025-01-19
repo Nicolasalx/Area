@@ -34,7 +34,7 @@ const Avatar = ({ src, alt = "Avatar", size = "md" }: AvatarProps) => {
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-gray-200">
-            <User className="h-6 w-6 text-gray-500" />
+            <User className="h-6 w-6 text-gray-800" />
           </div>
         )}
       </div>

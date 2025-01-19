@@ -25,6 +25,20 @@ interface UserData {
   name: string;
 }
 
+const BLACKLISTED_SERVICES = [
+  "opensky",
+  "earthquakealerts",
+  "time",
+  "fuelprice",
+  "discord",
+  "twilio",
+  "coingecko",
+  "openweather",
+  "newsapi",
+  "rss",
+  "worldtime",
+];
+
 const getServices = async (userId: string) => {
   const response = await axios.get(`${config.BACKEND_URL}/auth/${userId}`);
   return response;
@@ -44,6 +58,12 @@ const handleOAuthConnect = (service: string) => {
       break;
     case "discord":
       authUrl = `https://discord.com/oauth2/authorize?client_id=${config.DISCORD_CLIENT_ID}&redirect_uri=${config.DISCORD_REDIRECT_URI}&response_type=code&scope=identify email&state=${state}`;
+      break;
+    case "spotify":
+      authUrl = `https://accounts.spotify.com/authorize?client_id=${config.SPOTIFY_CLIENT_ID}&redirect_uri=${config.SPOTIFY_REDIRECT_URI}&response_type=code&scope=user-library-read playlist-read-private user-top-read user-read-playback-state playlist-modify-private playlist-modify-public&state=${state}`;
+      break;
+    case "trello":
+      authUrl = `https://api.trello.com/1/OAuthAuthorizeToken?&expiration=never&scope=read%2Cwrite&key=${config.TRELLO_API_KEY}&oauth_callback=${config.TRELLO_REDIRECT_URI}`;
       break;
     default:
       break;
@@ -113,8 +133,11 @@ export default function ProfilePage() {
       if (!userData?.id) return;
       try {
         const response = await getServices(userData.id);
-        setServices(response.data);
-        console.log(response.data);
+        const filteredServices = response.data.filter(
+          (service: Service) =>
+            !BLACKLISTED_SERVICES.includes(service.name.toLowerCase()),
+        );
+        setServices(filteredServices);
       } catch (error) {
         console.error("Error fetching services:", error);
       }
@@ -150,17 +173,17 @@ export default function ProfilePage() {
                     {formatActionReactionName(service.name)}
                   </Text>
                   <div
-                    className={`flex flex-row justify-center ${service.isSet ? "text-green-500" : "text-red-500"}`}
+                    className={`flex flex-row justify-center ${service.isSet ? "text-green-700" : "text-red-600"}`}
                   >
                     <Dot className={service.isSet ? "animate-pulse" : ""} />
                     <Text
-                      className={`inline-block ${service.isSet ? "text-green-500" : "text-red-500"}`}
+                      className={`inline-block ${service.isSet ? "text-green-700" : "text-red-600"}`}
                     >
                       {service.isSet ? "Connected" : "Not Connected"}
                     </Text>
                   </div>
                 </div>
-                <Text className="mt-1 text-gray-600">
+                <Text className="mt-1 text-gray-700">
                   {service.description}
                 </Text>
               </div>
@@ -175,6 +198,13 @@ export default function ProfilePage() {
                     Disconnect
                   </Button>
                 ) : service.oauthNeed ? (
+                  <Button
+                    onClick={() => handleOAuthConnect(service.name)}
+                    className="w-full"
+                  >
+                    <span>Connect with {service.name}</span>
+                  </Button>
+                ) : service.name === "trello" ? (
                   <Button
                     onClick={() => handleOAuthConnect(service.name)}
                     className="w-full"

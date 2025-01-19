@@ -7,6 +7,7 @@ import { TodoistReactionService } from '@reaction-service/todoist/todoist.servic
 import { IReactionHandler } from '@reaction-service/handler/base.handler';
 import { TrelloReactionService } from '@reaction-service/trello/trello.service';
 import { TwilioReactionService } from '@reaction-service/twilio/twilio.service';
+import { GoogleReactionService } from '@reaction-service/google/google.service';
 import { SpotifyReactionService } from '@reaction-service/spotify/spotify.service';
 
 @Injectable()
@@ -20,16 +21,10 @@ export class ReactionService {
     private readonly prisma: PrismaService,
     private readonly trelloService: TrelloReactionService,
     private readonly twilioService: TwilioReactionService,
+    private readonly googleService: GoogleReactionService,
     private readonly spotifyService: SpotifyReactionService,
   ) {
-    this.handlers = [
-      discordService,
-      slackService,
-      trelloService,
-      todoistService,
-      twilioService,
-      spotifyService,
-    ];
+    this.handlers = [discordService, twilioService];
   }
 
   async getReactions(): Promise<ReactionDto[]> {
@@ -67,5 +62,44 @@ export class ReactionService {
     }
 
     return handler.handle(reaction, data);
+  }
+
+  async redirectServiceTokens(
+    service: string,
+    refreshToken: string,
+    reaction: string,
+    data: any,
+  ): Promise<string> {
+    if (service == 'google') {
+      return await this.googleService.manageReactionGoogle(
+        refreshToken,
+        reaction,
+        data,
+      );
+    } else if (service == 'spotify') {
+      return await this.spotifyService.manageReactionSpotify(
+        refreshToken,
+        reaction,
+        data,
+      );
+    } else if (service == 'trello') {
+      return await this.trelloService.manageReactionTrello(
+        refreshToken,
+        reaction,
+        data,
+      );
+    } else if (service == 'todoist') {
+      return await this.todoistService.manageReactionTodoist(
+        refreshToken,
+        reaction,
+        data,
+      );
+    } else if (service == 'slack') {
+      return await this.slackService.manageReactionSlack(
+        refreshToken,
+        reaction,
+        data,
+      );
+    }
   }
 }
