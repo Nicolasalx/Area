@@ -3,18 +3,18 @@ import { IReactionHandler } from '@reaction-service/handler/base.handler';
 import { WebClient } from '@slack/web-api';
 
 @Injectable()
-export class SlackReactionService implements IReactionHandler {
+export class SlackReactionService {
   private webClient: WebClient;
+  private isInit = false;
 
   constructor() {
-    this.webClient = new WebClient(process.env.SLACK_BOT_TOKEN);
   }
 
-  canHandle(service: string): boolean {
-    return service === 'slack';
-  }
-
-  async handle(reaction: string, data: any): Promise<string> {
+  async manageReactionSlack(refreshToken: string, reaction: string, data: any): Promise<string> {
+    if (!this.isInit) {
+      this.webClient = new WebClient(refreshToken);
+      this.isInit = true;
+    }
     switch (reaction.toLowerCase()) {
       case 'send_slack_message':
         return this.sendMessage(data);

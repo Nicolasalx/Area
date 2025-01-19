@@ -131,7 +131,8 @@ export class ReactionController {
         service == 'google' ||
         service == 'spotify' ||
         service == 'trello' ||
-        service == 'todoist'
+        service == 'todoist' ||
+        service == 'slack'
       ) {
         return await this.reactionService.redirectServiceTokens(
           service,

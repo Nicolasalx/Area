@@ -3,14 +3,15 @@ import { WebClient } from '@slack/web-api';
 import { ActiveAction, ActiveReaction } from '@prisma/client';
 import { ActionService } from '../action/action.service';
 import { SlackUtils } from '@common/utils/slack.utils';
+import { getTriggerDate } from '@trigger-service/handler/get-trigger-date';
 
 @Injectable()
 export class SlackActionService {
   private webClient: WebClient;
   private lastCheckTimestamp: number = Date.now();
+  private isInit = false;
 
   constructor(private readonly actionService: ActionService) {
-    this.webClient = new WebClient(process.env.SLACK_BOT_TOKEN);
   }
 
   private async joinChannel(channelName: string): Promise<string | null> {
@@ -71,8 +72,13 @@ export class SlackActionService {
   async checkNewMessage(
     action: ActiveAction,
     reaction: ActiveReaction[],
+    refreshToken: string,
   ): Promise<void> {
     try {
+      if (!this.isInit) {
+        this.webClient = new WebClient(refreshToken);
+        this.isInit = true;
+      }
       const { channelName } = SlackUtils.parseSlackData(action.data);
       if (!channelName) {
         throw new Error('Channel name is required');
@@ -90,7 +96,10 @@ export class SlackActionService {
 
       if (result?.messages?.length > 0) {
         console.log(`New Slack messages detected in channel #${channelName}`);
-        await this.actionService.executeReactionsBis(reaction);
+        const ingredients = [
+          { field: 'trigger_date', value: getTriggerDate() },
+        ];
+        await this.actionService.executeReactions(ingredients, reaction);
         this.lastCheckTimestamp = Date.now();
       }
     } catch (error) {
@@ -101,8 +110,13 @@ export class SlackActionService {
   async checkMentions(
     action: ActiveAction,
     reaction: ActiveReaction[],
+    refreshToken: string,
   ): Promise<void> {
     try {
+      if (!this.isInit) {
+        this.webClient = new WebClient(refreshToken);
+        this.isInit = true;
+      }
       const { channelName, username } = SlackUtils.parseSlackData(action.data);
       if (!channelName || !username) {
         throw new Error('Channel name and username are required');
@@ -135,7 +149,10 @@ export class SlackActionService {
         console.log(
           `New mentions detected for @${username} in #${channelName}`,
         );
-        await this.actionService.executeReactionsBis(reaction);
+        const ingredients = [
+          { field: 'trigger_date', value: getTriggerDate() },
+        ];
+        await this.actionService.executeReactions(ingredients, reaction);
         this.lastCheckTimestamp = Date.now();
       }
     } catch (error) {
@@ -146,8 +163,13 @@ export class SlackActionService {
   async checkReaction(
     action: ActiveAction,
     reaction: ActiveReaction[],
+    refreshToken: string,
   ): Promise<void> {
     try {
+      if (!this.isInit) {
+        this.webClient = new WebClient(refreshToken);
+        this.isInit = true;
+      }
       const { channelName, reaction: emojiToCheck } = SlackUtils.parseSlackData(
         action.data,
       );
@@ -170,7 +192,10 @@ export class SlackActionService {
       for (const message of result.messages) {
         if (message.reactions?.some((r) => r.name === emojiToCheck)) {
           console.log(`Detected ${emojiToCheck} reaction in #${channelName}`);
-          await this.actionService.executeReactionsBis(reaction);
+          const ingredients = [
+            { field: 'trigger_date', value: getTriggerDate() },
+          ];
+          await this.actionService.executeReactions(ingredients, reaction);
           this.lastCheckTimestamp = Date.now();
           break;
         }
@@ -183,8 +208,13 @@ export class SlackActionService {
   async checkFileShared(
     action: ActiveAction,
     reaction: ActiveReaction[],
+    refreshToken: string,
   ): Promise<void> {
     try {
+      if (!this.isInit) {
+        this.webClient = new WebClient(refreshToken);
+        this.isInit = true;
+      }
       const { channelName } = SlackUtils.parseSlackData(action.data);
       if (!channelName) {
         throw new Error('Channel name is required');
@@ -202,7 +232,10 @@ export class SlackActionService {
 
       if (result?.messages?.some((msg) => msg.files?.length > 0)) {
         console.log(`New file shared in channel #${channelName}`);
-        await this.actionService.executeReactionsBis(reaction);
+        const ingredients = [
+          { field: 'trigger_date', value: getTriggerDate() },
+        ];
+        await this.actionService.executeReactions(ingredients, reaction);
         this.lastCheckTimestamp = Date.now();
       }
     } catch (error) {
