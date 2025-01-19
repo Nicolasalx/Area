@@ -1,13 +1,8 @@
 import axios from 'axios';
 import { Injectable } from '@nestjs/common';
-import { ActiveAction, ActiveReaction } from '@prisma/client';
+import { ActiveReaction } from '@prisma/client';
 import { ActionService } from '../action/action.service';
 import { getTriggerDate } from '@trigger-service/handler/get-trigger-date';
-
-interface GithubActionData {
-  repositoryOwner: string;
-  repositoryName: string;
-}
 
 @Injectable()
 export class GithubActionService {
@@ -16,8 +11,6 @@ export class GithubActionService {
   private knownPullRequests: string[] = [];
 
   constructor(private readonly actionService: ActionService) {}
-
-  // -------------------------------------------------------------------------------- //
 
   async getAllPullRequests(
     repositoryOwner: string,
@@ -59,12 +52,11 @@ export class GithubActionService {
   }
 
   async handleNewPullRequest(
-    action: ActiveAction,
+    action: any,
     reaction: ActiveReaction[],
   ): Promise<void> {
-    const data = action.data as unknown as GithubActionData;
-    const repositoryOwner = (data.repositoryOwner as any).value || 'Unknown';
-    const repositoryName = (data.repositoryName as any).value || 'Unknown';
+    const repositoryOwner = action.data?.repositoryOwner;
+    const repositoryName = action.data?.repositoryName;
 
     const token = process.env.GITHUB_TOKEN_API;
     const newPullRequests: string[] = [];
@@ -103,12 +95,11 @@ export class GithubActionService {
   // -------------------------------------------------------------------------------- //
 
   async handleNewBranch(
-    action: ActiveAction,
+    action: any,
     reaction: ActiveReaction[],
   ): Promise<void> {
-    const data = action.data as unknown as GithubActionData;
-    const repositoryOwner = (data.repositoryOwner as any).value || 'Unknown';
-    const repositoryName = (data.repositoryName as any).value || 'Unknown';
+    const repositoryOwner = action.data?.repositoryOwner;
+    const repositoryName = action.data?.repositoryName;
 
     const url = `https://api.github.com/repos/${repositoryOwner}/${repositoryName}/branches`;
     let page = 1;
@@ -202,12 +193,11 @@ export class GithubActionService {
   }
 
   async handleGithubPush(
-    action: ActiveAction,
+    action: any,
     reaction: ActiveReaction[],
   ): Promise<void> {
-    const data = action.data as unknown as GithubActionData;
-    const repositoryOwner = (data.repositoryOwner as any).value || 'Unknown';
-    const repositoryName = (data.repositoryName as any).value || 'Unknown';
+    const repositoryOwner = action.data?.repositoryOwner;
+    const repositoryName = action.data?.repositoryName;
 
     const token = process.env.GITHUB_TOKEN_API;
 
