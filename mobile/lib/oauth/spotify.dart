@@ -1,3 +1,5 @@
+import 'package:area/profile.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
@@ -10,15 +12,33 @@ class AuthSpotify {
     try {
       var userId = await globals.storage.read(key: 'id');
       Uri uriBackSpotify = Uri.parse('${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/auth/spotify/callback/?code=$code&redirect_uri=${dotenv.env['SPOTIFY_REDIRECT_URI']}&state=$userId');
-      await http.get(uriBackSpotify);
+      final response = await http.get(uriBackSpotify);
 
+      if (response.statusCode == 200) {
+        if (userId == null) {
+          Fluttertoast.showToast(
+            msg: 'Service connected successfully',
+            backgroundColor: Colors.green,
+          );
+          globals.navigatorKey.currentState!
+              .popUntil(ModalRoute.withName(routeServicesConfig));
+          globals.navigatorKey.currentState!.pushNamed(routeServicesConfig);
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: 'Login failed',
+          backgroundColor: Colors.red,
+        );
+      }
       globals.navigatorKey.currentState!
           .popUntil(ModalRoute.withName(routeHome));
       globals.navigatorKey.currentState!.pushNamed(routeHome);
       return true;
     } catch (error) {
-      print(" /!\\ ERROR : Login OAuth Failed");
-      print(error);
+      Fluttertoast.showToast(
+        msg: 'Login OAuth failed',
+        backgroundColor: Colors.red,
+      );
       return false;
     }
   }

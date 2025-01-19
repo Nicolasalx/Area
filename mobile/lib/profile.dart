@@ -1,3 +1,4 @@
+import 'package:area/main.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'confirmation.dart' as confirmation;
@@ -5,7 +6,6 @@ import 'globals.dart' as globals;
 import 'package:http/http.dart' as http;
 import 'services_configuration.dart';
 
-const routeHome = '/';
 const routeProfile = "profile";
 const routeSettings = "Settings";
 const routeServicesConfig = "ServicesConfiguration";
