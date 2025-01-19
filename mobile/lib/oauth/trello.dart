@@ -15,7 +15,7 @@ class AuthTrello {
       final response = await http.get(uriBackTrello);
 
       if (response.statusCode == 200) {
-        if (userId == null) {
+        if (globals.isLoggedIn == true) {
           Fluttertoast.showToast(
             msg: 'Service connected successfully',
             backgroundColor: Colors.green,

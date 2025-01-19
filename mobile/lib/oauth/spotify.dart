@@ -15,7 +15,7 @@ class AuthSpotify {
       final response = await http.get(uriBackSpotify);
 
       if (response.statusCode == 200) {
-        if (userId == null) {
+        if (globals.isLoggedIn == true) {
           Fluttertoast.showToast(
             msg: 'Service connected successfully',
             backgroundColor: Colors.green,

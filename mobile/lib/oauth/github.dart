@@ -16,7 +16,7 @@ class AuthGithub {
       final response = await http.get(uriBackGithub);
 
       if (response.statusCode == 200) {
-        if (userId != null) {
+        if (globals.isLoggedIn == false) {
           globals.isLoggedIn = true;
           var responseData = json.decode(response.body);
           await globals.storage.write(key: 'token', value: responseData["token"]);
