@@ -11,8 +11,7 @@ export class SlackActionService {
   private lastCheckTimestamp: number = Date.now();
   private isInit = false;
 
-  constructor(private readonly actionService: ActionService) {
-  }
+  constructor(private readonly actionService: ActionService) {}
 
   private async joinChannel(channelName: string): Promise<string | null> {
     try {

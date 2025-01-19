@@ -6,7 +6,7 @@ import { getToken, getUserId } from '@common/utils/token.utils';
 
 @Injectable()
 export class SlackActionHandler implements IActionHandler {
-  constructor(private readonly slackService: SlackActionService) { }
+  constructor(private readonly slackService: SlackActionService) {}
 
   canHandle(action: string): boolean {
     return [
@@ -29,7 +29,11 @@ export class SlackActionHandler implements IActionHandler {
     }
     switch (action.name) {
       case 'check_new_message':
-        await this.slackService.checkNewMessage(action, reactions, refreshToken);
+        await this.slackService.checkNewMessage(
+          action,
+          reactions,
+          refreshToken,
+        );
         break;
       case 'check_mention':
         await this.slackService.checkMentions(action, reactions, refreshToken);
@@ -38,7 +42,11 @@ export class SlackActionHandler implements IActionHandler {
         await this.slackService.checkReaction(action, reactions, refreshToken);
         break;
       case 'check_file_shared':
-        await this.slackService.checkFileShared(action, reactions, refreshToken);
+        await this.slackService.checkFileShared(
+          action,
+          reactions,
+          refreshToken,
+        );
         break;
     }
   }

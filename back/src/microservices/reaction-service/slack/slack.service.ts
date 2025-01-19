@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { IReactionHandler } from '@reaction-service/handler/base.handler';
 import { WebClient } from '@slack/web-api';
 
 @Injectable()
@@ -7,10 +6,13 @@ export class SlackReactionService {
   private webClient: WebClient;
   private isInit = false;
 
-  constructor() {
-  }
+  constructor() {}
 
-  async manageReactionSlack(refreshToken: string, reaction: string, data: any): Promise<string> {
+  async manageReactionSlack(
+    refreshToken: string,
+    reaction: string,
+    data: any,
+  ): Promise<string> {
     if (!this.isInit) {
       this.webClient = new WebClient(refreshToken);
       this.isInit = true;

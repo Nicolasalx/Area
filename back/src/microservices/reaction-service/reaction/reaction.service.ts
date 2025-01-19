@@ -95,7 +95,11 @@ export class ReactionService {
         data,
       );
     } else if (service == 'slack') {
-      return await this.slackService.manageReactionSlack(refreshToken, reaction, data);
+      return await this.slackService.manageReactionSlack(
+        refreshToken,
+        reaction,
+        data,
+      );
     }
   }
 }
