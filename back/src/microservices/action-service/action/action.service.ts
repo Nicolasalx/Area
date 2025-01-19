@@ -72,50 +72,6 @@ export class ActionService {
     }));
   }
 
-  async executeReactionsBis(reactions: ActiveReaction[]): Promise<void> {
-    this.updateToken();
-
-    for (const reaction of reactions) {
-      try {
-        const service = await this.prisma.services.findUnique({
-          where: { id: reaction.serviceId },
-        });
-
-        if (!service) {
-          console.log(`Service not found for ID: ${reaction.serviceId}`);
-          continue;
-        }
-
-        try {
-          const response = await axios.post(
-            'http://localhost:8080/reactions',
-            {
-              service: service.name,
-              reaction: reaction.name,
-              data: reaction.data,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${this.jwtToken}`,
-              },
-            },
-          );
-          console.log('Axios response :', response.data);
-        } catch (error) {
-          console.error(
-            'Erreur lors de la requête Axios :',
-            error.response?.data || error.message,
-          );
-        }
-      } catch (error) {
-        console.error(
-          `Error fetching service for ID: ${reaction.serviceId}`,
-          error,
-        );
-      }
-    }
-  }
-
   async modifyReactionData(
     ingredientsAction: IngredientsAction[],
     reaction: ActiveReaction,
