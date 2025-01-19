@@ -84,7 +84,9 @@ export class OAuthService {
       for (const serviceOauthUser of serviceOauth) {
         for (const serviceOauthElem of this.serviceOAuthList) {
           if (
-            serviceOauthUser.services.name.localeCompare(serviceOauthElem.name) == 0
+            serviceOauthUser.services.name.localeCompare(
+              serviceOauthElem.name,
+            ) == 0
           ) {
             serviceOauthElem.service.revokeAccessToken(serviceOauthUser.token);
           }
