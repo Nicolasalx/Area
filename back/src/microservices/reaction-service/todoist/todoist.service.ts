@@ -3,18 +3,18 @@ import { IReactionHandler } from '@reaction-service/handler/base.handler';
 import { TodoistApi } from '@doist/todoist-api-typescript';
 
 @Injectable()
-export class TodoistReactionService implements IReactionHandler {
+export class TodoistReactionService {
   private api: TodoistApi;
+  private apiInit = false;
 
   constructor() {
-    this.api = new TodoistApi(process.env.TODOIST_TOKEN);
   }
 
-  canHandle(service: string): boolean {
-    return service === 'todoist';
-  }
-
-  async handle(reaction: string, data: any): Promise<string> {
+  async manageReactionTodoist(refreshToken: string, reaction: string, data: any): Promise<string> {
+    if (!this.apiInit) {
+      this.api = new TodoistApi(refreshToken);
+      this.apiInit = true;
+    }
     switch (reaction) {
       case 'create_task':
         return await this.createTask(data);

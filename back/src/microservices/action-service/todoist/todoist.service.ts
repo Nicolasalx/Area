@@ -6,18 +6,23 @@ import { getTriggerDate } from '@trigger-service/handler/get-trigger-date';
 
 @Injectable()
 export class TodoistActionService {
-  private api: TodoistApi;
   private lastCheckTimestamp: number = Date.now();
+  private api: TodoistApi;
+  private apiInit = false;
 
   constructor(private readonly actionService: ActionService) {
-    this.api = new TodoistApi(process.env.TODOIST_TOKEN);
   }
 
   async checkNewTask(
     action: ActiveAction,
     reaction: ActiveReaction[],
+    refreshToken: string,
   ): Promise<void> {
     try {
+      if (!this.apiInit) {
+        this.api = new TodoistApi(refreshToken);
+        this.apiInit = true;
+      }
       const tasks = await this.api.getTasks();
       let newTaskDetected = false;
 
