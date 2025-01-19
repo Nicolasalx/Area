@@ -8,6 +8,7 @@ import {
   Patch,
   UseGuards,
   NotFoundException,
+  Logger,
 } from '@nestjs/common';
 import { WorkflowService } from './workflow.service';
 import { ApiOperation, ApiResponse, ApiTags, ApiBody } from '@nestjs/swagger';
@@ -18,6 +19,8 @@ import { JwtAuthGuard } from '../../../shared/auth/jwt-auth.guard';
 @UseGuards(JwtAuthGuard)
 @Controller('workflow')
 export class WorkflowController {
+  private readonly logger = new Logger(WorkflowController.name);
+
   constructor(private readonly workflowService: WorkflowService) {}
 
   /**
@@ -137,6 +140,7 @@ export class WorkflowController {
         data: workflows,
       };
     } catch (error) {
+      this.logger.error(error.message);
       throw error;
     }
   }
@@ -232,6 +236,7 @@ export class WorkflowController {
         data: workflow,
       };
     } catch (error) {
+      this.logger.error(error.message);
       throw error;
     }
   }
@@ -281,6 +286,7 @@ export class WorkflowController {
       };
     } catch (error) {
       if (error instanceof NotFoundException) {
+        this.logger.error(error.message);
         throw error;
       }
       console.error('Error deleting workflow:', error);
@@ -393,6 +399,7 @@ export class WorkflowController {
         data: workflow,
       };
     } catch (error) {
+      this.logger.error(error.message);
       throw error;
     }
   }
