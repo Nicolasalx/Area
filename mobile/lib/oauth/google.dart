@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:area/profile.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -20,7 +19,8 @@ class AuthGoogle {
         if (globals.isLoggedIn == false) {
           globals.isLoggedIn = true;
           var responseData = json.decode(response.body);
-          await globals.storage.write(key: 'token', value: responseData["token"]);
+          await globals.storage
+              .write(key: 'token', value: responseData["token"]);
           await globals.storage
               .write(key: 'email', value: responseData["user"]["email"]);
           await globals.storage

@@ -40,7 +40,8 @@ class NavigationButtons extends StatelessWidget {
           ElevatedButton.icon(
             onPressed: isNextEnabled ? onNext : null,
             icon: const Text('Next'),
-            label: Icon(Icons.arrow_forward, color: isNextEnabled ? Colors.white : Colors.grey[500]),
+            label: Icon(Icons.arrow_forward,
+                color: isNextEnabled ? Colors.white : Colors.grey[500]),
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,
               backgroundColor: isNextEnabled ? Colors.black : Colors.grey[300],

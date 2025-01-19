@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:area/profile.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -12,14 +11,16 @@ class AuthGithub {
   static Future<bool> login(String code) async {
     try {
       var userId = await globals.storage.read(key: 'id');
-      Uri uriBackGithub = Uri.parse('${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/auth/github/callback/?code=$code&redirect_uri=${dotenv.env['GITHUB_REDIRECT_URI']}&state=$userId');
+      Uri uriBackGithub = Uri.parse(
+          '${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/auth/github/callback/?code=$code&redirect_uri=${dotenv.env['GITHUB_REDIRECT_URI']}&state=$userId');
       final response = await http.get(uriBackGithub);
 
       if (response.statusCode == 200) {
         if (globals.isLoggedIn == false) {
           globals.isLoggedIn = true;
           var responseData = json.decode(response.body);
-          await globals.storage.write(key: 'token', value: responseData["token"]);
+          await globals.storage
+              .write(key: 'token', value: responseData["token"]);
           await globals.storage
               .write(key: 'email', value: responseData["user"]["email"]);
           await globals.storage
@@ -58,16 +59,15 @@ class AuthGithub {
 }
 
 var httpUri = Uri(
-  scheme: 'https',
-  host: 'github.com',
-  path: '/login/oauth/authorize',
-  queryParameters: {
-    'client_id': '${dotenv.env['GITHUB_CLIENT_ID']}',
-    'redirect_uri': '${dotenv.env['GITHUB_REDIRECT_URI']}',
-    'response_type': 'code',
-    'scope': ["read:user", "user:email"].join(" "),
-  }
-);
+    scheme: 'https',
+    host: 'github.com',
+    path: '/login/oauth/authorize',
+    queryParameters: {
+      'client_id': '${dotenv.env['GITHUB_CLIENT_ID']}',
+      'redirect_uri': '${dotenv.env['GITHUB_REDIRECT_URI']}',
+      'response_type': 'code',
+      'scope': ["read:user", "user:email"].join(" "),
+    });
 
 class OAuthGithubPage extends StatelessWidget {
   const OAuthGithubPage({super.key});
@@ -76,30 +76,29 @@ class OAuthGithubPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Connection Oauth Github')),
-      body: WebViewWidget(controller: WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(const Color(0x00000000))
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onPageStarted: (String url) {},
-          onPageFinished: (String url) {},
-          onWebResourceError: (WebResourceError error) {},
-          onNavigationRequest: (NavigationRequest request) {
-            var uri = Uri.parse(dotenv.env['GITHUB_REDIRECT_URI']??"error");
-            if (request.url.startsWith(uri.toString())) {
-              var requestUri = Uri.parse(request.url);
-              AuthGithub.login(requestUri.queryParameters['code'] ?? "");
-              return NavigationDecision.prevent;
-            }
-            return NavigationDecision.navigate;
-          },
-        ),
-      )
-      ..setUserAgent("Chrome")
-      ..loadRequest(httpUri)
-      ),
+      body: WebViewWidget(
+          controller: WebViewController()
+            ..setJavaScriptMode(JavaScriptMode.unrestricted)
+            ..setBackgroundColor(const Color(0x00000000))
+            ..setNavigationDelegate(
+              NavigationDelegate(
+                onPageStarted: (String url) {},
+                onPageFinished: (String url) {},
+                onWebResourceError: (WebResourceError error) {},
+                onNavigationRequest: (NavigationRequest request) {
+                  var uri =
+                      Uri.parse(dotenv.env['GITHUB_REDIRECT_URI'] ?? "error");
+                  if (request.url.startsWith(uri.toString())) {
+                    var requestUri = Uri.parse(request.url);
+                    AuthGithub.login(requestUri.queryParameters['code'] ?? "");
+                    return NavigationDecision.prevent;
+                  }
+                  return NavigationDecision.navigate;
+                },
+              ),
+            )
+            ..setUserAgent("Chrome")
+            ..loadRequest(httpUri)),
     );
   }
 }
-
-
