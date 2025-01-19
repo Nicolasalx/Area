@@ -128,6 +128,7 @@ export class OAuthController {
     try {
       return await this.oauthService.getServiceOAuthList(id);
     } catch (err) {
+      this.logger.error(err.message);
       throw err;
     }
   }
@@ -168,6 +169,7 @@ export class OAuthController {
       await this.oauthService.deleteServiceToken(body.userId, body.serviceId);
       return { message: 'Service well removed.' };
     } catch (err) {
+      this.logger.error(err.message);
       throw err;
     }
   }
@@ -217,6 +219,7 @@ export class OAuthController {
         );
       return response;
     } catch (err) {
+      this.logger.error(err.message);
       throw err;
     }
   }
@@ -266,6 +269,7 @@ export class OAuthController {
         );
       return response;
     } catch (err) {
+      this.logger.error(err.message);
       throw err;
     }
   }
@@ -316,6 +320,7 @@ export class OAuthController {
         );
       return response;
     } catch (err) {
+      this.logger.error(err.message);
       throw err;
     }
   }
@@ -366,6 +371,7 @@ export class OAuthController {
         );
       return response;
     } catch (err) {
+      this.logger.error(err.message);
       throw err;
     }
   }
@@ -539,6 +545,7 @@ export class OAuthController {
       );
       return { message: 'API key successfully added' };
     } catch (err) {
+      this.logger.error(err.message);
       throw err;
     }
   }
