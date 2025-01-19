@@ -34,8 +34,8 @@ class AuthGithub {
             backgroundColor: Colors.green,
           );
           globals.navigatorKey.currentState!
-              .popUntil(ModalRoute.withName(routeServicesConfig));
-          globals.navigatorKey.currentState!.pushNamed(routeServicesConfig);
+              .popUntil(ModalRoute.withName(routeHome));
+          globals.navigatorKey.currentState!.pushNamed(routeHome);
         }
       } else {
         Fluttertoast.showToast(
