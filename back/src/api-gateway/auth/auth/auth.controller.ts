@@ -160,7 +160,7 @@ export class AuthController {
       this.logger.debug('Delete successful');
       return response;
     } catch (err) {
-      this.logger.debug('Delete failed: ' + err);
+      this.logger.debug('Delete failed: ' + err.message);
       throw err;
     }
   }

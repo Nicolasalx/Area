@@ -1,19 +1,10 @@
-import { DiscordWebhook } from '@common/interfaces/discord.interface';
 import { Injectable } from '@nestjs/common';
 import { IReactionHandler } from '@reaction-service/handler/base.handler';
 import axios from 'axios';
 
 @Injectable()
 export class DiscordReactionService implements IReactionHandler {
-  private webhook: DiscordWebhook;
-
-  constructor() {
-    this.webhook = {
-      url: process.env.DISCORD_WEBHOOK_URL,
-      channelId: process.env.DISCORD_CHANNEL_ID,
-      token: process.env.DISCORD_TOKEN,
-    };
-  }
+  constructor() {}
 
   canHandle(service: string): boolean {
     return service === 'discord';
@@ -28,11 +19,14 @@ export class DiscordReactionService implements IReactionHandler {
     }
   }
 
-  private async sendMessage(data: { message: string }): Promise<string> {
-    const { message } = data;
+  private async sendMessage(data: {
+    message: string;
+    webhookUrl: string;
+  }): Promise<string> {
+    const { message, webhookUrl } = data;
 
     try {
-      await axios.post(this.webhook.url, {
+      await axios.post(webhookUrl, {
         content: message,
       });
     } catch (error) {
