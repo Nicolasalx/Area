@@ -6,7 +6,10 @@ VALUES
     ('create_youtube_playlist', 'Create a Youtube Playlist when triggered.', '{"reaction": "create_youtube_playlist"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'google' LIMIT 1), '[{"field": "title", "description": "The name of the YouTube playlist"}, {"field": "description", "description": "A description of the YouTube playlist"}, {"field": "privacyStatus", "description": "The privacy status of the playlist. Possible values are: public, private, unlisted", "options": ["public", "private", "unlisted"]}]'),
 
 -- discord
-    ('send_message', 'Send message to discord channel.', '{"reaction": "send_message"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'discord' LIMIT 1), '[{"field": "message", "description": "Message to send in the channel"}]'),
+    ('send_message', 'Send message to discord channel.', '{"reaction": "send_message"}', true, NOW(),
+        (SELECT id FROM "Services" WHERE "name" = 'discord' LIMIT 1),
+        '[{"field": "message", "description": "Message to send in the channel"},
+        {"field": "webhookUrl", "description": "Webhook URL of the channel"}]'),
 
 -- slack
     ('send_slack_message', 'Sends a message to a Slack channel when triggered.', '{"reaction": "send_message"}', true, NOW(), (SELECT id FROM "Services" WHERE "name" = 'slack' LIMIT 1), '[{"field": "channelName", "description": "Name of the Slack channel to send the message to (without #)"}, {"field": "message", "description": "The message text to send"}]'),
