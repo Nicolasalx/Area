@@ -81,7 +81,7 @@ export default function ProfilePage() {
 
         <div className="space-y-6">
           <div className="flex items-center gap-4 rounded-lg border p-4">
-            <User className="h-6 w-6 text-gray-400" />
+            <User className="h-6 w-6 text-gray-700" />
             <div>
               <Text variant="small" color="gray">
                 Name
@@ -91,7 +91,7 @@ export default function ProfilePage() {
           </div>
 
           <div className="flex items-center gap-4 rounded-lg border p-4">
-            <AtSign className="h-6 w-6 text-gray-400" />
+            <AtSign className="h-6 w-6 text-gray-700" />
             <div>
               <Text variant="small" color="gray">
                 Email
@@ -102,7 +102,7 @@ export default function ProfilePage() {
 
           <div className="mt-8 border-t pt-8">
             <div className="rounded-lg bg-red-50 p-4">
-              <Text variant="h3" className="mb-2">
+              <Text variant="h3" as={"h2"} className="mb-2">
                 Danger Zone
               </Text>
               <Text variant="small" color="gray" className="mb-4">

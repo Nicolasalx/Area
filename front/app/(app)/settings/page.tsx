@@ -173,17 +173,17 @@ export default function ProfilePage() {
                     {formatActionReactionName(service.name)}
                   </Text>
                   <div
-                    className={`flex flex-row justify-center ${service.isSet ? "text-green-500" : "text-red-500"}`}
+                    className={`flex flex-row justify-center ${service.isSet ? "text-green-700" : "text-red-600"}`}
                   >
                     <Dot className={service.isSet ? "animate-pulse" : ""} />
                     <Text
-                      className={`inline-block ${service.isSet ? "text-green-500" : "text-red-500"}`}
+                      className={`inline-block ${service.isSet ? "text-green-700" : "text-red-600"}`}
                     >
                       {service.isSet ? "Connected" : "Not Connected"}
                     </Text>
                   </div>
                 </div>
-                <Text className="mt-1 text-gray-600">
+                <Text className="mt-1 text-gray-700">
                   {service.description}
                 </Text>
               </div>

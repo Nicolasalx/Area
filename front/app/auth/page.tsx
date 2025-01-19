@@ -53,7 +53,7 @@ export default function AuthPage() {
         <button
           type="button"
           onClick={() => setIsLogin(!isLogin)}
-          className="rounded-sm text-sm text-black underline decoration-1 underline-offset-2 duration-200 hover:text-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+          className="rounded-sm text-sm text-black underline decoration-1 underline-offset-2 duration-200 hover:text-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
         >
           {isLogin ? "Create an account" : "Sign in"}
         </button>

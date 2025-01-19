@@ -26,9 +26,11 @@ export default function Accordion({
         className="flex w-full items-center justify-between rounded-lg bg-gray-50 px-4 py-3 text-left text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <Text variant="h5">{title}</Text>
+        <Text variant="h5" as={"p"}>
+          {title}
+        </Text>
         <ChevronDown
-          className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${
+          className={`h-5 w-5 text-gray-800 transition-transform duration-200 ${
             isOpen ? "rotate-180 transform" : ""
           }`}
         />

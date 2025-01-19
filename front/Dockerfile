@@ -1,10 +1,14 @@
 FROM node:22-alpine
 
-COPY package*.json ./
+WORKDIR /app
 
+COPY package*.json ./
 RUN npm install
 
 COPY . .
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN npm run build
 

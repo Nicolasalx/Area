@@ -47,7 +47,9 @@ const TriggerCard = memo(
               {getServiceIcon(trigger.service?.name, "h-8 w-8")}
             </div>
             <div className="flex flex-col">
-              <Text variant="h5">{formatActionReactionName(trigger.name)}</Text>
+              <Text variant="h5" as={"h4"}>
+                {formatActionReactionName(trigger.name)}
+              </Text>
               {trigger.service && (
                 <Text variant="caption" color="gray">
                   {formatActionReactionName(trigger.service.name)}

@@ -24,6 +24,7 @@ const config: NextConfig = {
     ],
   },
   env: {
+    NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL,
     DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
     DISCORD_REDIRECT_URI: process.env.DISCORD_REDIRECT_URI,
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,

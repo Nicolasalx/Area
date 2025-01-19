@@ -61,7 +61,7 @@ const ServiceCard = memo(
               {getServiceIcon(service.name, "h-8 w-8")}
             </div>
             <div className="flex flex-col">
-              <Text variant="h5">
+              <Text variant="h5" as={"h4"}>
                 {service.name.charAt(0).toUpperCase() + service.name.slice(1)}
               </Text>
               <Text variant="caption" color="gray">

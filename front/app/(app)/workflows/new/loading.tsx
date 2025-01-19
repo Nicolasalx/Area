@@ -50,7 +50,7 @@ export default function Loading() {
               <div className="flex items-center justify-between pt-4">
                 <Button
                   disabled
-                  className="bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  className="bg-gray-100 text-gray-800 hover:bg-gray-200"
                 >
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Back
@@ -73,7 +73,7 @@ export default function Loading() {
         <div className="container mx-auto flex items-center justify-between px-8">
           <Button
             disabled
-            className="bg-gray-100 text-gray-700 hover:bg-gray-200"
+            className="bg-gray-100 text-gray-800 hover:bg-gray-200"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back

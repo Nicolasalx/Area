@@ -248,7 +248,7 @@ export default function LandingPage() {
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
               Everything You Need to Automate
             </h2>
-            <p className="mt-4 text-lg text-gray-600">
+            <p className="mt-4 text-lg text-gray-700">
               Create powerful workflows with our extensive collection of
               integrations and features.
             </p>
@@ -267,7 +267,7 @@ export default function LandingPage() {
                   {feature.icon}
                 </div>
                 <h3 className="text-xl font-semibold">{feature.title}</h3>
-                <p className="mt-4 text-gray-600">{feature.description}</p>
+                <p className="mt-4 text-gray-700">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -293,7 +293,7 @@ export default function LandingPage() {
               >
                 15+
               </div>
-              <div className="mt-2 text-center text-base text-gray-600">
+              <div className="mt-2 text-center text-base text-gray-700">
                 Integrated Services
               </div>
             </div>
@@ -309,7 +309,7 @@ export default function LandingPage() {
               >
                 100+
               </div>
-              <div className="mt-2 text-center text-base text-gray-600">
+              <div className="mt-2 text-center text-base text-gray-700">
                 Available AREAs
               </div>
             </div>
@@ -325,7 +325,7 @@ export default function LandingPage() {
               >
                 20+
               </div>
-              <div className="mt-2 text-center text-base text-gray-600">
+              <div className="mt-2 text-center text-base text-gray-700">
                 Available Reactions
               </div>
             </div>
@@ -341,7 +341,7 @@ export default function LandingPage() {
               >
                 35+
               </div>
-              <div className="mt-2 text-center text-base text-gray-600">
+              <div className="mt-2 text-center text-base text-gray-700">
                 Available Actions
               </div>
             </div>
@@ -363,7 +363,7 @@ export default function LandingPage() {
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
               Integrate with Your Favorite Services
             </h2>
-            <p className="mt-4 text-lg text-gray-600">
+            <p className="mt-4 text-lg text-gray-700">
               Connect and automate across multiple platforms seamlessly.
             </p>
           </div>
