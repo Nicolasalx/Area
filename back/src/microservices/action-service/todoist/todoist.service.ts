@@ -10,8 +10,7 @@ export class TodoistActionService {
   private api: TodoistApi;
   private apiInit = false;
 
-  constructor(private readonly actionService: ActionService) {
-  }
+  constructor(private readonly actionService: ActionService) {}
 
   async checkNewTask(
     action: ActiveAction,

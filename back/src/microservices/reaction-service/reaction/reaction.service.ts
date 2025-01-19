@@ -24,11 +24,7 @@ export class ReactionService {
     private readonly googleService: GoogleReactionService,
     private readonly spotifyService: SpotifyReactionService,
   ) {
-    this.handlers = [
-      discordService,
-      slackService,
-      twilioService,
-    ];
+    this.handlers = [discordService, slackService, twilioService];
   }
 
   async getReactions(): Promise<ReactionDto[]> {

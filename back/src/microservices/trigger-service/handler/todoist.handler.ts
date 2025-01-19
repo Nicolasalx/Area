@@ -17,10 +17,7 @@ export class TodoistActionHandler implements IActionHandler {
     reactions: ActiveReaction[],
   ): Promise<void> {
     const { workflowId } = action;
-    const refreshToken = await getToken(
-      await getUserId(workflowId),
-      'todoist',
-    );
+    const refreshToken = await getToken(await getUserId(workflowId), 'todoist');
     if (!refreshToken) {
       console.log('Access token not available');
       return;

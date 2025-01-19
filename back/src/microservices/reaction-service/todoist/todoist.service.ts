@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { IReactionHandler } from '@reaction-service/handler/base.handler';
 import { TodoistApi } from '@doist/todoist-api-typescript';
 
 @Injectable()
@@ -7,10 +6,13 @@ export class TodoistReactionService {
   private api: TodoistApi;
   private apiInit = false;
 
-  constructor() {
-  }
+  constructor() {}
 
-  async manageReactionTodoist(refreshToken: string, reaction: string, data: any): Promise<string> {
+  async manageReactionTodoist(
+    refreshToken: string,
+    reaction: string,
+    data: any,
+  ): Promise<string> {
     if (!this.apiInit) {
       this.api = new TodoistApi(refreshToken);
       this.apiInit = true;
