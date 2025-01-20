@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -7,29 +6,16 @@ import 'package:area/main.dart';
 import 'package:http/http.dart' as http;
 import '../globals.dart' as globals;
 
-class AuthGithub {
-  static Future<bool> login(String code) async {
+class AuthTrello {
+  static Future<bool> login(String token) async {
     try {
       var userId = await globals.storage.read(key: 'id');
-      Uri uriBackGithub = Uri.parse(
-          '${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/auth/github/callback/?code=$code&redirect_uri=${dotenv.env['GITHUB_REDIRECT_URI']}&state=$userId');
-      final response = await http.get(uriBackGithub);
+      Uri uriBackTrello = Uri.parse(
+          '${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/auth/trello/callback/?token=$token&state=$userId');
+      final response = await http.get(uriBackTrello);
 
       if (response.statusCode == 200) {
-        if (globals.isLoggedIn == false) {
-          globals.isLoggedIn = true;
-          var responseData = json.decode(response.body);
-          await globals.storage
-              .write(key: 'token', value: responseData["token"]);
-          await globals.storage
-              .write(key: 'email', value: responseData["user"]["email"]);
-          await globals.storage
-              .write(key: 'name', value: responseData["user"]["name"]);
-          await globals.storage
-              .write(key: 'id', value: responseData["user"]["id"]);
-          await globals.storage
-              .write(key: 'picture', value: responseData["user"]["picture"]);
-        } else {
+        if (globals.isLoggedIn == true) {
           Fluttertoast.showToast(
             msg: 'Service connected successfully',
             backgroundColor: Colors.green,
@@ -58,39 +44,33 @@ class AuthGithub {
   }
 }
 
-var httpUri = Uri(
-    scheme: 'https',
-    host: 'github.com',
-    path: '/login/oauth/authorize',
-    queryParameters: {
-      'client_id': '${dotenv.env['GITHUB_CLIENT_ID']}',
-      'redirect_uri': '${dotenv.env['GITHUB_REDIRECT_URI']}',
-      'response_type': 'code',
-      'scope': ["read:user", "user:email"].join(" "),
-    });
+var httpUri = Uri.parse(
+    'https://api.trello.com/1/OAuthAuthorizeToken?&expiration=never&scope=read%2Cwrite&key=${dotenv.env['TRELLO_API_KEY']}&oauth_callback=${dotenv.env['TRELLO_REDIRECT_URI']}');
 
-class OAuthGithubPage extends StatelessWidget {
-  const OAuthGithubPage({super.key});
+class OAuthTrelloPage extends StatelessWidget {
+  const OAuthTrelloPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Connection Oauth Github')),
+      appBar: AppBar(title: const Text('Connection Oauth Trello')),
       body: WebViewWidget(
           controller: WebViewController()
             ..setJavaScriptMode(JavaScriptMode.unrestricted)
             ..setBackgroundColor(const Color(0x00000000))
             ..setNavigationDelegate(
               NavigationDelegate(
-                onPageStarted: (String url) {},
+                onPageStarted: (String url) {
+                  print(url);
+                },
                 onPageFinished: (String url) {},
                 onWebResourceError: (WebResourceError error) {},
                 onNavigationRequest: (NavigationRequest request) {
                   var uri =
-                      Uri.parse(dotenv.env['GITHUB_REDIRECT_URI'] ?? "error");
+                      Uri.parse(dotenv.env['TRELLO_REDIRECT_URI'] ?? "error");
                   if (request.url.startsWith(uri.toString())) {
-                    var requestUri = Uri.parse(request.url);
-                    AuthGithub.login(requestUri.queryParameters['code'] ?? "");
+                    var token = request.url.split('=')[1];
+                    AuthTrello.login(token);
                     return NavigationDecision.prevent;
                   }
                   return NavigationDecision.navigate;

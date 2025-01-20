@@ -550,7 +550,6 @@ class _NewAreaPageState extends State<NewAreaPage> {
                   );
                 }
               }
-
               return const Text('No ingredients available');
             },
           ),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
@@ -9,30 +10,49 @@ import '../globals.dart' as globals;
 class AuthDiscord {
   static Future<bool> login(String code) async {
     try {
+      var userId = await globals.storage.read(key: 'id');
       Uri uriBackDiscord = Uri.parse(
-          '${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/auth/discord/callback/?code=$code&redirect_uri=${dotenv.env['DISCORD_REDIRECT_URI']}');
+          '${dotenv.env['FLUTTER_PUBLIC_BACKEND_URL']}/auth/discord/callback/?code=$code&redirect_uri=${dotenv.env['DISCORD_REDIRECT_URI']}&state=$userId');
       final response = await http.get(uriBackDiscord);
 
       if (response.statusCode == 200) {
-        globals.isLoggedIn = true;
-        var responseData = json.decode(response.body);
-        await globals.storage.write(key: 'token', value: responseData["token"]);
-        await globals.storage
-            .write(key: 'email', value: responseData["user"]["email"]);
-        await globals.storage
-            .write(key: 'name', value: responseData["user"]["name"]);
-        await globals.storage
-            .write(key: 'id', value: responseData["user"]["id"]);
-        await globals.storage
-            .write(key: 'picture', value: responseData["user"]["picture"]);
-        globals.navigatorKey.currentState!
-            .popUntil(ModalRoute.withName(routeHome));
-        globals.navigatorKey.currentState!.pushNamed(routeHome);
+        if (globals.isLoggedIn == false) {
+          globals.isLoggedIn = true;
+          var responseData = json.decode(response.body);
+          await globals.storage
+              .write(key: 'token', value: responseData["token"]);
+          await globals.storage
+              .write(key: 'email', value: responseData["user"]["email"]);
+          await globals.storage
+              .write(key: 'name', value: responseData["user"]["name"]);
+          await globals.storage
+              .write(key: 'id', value: responseData["user"]["id"]);
+          await globals.storage
+              .write(key: 'picture', value: responseData["user"]["picture"]);
+        } else {
+          Fluttertoast.showToast(
+            msg: 'Service connected successfully',
+            backgroundColor: Colors.green,
+          );
+          globals.navigatorKey.currentState!
+              .popUntil(ModalRoute.withName(routeHome));
+          globals.navigatorKey.currentState!.pushNamed(routeHome);
+        }
+      } else {
+        Fluttertoast.showToast(
+          msg: 'Login failed',
+          backgroundColor: Colors.red,
+        );
       }
+      globals.navigatorKey.currentState!
+          .popUntil(ModalRoute.withName(routeHome));
+      globals.navigatorKey.currentState!.pushNamed(routeHome);
       return true;
     } catch (error) {
-      print(" /!\\ ERROR : Login OAuth Failed");
-      print(error);
+      Fluttertoast.showToast(
+        msg: 'Login OAuth failed',
+        backgroundColor: Colors.red,
+      );
       return false;
     }
   }

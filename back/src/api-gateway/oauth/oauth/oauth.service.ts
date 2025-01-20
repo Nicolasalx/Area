@@ -84,14 +84,16 @@ export class OAuthService {
       for (const serviceOauthUser of serviceOauth) {
         for (const serviceOauthElem of this.serviceOAuthList) {
           if (
-            serviceOauthUser.services.name.localeCompare(serviceOauthElem.name)
+            serviceOauthUser.services.name.localeCompare(
+              serviceOauthElem.name,
+            ) == 0
           ) {
             serviceOauthElem.service.revokeAccessToken(serviceOauthUser.token);
           }
         }
       }
     } catch (err) {
-      console.log('deleteServiceToken: Revoke Oauth failed, ' + err);
+      this.logger.error('Revoke Oauth failed, ' + err.message);
     }
     return this.prisma.serviceTokens.deleteMany({
       where: {
